@@ -1,17 +1,21 @@
 import { motion } from "framer-motion";
+import { useGameSocket } from "../hooks/useGameSocket";
 import { useGameStore } from "../store";
 
 export default function MatchEndPage() {
+  const { nextMatch } = useGameSocket();
   const { matchEnd, meta, players } = useGameStore();
 
   if (!matchEnd) return null;
 
-  const nextMatch = matchEnd.match_number + 1;
+  const upcoming = matchEnd.match_number + 1;
   const gameOver = meta && Object.values(meta.total_points).some((p) => p >= 10);
   const allMatchesDone = matchEnd.match_number >= (meta?.total_matches ?? 4);
 
   const winnerName =
-    players.find((p) => p.id === matchEnd.winner_player_id)?.name ?? "Unknown";
+    players.find((p) => p.id === matchEnd.winner_player_id)?.name ??
+    meta?.player_names?.[matchEnd.winner_player_id] ??
+    "Unknown";
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
@@ -60,22 +64,12 @@ export default function MatchEndPage() {
 
         {!gameOver && !allMatchesDone && (
           <div className="text-center">
-            <button
-              className="btn-royal"
-              onClick={() => {
-                const kingSeat = (nextMatch - 1) % 4;
-                useGameStore.getState().handleMatchIntro({
-                  match_number: nextMatch,
-                  total_matches: 4,
-                  starting_king_seat: kingSeat,
-                  starting_king_name:
-                    players.find((p) => p.seat === kingSeat)?.name ?? "Unknown",
-                  meta,
-                });
-              }}
-            >
-              Next Match ({nextMatch} of 4)
+            <button className="btn-royal" onClick={() => nextMatch()}>
+              Next Match ({upcoming} of 4)
             </button>
+            <p className="text-xs text-royal-dark/50 mt-2">
+              Any player can continue — everyone advances together.
+            </p>
           </div>
         )}
 

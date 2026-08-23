@@ -18,6 +18,10 @@ def propose_trade(
     offer: dict[str, Any],
     request: dict[str, Any],
 ) -> str:
+    if proposer == target:
+        raise ValueError("Cannot propose a trade with yourself")
+    if not (0 <= target < state.num_players):
+        raise ValueError("Invalid trade target")
     pid = _next_proposal_id(state)
     proposal = {
         "id": pid,
@@ -47,18 +51,21 @@ def propose_alliance(
     targets: list[int],
     terms: str = "",
 ) -> str:
+    cleaned = [int(t) for t in targets if int(t) != proposer and 0 <= int(t) < state.num_players]
+    if not cleaned:
+        raise ValueError("Alliance requires at least one other player")
     pid = _next_proposal_id(state)
     proposal = {
         "id": pid,
         "type": "alliance",
         "proposer": proposer,
-        "targets": targets,
+        "targets": cleaned,
         "terms": terms,
         "status": "pending",
     }
     state.pending_proposals.append(proposal)
     state.negotiation_history.append(proposal)
-    state.log_event("propose_alliance", proposal_id=pid, proposer=proposer, targets=targets)
+    state.log_event("propose_alliance", proposal_id=pid, proposer=proposer, targets=cleaned)
     return pid
 
 
@@ -109,7 +116,10 @@ def accept_proposal(state: GameState, accepter: int, proposal_id: str) -> bool:
     if proposal["type"] == "trade":
         if accepter != proposal["target"]:
             return False
-        _execute_trade(state, proposal["proposer"], proposal["target"], proposal["offer"], proposal["request"])
+        if not _execute_trade(
+            state, proposal["proposer"], proposal["target"], proposal["offer"], proposal["request"]
+        ):
+            return False
     elif proposal["type"] == "conditional":
         if accepter != proposal["target"]:
             return False
@@ -118,13 +128,16 @@ def accept_proposal(state: GameState, accepter: int, proposal_id: str) -> bool:
             promise.status = "accepted"
         state.log_event("conditional_accepted", proposal_id=proposal_id, note="non_binding")
     elif proposal["type"] == "alliance":
-        members = frozenset([proposal["proposer"], *proposal["targets"]])
-        if accepter not in members:
+        targets = proposal.get("targets") or []
+        if accepter not in targets:
             return False
+        members = frozenset([proposal["proposer"], *targets])
         state.alliances.append(
             Alliance(members=members, declared_round=state.current_round, terms=proposal.get("terms", ""))
         )
         state.log_event("alliance_formed", members=list(members))
+    else:
+        return False
 
     proposal["status"] = "accepted"
     state.log_event("proposal_accepted", proposal_id=proposal_id, accepter=accepter)
@@ -134,6 +147,10 @@ def accept_proposal(state: GameState, accepter: int, proposal_id: str) -> bool:
 def reject_proposal(state: GameState, rejecter: int, proposal_id: str) -> bool:
     proposal = next((p for p in state.pending_proposals if p["id"] == proposal_id), None)
     if not proposal or proposal["status"] != "pending":
+        return False
+    is_target = proposal.get("target") == rejecter
+    is_alliance_target = rejecter in (proposal.get("targets") or [])
+    if not is_target and not is_alliance_target:
         return False
     proposal["status"] = "rejected"
     state.log_event("proposal_rejected", proposal_id=proposal_id, rejecter=rejecter)
@@ -157,8 +174,8 @@ def _execute_trade(
     target: int,
     offer: dict[str, Any],
     request: dict[str, Any],
-) -> None:
-    """Execute gold/card trade. Gifted gold tracked separately."""
+) -> bool:
+    """Execute gold/card trade. Gifted gold tracked separately. Returns False if blocked."""
     max_trades = int(state.config.get("max_negotiation_trades_per_phase", 0))
     if max_trades > 0:
         for seat in (proposer, target):
@@ -170,7 +187,7 @@ def _execute_trade(
                     reason="max_negotiation_trades_per_phase",
                     seat=seat,
                 )
-                return
+                return False
 
     trade_cap = int(state.config.get("max_negotiation_gift_per_trade", 0))
     trade_remaining: dict[int, int] = {}
@@ -183,6 +200,7 @@ def _execute_trade(
     for seat in (proposer, target):
         state.negotiation_trades_executed[seat] = state.negotiation_trades_executed.get(seat, 0) + 1
     state.log_event("trade_executed", proposer=proposer, target=target)
+    return True
 
 
 def _apply_trade_payload(

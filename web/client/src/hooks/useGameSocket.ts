@@ -194,6 +194,10 @@ export function useGameSocket() {
     sendShared({ type: "begin_match", payload: { match_number: matchNumber } });
   }, []);
 
+  const nextMatch = useCallback(() => {
+    sendShared({ type: "next_match", payload: {} });
+  }, []);
+
   const sendAction = useCallback((actionType: string, data: Record<string, unknown> = {}) => {
     sendShared({ type: "action", payload: { action_type: actionType, data } });
   }, []);
@@ -213,6 +217,7 @@ export function useGameSocket() {
     toggleReady,
     startGame,
     beginMatch,
+    nextMatch,
     sendAction,
     acceptProposal,
     rejectProposal,

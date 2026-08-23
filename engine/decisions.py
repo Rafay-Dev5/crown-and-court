@@ -52,8 +52,23 @@ class DecisionEngine:
         self._played_buffer = []
         self._play_reveal_idx = 0
         self._phase_stage = "negotiation"
+        self._reset_negotiation_tracking()
         self._build_negotiation_queue()
         return self.state
+
+    def _reset_negotiation_tracking(self) -> None:
+        """Clear pending deals and per-phase gift/trade caps for a fresh negotiation."""
+        assert self.state
+        self.state.pending_proposals = []
+        self.state.negotiation_gift_sent = {}
+        self.state.negotiation_trades_executed = {}
+
+    def _expire_pending_proposals(self) -> None:
+        """Mark leftover proposals expired when negotiation ends (cannot carry to next round)."""
+        assert self.state
+        for proposal in self.state.pending_proposals:
+            if proposal.get("status") == "pending":
+                proposal["status"] = "expired"
 
     @property
     def done(self) -> bool:
@@ -212,6 +227,7 @@ class DecisionEngine:
     def _advance_phase(self) -> None:
         assert self.state
         if self._phase_stage == "negotiation":
+            self._expire_pending_proposals()
             self.state.log_event("negotiation_complete")
             run_succession_check(self.state)
             self._build_play_queue()
@@ -240,5 +256,6 @@ class DecisionEngine:
         self._neg_tick = 0
         self._neg_seat_idx = 0
         self._phase_stage = "negotiation"
+        self._reset_negotiation_tracking()
         self.state.log_event("round_start", round=self.state.current_round)
         self._build_negotiation_queue()

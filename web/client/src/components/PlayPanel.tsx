@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CardComponent from "./CardComponent";
 import type { CardData } from "../store/gameStore";
 
@@ -10,6 +10,10 @@ type Props = {
 
 export default function PlayPanel({ hand, nPlay, onSubmit }: Props) {
   const [selected, setSelected] = useState<number[]>([]);
+
+  useEffect(() => {
+    setSelected([]);
+  }, [hand, nPlay]);
 
   const toggle = (idx: number) => {
     setSelected((prev) => {

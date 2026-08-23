@@ -205,6 +205,8 @@ export function createGameStore(set: (partial: Partial<GameStore> | ((s: GameSto
         yourSeat: (payload.your_seat as number) ?? get().yourSeat,
         matchNumber: payload.match_number as number,
         meta: (payload.meta as MetaState) ?? get().meta,
+        // Fresh match — drop prior match chatter from the log.
+        events: get().matchNumber !== (payload.match_number as number) ? [] : get().events,
       });
     },
 

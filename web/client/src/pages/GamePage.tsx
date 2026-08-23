@@ -40,7 +40,13 @@ export default function GamePage() {
 
   const isMyTurn = decision?.seat === yourSeat;
   const myRole = publicState.seats.find((s) => s.seat_id === yourSeat)?.role ?? "noble";
-  const nPlay = myRole === "king" ? 3 : 2;
+  // Prefer engine n_play (statuses / hand size); fall back to role defaults.
+  const nPlay =
+    typeof decision?.context?.n_play === "number"
+      ? (decision.context.n_play as number)
+      : myRole === "king"
+        ? 3
+        : 2;
 
   const phaseLabel = publicState.phase.toUpperCase();
   const negInfo = publicState.negotiation_tick != null

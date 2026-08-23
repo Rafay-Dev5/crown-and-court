@@ -12,6 +12,7 @@ class ClientMessageType(str, Enum):
     READY = "ready"
     START = "start"
     BEGIN_MATCH = "begin_match"
+    NEXT_MATCH = "next_match"
     ACTION = "action"
     ACCEPT_PROPOSAL = "accept_proposal"
     REJECT_PROPOSAL = "reject_proposal"

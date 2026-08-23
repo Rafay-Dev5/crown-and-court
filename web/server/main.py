@@ -135,16 +135,44 @@ async def handle_message(
         if match_num < 1 or match_num > 4:
             await _send_error(websocket, "Invalid match number")
             return player_id, room_code
-        if room.phase not in (RoomPhase.MATCH_INTRO, RoomPhase.MATCH_END):
-            # Allow begin from match_intro; also after match_end client navigates to intro.
-            if room.phase != RoomPhase.MATCH_INTRO and room.pending_match != match_num:
-                pass
+        if room.phase != RoomPhase.MATCH_INTRO:
+            await _send_error(websocket, "Match can only be started from the match intro")
+            return player_id, room_code
+        if match_num != room.pending_match:
+            await _send_error(websocket, f"Expected match {room.pending_match}")
+            return player_id, room_code
         try:
             room.start_match(match_num)
         except Exception as exc:
             await _send_error(websocket, f"Failed to start match: {exc}")
             return player_id, room_code
         await rooms.broadcast_game_state(room)
+
+    elif msg.type == ClientMessageType.NEXT_MATCH:
+        # After MATCH_END the room is already MATCH_INTRO; broadcast intro so all clients sync.
+        if room.phase not in (RoomPhase.MATCH_INTRO, RoomPhase.MATCH_END):
+            await _send_error(websocket, "No next match available")
+            return player_id, room_code
+        if room.check_game_over():
+            await _send_error(websocket, "Game is already over")
+            return player_id, room_code
+        room.phase = RoomPhase.MATCH_INTRO
+        match_num = room.pending_match
+        king_seat = room.meta.starting_king_seat_for_match(match_num) if room.meta else 0
+        king_name = room.meta.player_names[king_seat] if room.meta else ""
+        await rooms.broadcast(
+            room,
+            ServerMessage(
+                type=ServerMessageType.MATCH_INTRO,
+                payload={
+                    "match_number": match_num,
+                    "total_matches": 4,
+                    "starting_king_seat": king_seat,
+                    "starting_king_name": king_name,
+                    "meta": room.meta.to_dict() if room.meta else None,
+                },
+            ),
+        )
 
     elif msg.type == ClientMessageType.ACTION:
         try:

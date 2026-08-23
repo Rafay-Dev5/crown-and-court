@@ -222,16 +222,17 @@ class RoomManager:
         if room.session is None:
             return
         session = room.session
+        public = session.build_public_state().model_dump()
+        dec = session.build_decision_info()
+        dec_payload = dec.model_dump() if dec else None
         for pid, player in room.players.items():
-            public = session.build_public_state().model_dump()
             private = session.build_private_state(pid).model_dump()
-            dec = session.build_decision_info()
             msg = ServerMessage(
                 type=ServerMessageType.GAME_STATE,
                 payload={
                     "public": public,
                     "private": private,
-                    "decision": dec.model_dump() if dec else None,
+                    "decision": dec_payload,
                     "your_seat": player.seat,
                     "phase": room.phase.value,
                     "match_number": room.pending_match,
@@ -240,14 +241,13 @@ class RoomManager:
             )
             await self.send_to(player, msg)
 
-        dec = session.build_decision_info()
         if dec:
             await self.broadcast(
                 room,
                 ServerMessage(
                     type=ServerMessageType.DECISION_REQUIRED,
                     payload={
-                        "decision": dec.model_dump(),
+                        "decision": dec_payload,
                         "seat_player_id": session.player_id_for_seat(dec.seat),
                         "seat_player_name": session.player_names[dec.seat],
                     },

@@ -70,6 +70,8 @@ class GameSession:
         self.engine = DecisionEngine(self.config, self.rng)
         self._pending_human_action: HumanAction | None = None
         self._decision_counter = 0
+        self._last_decision_key: tuple[int, str] | None = None
+        self._cached_decision_id = ""
         self._last_event_index = 0
         self.state = self.engine.reset()
 
@@ -83,9 +85,15 @@ class GameSession:
     def decision_id(self) -> str:
         dec = self.current_decision()
         if dec is None:
+            self._last_decision_key = None
+            self._cached_decision_id = ""
             return ""
-        self._decision_counter += 1
-        return f"d{self._decision_counter}-{dec.seat}-{dec.dtype.value}"
+        key = (dec.seat, dec.dtype.value)
+        if key != self._last_decision_key:
+            self._decision_counter += 1
+            self._last_decision_key = key
+            self._cached_decision_id = f"d{self._decision_counter}-{dec.seat}-{dec.dtype.value}"
+        return self._cached_decision_id
 
     def apply_action(self, action: HumanAction) -> GameState:
         self._pending_human_action = action
@@ -127,20 +135,28 @@ class GameSession:
             target = int(payload["target"])
             offer = payload.get("offer", {"gold": 0})
             request = payload.get("request", {"gold": 0})
-            propose_trade(state, seat, target, offer, request)
+            try:
+                propose_trade(state, seat, target, offer, request)
+            except ValueError:
+                pass_action(state, seat)
         elif atype == "propose_alliance":
             targets = [int(t) for t in payload.get("targets", [])]
             terms = payload.get("terms", "")
-            propose_alliance(state, seat, targets, terms=terms)
+            try:
+                propose_alliance(state, seat, targets, terms=terms)
+            except ValueError:
+                pass_action(state, seat)
         elif atype == "propose_conditional":
             target = int(payload["target"])
             offer = payload.get("offer", {})
             condition = payload.get("condition", {})
             propose_conditional(state, seat, target, offer, condition)
         elif atype == "accept_proposal":
-            accept_proposal(state, seat, payload["proposal_id"])
+            if not accept_proposal(state, seat, payload["proposal_id"]):
+                pass_action(state, seat)
         elif atype == "reject_proposal":
-            reject_proposal(state, seat, payload["proposal_id"])
+            if not reject_proposal(state, seat, payload["proposal_id"]):
+                pass_action(state, seat)
         elif atype == "threaten":
             target = int(payload["target"])
             terms = payload.get("terms", "")
@@ -152,18 +168,19 @@ class GameSession:
         self, state: GameState, seat: int, _action: int, _rng: GameRNG
     ) -> None:
         act = self._pending_human_action
-        indices = act.payload.get("card_indices", [0]) if act else [0]
+        raw_indices = act.payload.get("card_indices") if act else None
         hand = state.seats[seat].hand
         dec = self.current_decision()
         n_play = dec.context.get("n_play", 2) if dec else 2
 
-        selected_indices = sorted(set(int(i) for i in indices if 0 <= int(i) < len(hand)))[:n_play]
-        while len(selected_indices) < n_play and len(selected_indices) < len(hand):
-            for i in range(len(hand)):
-                if i not in selected_indices:
-                    selected_indices.append(i)
-                if len(selected_indices) >= n_play:
-                    break
+        if not raw_indices:
+            # Bots / empty payload — play the first n_play cards.
+            selected_indices = list(range(min(n_play, len(hand))))
+        else:
+            # Never pad a partial human selection — that plays unintended cards.
+            selected_indices = sorted(
+                set(int(i) for i in raw_indices if 0 <= int(i) < len(hand))
+            )[:n_play]
 
         selected = [hand[i] for i in selected_indices if i < len(hand)]
         for idx in sorted([i for i in selected_indices if i < len(hand)], reverse=True):
