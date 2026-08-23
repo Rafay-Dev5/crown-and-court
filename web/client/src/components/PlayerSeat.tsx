@@ -53,7 +53,7 @@ export default function PlayerSeat({ seat, isYou, position, isActive }: Props) {
         {!isYou && (
           <div className="flex gap-0.5 mt-2 justify-center">
             {Array.from({ length: Math.min(seat.hand_size, 5) }).map((_, i) => (
-              <div key={i} className="card-back w-4 h-6" />
+              <div key={i} className="w-4 h-6 rounded-sm border border-royal-gold/60 bg-royal-darker" />
             ))}
             {seat.hand_size > 5 && <span className="text-xs text-parchment/50">+{seat.hand_size - 5}</span>}
           </div>

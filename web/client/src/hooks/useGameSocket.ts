@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useGameStore } from "../store";
 
 function resolveWebSocketUrl(): string {
@@ -9,12 +9,12 @@ function resolveWebSocketUrl(): string {
   const { protocol, hostname, port, host } = window.location;
   const wsProtocol = protocol === "https:" ? "wss:" : "ws:";
 
-  // Vite dev server (5173) — proxy WebSocket to the Python backend on 8000.
-  if (import.meta.env.DEV && port === "5173") {
+  // Vite dev server proxies API separately; connect directly to backend.
+  if (import.meta.env.DEV && (port === "5173" || port === "4173")) {
     return `${wsProtocol}//${hostname}:8000/ws`;
   }
 
-  // Production: same origin (client + server share one URL).
+  // Production: same origin (FastAPI serves UI + /ws).
   return `${wsProtocol}//${host}/ws`;
 }
 
@@ -23,140 +23,191 @@ type OutgoingMessage = {
   payload?: Record<string, unknown>;
 };
 
-export function useGameSocket() {
-  const wsRef = useRef<WebSocket | null>(null);
-  const store = useGameStore();
+/** Module singleton so StrictMode remounts / multiple hook calls share one socket. */
+let sharedWs: WebSocket | null = null;
+let sharedListeners = 0;
+const pendingOutbox: OutgoingMessage[] = [];
 
-  const send = useCallback((msg: OutgoingMessage) => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(msg));
+function flushOutbox(ws: WebSocket) {
+  while (pendingOutbox.length > 0 && ws.readyState === WebSocket.OPEN) {
+    const msg = pendingOutbox.shift()!;
+    ws.send(JSON.stringify(msg));
+  }
+}
+
+function ensureSharedSocket() {
+  if (sharedWs && (sharedWs.readyState === WebSocket.OPEN || sharedWs.readyState === WebSocket.CONNECTING)) {
+    return sharedWs;
+  }
+
+  const ws = new WebSocket(resolveWebSocketUrl());
+  sharedWs = ws;
+
+  ws.onopen = () => {
+    useGameStore.setState({ connected: true, error: null });
+    flushOutbox(ws);
+
+    const token = localStorage.getItem("cc_reconnect_token");
+    if (token) {
+      ws.send(JSON.stringify({ type: "reconnect", payload: { token } }));
     }
-  }, []);
+  };
 
-  const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+  ws.onclose = () => {
+    useGameStore.setState({ connected: false });
+    if (sharedWs === ws) sharedWs = null;
+  };
 
-    const ws = new WebSocket(resolveWebSocketUrl());
-    wsRef.current = ws;
+  ws.onerror = () => {
+    useGameStore.setState({ error: "Connection failed — is the server running?" });
+  };
 
-    ws.onopen = () => {
-      useGameStore.setState({ connected: true, error: null });
-      const token = localStorage.getItem("cc_reconnect_token");
-      const roomCode = localStorage.getItem("cc_room_code");
-      const playerId = localStorage.getItem("cc_player_id");
-      if (token && roomCode && playerId) {
-        send({ type: "reconnect", payload: { token } });
+  ws.onmessage = (ev) => {
+    let msg: { type: string; payload?: Record<string, unknown> };
+    try {
+      msg = JSON.parse(ev.data);
+    } catch {
+      return;
+    }
+    const s = useGameStore.getState();
+    switch (msg.type) {
+      case "error": {
+        const message = (msg.payload?.message as string) ?? "Unknown error";
+        // Stale reconnect after server restart — clear and stay on home.
+        if (
+          message.includes("Invalid reconnect") ||
+          message.includes("Room no longer") ||
+          message.includes("Player not found")
+        ) {
+          localStorage.removeItem("cc_reconnect_token");
+          localStorage.removeItem("cc_room_code");
+          localStorage.removeItem("cc_player_id");
+          useGameStore.setState({
+            reconnectToken: null,
+            roomCode: null,
+            error: null,
+            screen: "home",
+          });
+          break;
+        }
+        s.setError(message);
+        break;
       }
-    };
+      case "lobby_state":
+        s.handleLobbyState(msg.payload ?? {});
+        if (msg.payload?.reconnect_token) {
+          localStorage.setItem("cc_reconnect_token", String(msg.payload.reconnect_token));
+        }
+        if (msg.payload?.code) {
+          localStorage.setItem("cc_room_code", String(msg.payload.code));
+        }
+        if (msg.payload?.your_id) {
+          localStorage.setItem("cc_player_id", String(msg.payload.your_id));
+        }
+        break;
+      case "match_intro":
+        s.handleMatchIntro(msg.payload ?? {});
+        break;
+      case "game_state":
+        s.handleGameState(msg.payload ?? {});
+        break;
+      case "decision_required":
+        s.handleDecisionRequired(msg.payload ?? {});
+        break;
+      case "event":
+        s.handleEvent(msg.payload ?? {});
+        break;
+      case "match_end":
+        s.handleMatchEnd(msg.payload ?? {});
+        break;
+      case "game_end":
+        s.handleGameEnd(msg.payload ?? {});
+        break;
+    }
+  };
 
-    ws.onclose = () => {
-      useGameStore.setState({ connected: false });
-    };
+  return ws;
+}
 
-    ws.onerror = () => {
-      useGameStore.setState({ error: "Connection failed — is the server running?" });
-    };
+function sendShared(msg: OutgoingMessage) {
+  const ws = ensureSharedSocket();
+  if (ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(msg));
+  } else {
+    pendingOutbox.push(msg);
+  }
+}
 
-    ws.onmessage = (ev) => {
-      const msg = JSON.parse(ev.data);
-      const s = useGameStore.getState();
-      switch (msg.type) {
-        case "error":
-          s.setError(msg.payload?.message ?? "Unknown error");
-          break;
-        case "lobby_state":
-          s.handleLobbyState(msg.payload);
-          if (msg.payload.reconnect_token) {
-            localStorage.setItem("cc_reconnect_token", msg.payload.reconnect_token);
-          }
-          if (msg.payload.code) {
-            localStorage.setItem("cc_room_code", msg.payload.code);
-          }
-          if (msg.payload.your_id) {
-            localStorage.setItem("cc_player_id", msg.payload.your_id);
-          }
-          break;
-        case "match_intro":
-          s.handleMatchIntro(msg.payload);
-          break;
-        case "game_state":
-          s.handleGameState(msg.payload);
-          break;
-        case "decision_required":
-          s.handleDecisionRequired(msg.payload);
-          break;
-        case "event":
-          s.handleEvent(msg.payload);
-          break;
-        case "match_end":
-          s.handleMatchEnd(msg.payload);
-          break;
-        case "game_end":
-          s.handleGameEnd(msg.payload);
-          break;
-      }
-    };
-  }, [send]);
+export function useGameSocket() {
+  const [connected, setConnected] = useState(useGameStore.getState().connected);
+  const subscribed = useRef(false);
 
   useEffect(() => {
-    connect();
+    if (subscribed.current) return;
+    subscribed.current = true;
+    sharedListeners += 1;
+    ensureSharedSocket();
+
+    const unsub = useGameStore.subscribe((state) => setConnected(state.connected));
+
     return () => {
-      wsRef.current?.close();
+      unsub();
+      subscribed.current = false;
+      sharedListeners = Math.max(0, sharedListeners - 1);
+      // Keep socket alive across StrictMode remount; only close when no listeners left.
+      if (sharedListeners === 0 && sharedWs) {
+        // Delay so StrictMode remount can reclaim the same socket.
+        const toClose = sharedWs;
+        setTimeout(() => {
+          if (sharedListeners === 0 && sharedWs === toClose) {
+            toClose.close();
+            sharedWs = null;
+          }
+        }, 250);
+      }
     };
-  }, [connect]);
+  }, []);
 
-  const createLobby = useCallback(
-    (name: string) => {
-      send({ type: "join", payload: { action: "create", name } });
-    },
-    [send]
-  );
+  const createLobby = useCallback((name: string) => {
+    localStorage.removeItem("cc_reconnect_token");
+    sendShared({ type: "join", payload: { action: "create", name } });
+  }, []);
 
-  const joinLobby = useCallback(
-    (code: string, name: string) => {
-      send({ type: "join", payload: { action: "join", code, name } });
-    },
-    [send]
-  );
+  const joinLobby = useCallback((code: string, name: string) => {
+    localStorage.removeItem("cc_reconnect_token");
+    sendShared({ type: "join", payload: { action: "join", code, name } });
+  }, []);
 
   const toggleReady = useCallback(() => {
-    send({ type: "ready" });
-  }, [send]);
+    const me = useGameStore.getState().players.find(
+      (p) => p.id === useGameStore.getState().playerId
+    );
+    const next = !(me?.ready ?? false);
+    sendShared({ type: "ready", payload: { ready: next } });
+  }, []);
 
   const startGame = useCallback(() => {
-    send({ type: "start" });
-  }, [send]);
+    sendShared({ type: "start" });
+  }, []);
 
-  const beginMatch = useCallback(
-    (matchNumber: number) => {
-      send({ type: "begin_match", payload: { match_number: matchNumber } });
-    },
-    [send]
-  );
+  const beginMatch = useCallback((matchNumber: number) => {
+    sendShared({ type: "begin_match", payload: { match_number: matchNumber } });
+  }, []);
 
-  const sendAction = useCallback(
-    (actionType: string, data: Record<string, unknown> = {}) => {
-      send({ type: "action", payload: { action_type: actionType, data } });
-    },
-    [send]
-  );
+  const sendAction = useCallback((actionType: string, data: Record<string, unknown> = {}) => {
+    sendShared({ type: "action", payload: { action_type: actionType, data } });
+  }, []);
 
-  const acceptProposal = useCallback(
-    (proposalId: string) => {
-      send({ type: "accept_proposal", payload: { proposal_id: proposalId } });
-    },
-    [send]
-  );
+  const acceptProposal = useCallback((proposalId: string) => {
+    sendShared({ type: "accept_proposal", payload: { proposal_id: proposalId } });
+  }, []);
 
-  const rejectProposal = useCallback(
-    (proposalId: string) => {
-      send({ type: "reject_proposal", payload: { proposal_id: proposalId } });
-    },
-    [send]
-  );
+  const rejectProposal = useCallback((proposalId: string) => {
+    sendShared({ type: "reject_proposal", payload: { proposal_id: proposalId } });
+  }, []);
 
   return {
-    send,
+    send: sendShared,
     createLobby,
     joinLobby,
     toggleReady,
@@ -165,6 +216,6 @@ export function useGameSocket() {
     sendAction,
     acceptProposal,
     rejectProposal,
-    connected: store.connected,
+    connected,
   };
 }

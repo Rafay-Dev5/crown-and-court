@@ -5,11 +5,38 @@ import { useGameStore } from "../store";
 
 export default function LobbyPage() {
   const { toggleReady, startGame } = useGameSocket();
-  const { roomCode, players, playerId, hostId, canStart, yourSeat } = useGameStore();
+  const { roomCode, players, playerId, hostId, canStart } = useGameStore();
   const [copied, setCopied] = useState(false);
 
   const me = players.find((p) => p.id === playerId);
   const inviteLink = `${window.location.origin}?code=${roomCode}`;
+
+  // Seats are assigned only when the match starts; until then show join order.
+  const slots: Array<(typeof players)[number] | null> = Array.from({ length: 4 }, (_, i) => {
+    const bySeat = players.find((p) => p.seat === i);
+    if (bySeat) return bySeat;
+    // Fallback: fill empty seats with players who don't have seats yet
+    const unseated = players.filter((p) => p.seat === null || p.seat === undefined);
+    return unseated[i] ?? null;
+  });
+
+  // Deduplicate if some have seats and some don't
+  const shownIds = new Set<string>();
+  const displaySlots = slots.map((p) => {
+    if (!p) return null;
+    if (shownIds.has(p.id)) return null;
+    shownIds.add(p.id);
+    return p;
+  });
+  // Put any remaining unseated players into empty slots
+  for (const p of players) {
+    if (shownIds.has(p.id)) continue;
+    const emptyIdx = displaySlots.findIndex((s) => s === null);
+    if (emptyIdx >= 0) {
+      displaySlots[emptyIdx] = p;
+      shownIds.add(p.id);
+    }
+  }
 
   const copyInvite = async () => {
     await navigator.clipboard.writeText(inviteLink);
@@ -27,12 +54,13 @@ export default function LobbyPage() {
         <div className="text-center mb-6">
           <h1 className="text-3xl font-display text-royal-gold">Lobby</h1>
           <p className="text-2xl tracking-[0.3em] font-display text-parchment mt-2">{roomCode}</p>
-          <p className="text-parchment/60 text-sm mt-1">Match 0 of 4 · Waiting for players</p>
+          <p className="text-parchment/60 text-sm mt-1">
+            {players.length}/4 players · Waiting to start
+          </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {Array.from({ length: 4 }).map((_, i) => {
-            const player = players.find((p) => p.seat === i);
+          {displaySlots.map((player, i) => {
             const isYou = player?.id === playerId;
             return (
               <motion.div
@@ -47,7 +75,11 @@ export default function LobbyPage() {
                     <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-royal-dark/10 flex items-center justify-center">
                       <img src={`/assets/avatar-${(i % 4) + 1}.svg`} alt="" className="w-8 h-8" />
                     </div>
-                    <p className="font-semibold truncate">{player.name}{isYou ? " (You)" : ""}</p>
+                    <p className="font-semibold truncate">
+                      {player.name}
+                      {isYou ? " (You)" : ""}
+                      {player.id === hostId ? " ★" : ""}
+                    </p>
                     <p className={`text-xs mt-1 ${player.ready ? "text-green-700" : "text-amber-700"}`}>
                       {player.ready ? "READY" : "Not ready"}
                     </p>
@@ -95,10 +127,6 @@ export default function LobbyPage() {
               </p>
             )}
           </div>
-        )}
-
-        {yourSeat !== null && yourSeat !== undefined && (
-          <p className="text-center text-sm text-parchment/50 mt-4">Your seat: {yourSeat + 1}</p>
         )}
       </motion.div>
     </div>

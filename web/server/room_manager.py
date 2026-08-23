@@ -89,7 +89,12 @@ class GameRoom:
         king_seat = self.meta.starting_king_seat_for_match(match_num)
         ids = self.meta.player_ids
         names = self.meta.player_names
-        self.session = GameSession(ids, names, starting_king_seat=king_seat, seed=hash(self.code) + match_num)
+        self.session = GameSession(
+            ids,
+            names,
+            starting_king_seat=king_seat,
+            seed=abs(hash(self.code)) % (2**31 - 1) + match_num,
+        )
         self.meta.record_match_start(match_num, self.session.state)
         self.pending_match = match_num
         self.phase = RoomPhase.PLAYING
@@ -148,7 +153,9 @@ class RoomManager:
         room = self.get_room(code)
         if room is None:
             raise ValueError("Room not found")
-        if len(room.players) >= MAX_PLAYERS:
+        if room.phase != RoomPhase.LOBBY:
+            raise ValueError("Game already started — ask the host for a new lobby")
+        if len(room.players) >= MAX_PLAYERS and player_id not in room.players:
             raise ValueError("Room is full")
         if player_id in room.players:
             room.players[player_id].name = name
@@ -172,6 +179,25 @@ class RoomManager:
             raise ValueError("Player not found")
         player.websocket = websocket
         return room, player
+
+    async def broadcast_lobby(self, room: GameRoom) -> None:
+        """Send each player a personalized lobby payload (correct your_id / token)."""
+        for pid, player in room.players.items():
+            payload = {
+                "code": room.code,
+                "host_id": room.host_id,
+                "players": [p.model_dump() for p in room.player_list()],
+                "your_id": pid,
+                "your_seat": player.seat,
+                "reconnect_token": player.reconnect_token,
+                "phase": room.phase.value,
+                "can_start": room.all_ready() and pid == room.host_id,
+                "meta": room.meta.to_dict() if room.meta else None,
+            }
+            await self.send_to(
+                player,
+                ServerMessage(type=ServerMessageType.LOBBY_STATE, payload=payload),
+            )
 
     async def broadcast(self, room: GameRoom, message: ServerMessage) -> None:
         dead: list[str] = []

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useGameStore } from "../store";
@@ -7,15 +7,27 @@ export default function HomePage() {
   const [mode, setMode] = useState<"menu" | "create" | "join">("menu");
   const [joinCode, setJoinCode] = useState("");
   const { createLobby, joinLobby, connected } = useGameSocket();
-  const { playerName, setPlayerName, error } = useGameStore();
+  const { playerName, setPlayerName, error, setError } = useGameStore();
+
+  // Prefill join from invite link ?code=ABCD
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    if (code) {
+      setJoinCode(code.toUpperCase());
+      setMode("join");
+    }
+  }, []);
 
   const handleCreate = () => {
     if (!playerName.trim()) return;
+    setError(null);
     createLobby(playerName.trim());
   };
 
   const handleJoin = () => {
     if (!playerName.trim() || !joinCode.trim()) return;
+    setError(null);
     joinLobby(joinCode.trim().toUpperCase(), playerName.trim());
   };
 
@@ -72,7 +84,7 @@ export default function HomePage() {
 
         {mode === "create" && (
           <div className="flex flex-col gap-3">
-            <button className="btn-royal w-full" onClick={handleCreate} disabled={!playerName.trim()}>
+            <button className="btn-royal w-full" onClick={handleCreate} disabled={!playerName.trim() || !connected}>
               Create & Enter Lobby
             </button>
             <button className="btn-outline w-full" onClick={() => setMode("menu")}>
@@ -90,7 +102,11 @@ export default function HomePage() {
               placeholder="Room code (e.g. ABCD)"
               className="w-full px-4 py-2 rounded-lg border-2 border-royal-gold/50 bg-white/80 text-royal-dark focus:outline-none focus:border-royal-gold uppercase tracking-widest text-center"
             />
-            <button className="btn-royal w-full" onClick={handleJoin} disabled={!playerName.trim() || !joinCode.trim()}>
+            <button
+              className="btn-royal w-full"
+              onClick={handleJoin}
+              disabled={!playerName.trim() || !joinCode.trim() || !connected}
+            >
               Join Lobby
             </button>
             <button className="btn-outline w-full" onClick={() => setMode("menu")}>

@@ -9,26 +9,25 @@ import MatchEndPage from "./pages/MatchEndPage";
 import GameEndPage from "./pages/GameEndPage";
 
 export default function App() {
+  // Single socket subscription for the whole app (do not call useGameSocket twice).
   useGameSocket();
-  const { screen, setPlayerName } = useGameStore();
-  const { joinLobby: join } = useGameSocket();
+  const screen = useGameStore((s) => s.screen);
+  const setPlayerName = useGameStore((s) => s.setPlayerName);
+  const playerName = useGameStore((s) => s.playerName);
+
+  useEffect(() => {
+    if (playerName) localStorage.setItem("cc_player_name", playerName);
+  }, [playerName]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    if (code && screen === "home") {
-      const savedName = localStorage.getItem("cc_player_name");
-      if (savedName) {
-        setPlayerName(savedName);
-        join(code, savedName);
-      }
+    if (!code) return;
+    const savedName = localStorage.getItem("cc_player_name");
+    if (savedName && !playerName) {
+      setPlayerName(savedName);
     }
-  }, [screen, setPlayerName, join]);
-
-  useEffect(() => {
-    const name = useGameStore.getState().playerName;
-    if (name) localStorage.setItem("cc_player_name", name);
-  });
+  }, [playerName, setPlayerName]);
 
   switch (screen) {
     case "lobby":

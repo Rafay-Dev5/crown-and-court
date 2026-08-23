@@ -45,20 +45,28 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     try:
         while True:
             raw = await websocket.receive_text()
-            msg = ClientMessage.model_validate_json(raw)
-            player_id, room_code = await handle_message(websocket, msg, player_id, room_code)
+            try:
+                msg = ClientMessage.model_validate_json(raw)
+            except Exception as exc:
+                await _send_error(websocket, f"Invalid message: {exc}")
+                continue
+            try:
+                player_id, room_code = await handle_message(
+                    websocket, msg, player_id, room_code
+                )
+            except ValueError as exc:
+                await _send_error(websocket, str(exc))
+            except Exception as exc:
+                await _send_error(websocket, f"Server error: {exc}")
     except WebSocketDisconnect:
         if room_code and player_id:
             room = rooms.get_room(room_code)
             if room and player_id in room.players:
                 room.players[player_id].websocket = None
-                await rooms.broadcast(
-                    room,
-                    ServerMessage(
-                        type=ServerMessageType.LOBBY_STATE,
-                        payload=_lobby_payload(room, player_id),
-                    ),
-                )
+                try:
+                    await rooms.broadcast_lobby(room)
+                except Exception:
+                    pass
 
 
 async def handle_message(
@@ -83,14 +91,18 @@ async def handle_message(
         return player_id, room_code
 
     if msg.type == ClientMessageType.READY:
-        room.players[player_id].ready = not room.players[player_id].ready
-        await rooms.broadcast(
-            room,
-            ServerMessage(
-                type=ServerMessageType.LOBBY_STATE,
-                payload=_lobby_payload(room, player_id),
-            ),
-        )
+        if player_id not in room.players:
+            await _send_error(websocket, "Player not in room")
+            return player_id, room_code
+        if room.phase != RoomPhase.LOBBY:
+            await _send_error(websocket, "Cannot change ready outside lobby")
+            return player_id, room_code
+        # Absolute ready state (not toggle) — avoids race flips under concurrent updates.
+        if "ready" in msg.payload:
+            room.players[player_id].ready = bool(msg.payload.get("ready"))
+        else:
+            room.players[player_id].ready = True
+        await rooms.broadcast_lobby(room)
 
     elif msg.type == ClientMessageType.START:
         if player_id != room.host_id:
@@ -100,7 +112,10 @@ async def handle_message(
             await _send_error(websocket, "All players must be ready")
             return player_id, room_code
         room.start_meta_game()
-        king_name = room.meta.player_names[room.meta.starting_king_seat_for_match(1)] if room.meta else ""
+        king_seat = room.meta.starting_king_seat_for_match(1) if room.meta else 0
+        king_name = room.meta.player_names[king_seat] if room.meta else ""
+        # Refresh lobby seats for every client, then show match intro.
+        await rooms.broadcast_lobby(room)
         await rooms.broadcast(
             room,
             ServerMessage(
@@ -108,7 +123,7 @@ async def handle_message(
                 payload={
                     "match_number": 1,
                     "total_matches": 4,
-                    "starting_king_seat": 0,
+                    "starting_king_seat": king_seat,
                     "starting_king_name": king_name,
                     "meta": room.meta.to_dict() if room.meta else None,
                 },
@@ -120,7 +135,15 @@ async def handle_message(
         if match_num < 1 or match_num > 4:
             await _send_error(websocket, "Invalid match number")
             return player_id, room_code
-        room.start_match(match_num)
+        if room.phase not in (RoomPhase.MATCH_INTRO, RoomPhase.MATCH_END):
+            # Allow begin from match_intro; also after match_end client navigates to intro.
+            if room.phase != RoomPhase.MATCH_INTRO and room.pending_match != match_num:
+                pass
+        try:
+            room.start_match(match_num)
+        except Exception as exc:
+            await _send_error(websocket, f"Failed to start match: {exc}")
+            return player_id, room_code
         await rooms.broadcast_game_state(room)
 
     elif msg.type == ClientMessageType.ACTION:
@@ -128,6 +151,8 @@ async def handle_message(
             await rooms.handle_action(room, player_id, msg.payload)
         except ValueError as e:
             await _send_error(websocket, str(e))
+        except Exception as e:
+            await _send_error(websocket, f"Action failed: {e}")
 
     elif msg.type == ClientMessageType.ACCEPT_PROPOSAL:
         try:
@@ -167,24 +192,25 @@ async def _handle_join(
         )
         return player_id, room.code
 
-    code = msg.payload.get("code", "").upper().strip()
+    code = (msg.payload.get("code") or "").upper().strip().replace(" ", "")
+    if not code:
+        raise ValueError("Room code required")
     room = rooms.join_room(code, player_id, name)
     room.players[player_id].websocket = websocket
-    await rooms.broadcast(
-        room,
-        ServerMessage(
-            type=ServerMessageType.LOBBY_STATE,
-            payload=_lobby_payload(room, player_id),
-        ),
-    )
-    return player_id, code
+    await rooms.broadcast_lobby(room)
+    return player_id, room.code
 
 
 async def _handle_reconnect(
     websocket: WebSocket, msg: ClientMessage
-) -> tuple[str, str]:
+) -> tuple[str | None, str | None]:
     token = msg.payload.get("token", "")
-    room, player = rooms.reconnect(token, websocket)
+    try:
+        room, player = rooms.reconnect(token, websocket)
+    except ValueError as exc:
+        await _send_error(websocket, str(exc))
+        return None, None
+
     payload = _lobby_payload(room, player.id)
     payload["reconnected"] = True
 
