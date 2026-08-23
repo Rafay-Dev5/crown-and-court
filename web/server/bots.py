@@ -1,11 +1,15 @@
-"""Four distinct table bots for practice and full-game testing."""
+"""Four distinct table bots for practice and full-game testing.
+
+Kept free of the RL ``agents`` package so the slim Railway image can import
+this module without numpy / agents/ being present.
+"""
 
 from __future__ import annotations
 
 from typing import Any
 
-from agents.heuristic.bots import HEURISTIC_BOTS
 from engine.decisions import DecisionType, PendingDecision
+from engine.phases import random_choice_policy, random_play_policy
 from engine.rng import GameRNG
 from web.server.game_session import GameSession, HumanAction
 
@@ -16,6 +20,13 @@ BOT_PROFILES: list[tuple[str, str, str]] = [
     ("exploit", "The Opportunist", "Accepts cheap deals and plays whatever is convenient."),
 ]
 
+_PLAY_PREF: dict[str, tuple[str, ...]] = {
+    "hoard": ("economy", "protection", "tempo"),
+    "aggressive": ("disruption", "betrayal", "information"),
+    "ally_neighbor": ("alliance", "economy", "protection"),
+    "exploit": ("economy", "disruption", "betrayal", "alliance"),
+}
+
 
 def unused_bot_profiles(used_keys: set[str]) -> list[tuple[str, str, str]]:
     return [p for p in BOT_PROFILES if p[0] not in used_keys]
@@ -25,11 +36,65 @@ def _other_seats(session: GameSession, seat: int) -> list[int]:
     return [s for s in range(session.state.num_players) if s != seat]
 
 
+def _pick_play_indices(bot_key: str, hand: list[dict], n: int) -> list[int]:
+    prefs = _PLAY_PREF.get(bot_key, ())
+    ranked: list[int] = []
+    for cat in prefs:
+        for i, card in enumerate(hand):
+            if i not in ranked and card.get("category") == cat:
+                ranked.append(i)
+            if len(ranked) >= n:
+                return ranked[:n]
+    for i in range(len(hand)):
+        if i not in ranked:
+            ranked.append(i)
+        if len(ranked) >= n:
+            break
+    return ranked[:n]
+
+
+def _pick_choice(bot_key: str, session: GameSession, seat: int, options: list[dict]) -> str:
+    if not options:
+        return ""
+    if len(options) == 1:
+        return str(options[0].get("id", ""))
+
+    risky = ("invest_private", "private", "bold", "double", "steal", "backstab", "coup")
+    safe = ("invest_public", "public", "safe", "conservative", "ward")
+
+    def score(opt: dict, idx: int) -> float:
+        oid = str(opt.get("id", "")).lower()
+        label = str(opt.get("label", "")).lower()
+        text = f"{oid} {label}"
+        s = 0.0
+        if bot_key == "aggressive":
+            if any(k in text for k in risky):
+                s += 3.0
+            s += idx * 0.2
+        elif bot_key == "hoard":
+            if any(k in text for k in safe):
+                s += 3.0
+            if "public" in text:
+                s += 1.5
+            s -= idx * 0.2
+        elif bot_key == "ally_neighbor":
+            if "public" in text or "alliance" in text or "pact" in text:
+                s += 2.5
+        return s
+
+    scored = [(score(opt, i), str(opt.get("id", ""))) for i, opt in enumerate(options)]
+    best = max(scored, key=lambda x: x[0])[0]
+    top = [oid for val, oid in scored if val >= best - 0.01 and oid]
+    if not top:
+        return random_choice_policy(session.state, seat, options)
+    rng = GameRNG(seed=hash((bot_key, seat, session.state.current_round, tuple(top))) % (2**31))
+    return rng.choice(top)
+
+
 def decide_bot_action(bot_key: str, session: GameSession, dec: PendingDecision) -> HumanAction:
     rng = session.rng
     seat = dec.seat
     state = session.state
-    _neg_fn, play_fn, choice_fn = HEURISTIC_BOTS.get(bot_key, HEURISTIC_BOTS["exploit"])
     others = _other_seats(session, seat)
 
     if dec.dtype == DecisionType.NEGOTIATION:
@@ -70,10 +135,10 @@ def decide_bot_action(bot_key: str, session: GameSession, dec: PendingDecision) 
     if dec.dtype == DecisionType.PLAY:
         hand = state.seats[seat].hand
         n = int(dec.context.get("n_play", 2))
-        indices = play_fn(state, seat, hand)
-        cleaned = sorted({int(i) for i in indices if 0 <= int(i) < len(hand)})[:n]
+        cleaned = _pick_play_indices(bot_key, hand, n)
         if len(cleaned) < n:
-            for i in range(len(hand)):
+            fallback = random_play_policy(state, seat, hand)
+            for i in fallback:
                 if i not in cleaned:
                     cleaned.append(i)
                 if len(cleaned) >= n:
@@ -83,7 +148,7 @@ def decide_bot_action(bot_key: str, session: GameSession, dec: PendingDecision) 
     if dec.dtype == DecisionType.CHOICE:
         options = dec.context.get("options") or []
         if options:
-            chosen = choice_fn(state, seat, options)
+            chosen = _pick_choice(bot_key, session, seat, options)
             for i, opt in enumerate(options):
                 if opt.get("id") == chosen:
                     return HumanAction(action_type="choice", payload={"choice_index": i})
