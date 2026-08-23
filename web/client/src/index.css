@@ -42,6 +42,19 @@ h1, h2, h3, h4 {
   border-radius: 8px;
 }
 
+.card-preview {
+  background:
+    radial-gradient(ellipse at top, rgba(232, 197, 71, 0.18) 0%, transparent 55%),
+    linear-gradient(165deg, #f8efd8 0%, var(--color-parchment) 45%, var(--color-parchment-dark) 100%);
+  color: var(--color-royal-dark);
+  border: 2px solid var(--color-royal-gold);
+  border-radius: 10px;
+  box-shadow:
+    0 12px 40px rgba(26, 8, 12, 0.55),
+    0 0 0 1px rgba(201, 162, 39, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
 .gold-glow {
   box-shadow: 0 0 20px rgba(201, 162, 39, 0.4), inset 0 0 10px rgba(201, 162, 39, 0.1);
 }

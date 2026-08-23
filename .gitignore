@@ -17,4 +17,6 @@ viewer/node_modules/
 viewer/dist/
 web/client/node_modules/
 web/client/dist/
+web/e2e-screenshots/
+scripts/_shot_local.py
 game_logs/

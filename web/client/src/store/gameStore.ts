@@ -50,6 +50,9 @@ export type CardData = {
   rarity?: string;
   timing?: string;
   effect?: Record<string, unknown>;
+  on_whiff_penalty?: Record<string, unknown>;
+  requires_state?: Record<string, unknown>;
+  copies_in_deck?: number;
   flavor_text?: string;
 };
 
