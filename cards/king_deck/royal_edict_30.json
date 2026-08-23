@@ -1,0 +1,38 @@
+{
+  "id": "king_royal_edict_30_030",
+  "name": "Vault Seal",
+  "owner_type": "king",
+  "category": "protection",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "protect_gold",
+    "params": {
+      "target": "self",
+      "amount": 110,
+      "duration_rounds": 1,
+      "specificity": "generic",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self",
+        "attack_type": "gold_theft"
+      }
+    }
+  },
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 5
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "synergy_tags": [
+    "king_defense"
+  ],
+  "flavor_text": "The seal holds \u2014 if thieves come knocking.",
+  "designer_notes": "Replaced resize stub; King reactive shield with whiff (PRD \u00a710 FR-CARD-4)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "noble_court_gambit_37_037",
+  "name": "Hidden Ledger",
+  "owner_type": "noble",
+  "category": "information",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "peek_card",
+    "params": {
+      "target": "king",
+      "card_index": 0
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Even kings leave a paper trail.",
+  "designer_notes": "Replaced resize stub; Noble information (PRD \u00a710)."
+}

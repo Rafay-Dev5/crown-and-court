@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Crown &amp; Court — Playtest Proxies</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    color: #1a120e;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .sheet {
+    width: 210mm;
+    height: 297mm;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+    padding: 8mm 6mm 6mm;
+  }
+  .sheet:last-child { page-break-after: auto; }
+  .cover {
+    padding: 28mm 22mm;
+  }
+  .cover h1 {
+    font-size: 32pt;
+    font-weight: normal;
+    color: #6b1419;
+    margin: 0 0 0.25em;
+  }
+  .cover .sub { font-size: 16pt; color: #5a4638; margin: 0 0 1.5em; }
+  .cover p { margin: 0.4em 0; font-size: 11pt; }
+  .cover ul { margin-top: 1.2em; font-size: 11pt; line-height: 1.5; }
+
+  .banner {
+    text-align: center;
+    font-family: system-ui, sans-serif;
+    font-size: 8pt;
+    color: #5a4638;
+    margin: 0 0 3mm;
+  }
+
+  .grid {
+    width: 189mm; /* 3 × 63mm */
+    height: 264mm; /* 3 × 88mm */
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 63mm);
+    grid-template-rows: repeat(3, 88mm);
+    outline: 0.4pt dashed #d62828;
+  }
+
+  .card {
+    width: 63mm;
+    height: 88mm;
+    border: 1.2pt solid #1a120e;
+    outline: 0.35pt dashed #d62828;
+    outline-offset: -0.35pt;
+    background: #faf6ef;
+    padding: 2mm;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  .card.empty {
+    background: transparent;
+    border-color: transparent;
+    outline-color: #d62828;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1mm;
+    margin-bottom: 1.2mm;
+  }
+  .name {
+    margin: 0;
+    font-size: 9pt;
+    font-weight: normal;
+    line-height: 1.15;
+    flex: 1;
+  }
+  .badge {
+    flex: 0 0 auto;
+    background: var(--accent);
+    color: #fff;
+    font-family: system-ui, sans-serif;
+    font-size: 6.5pt;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.8mm 1.4mm;
+  }
+
+  .art {
+    height: 22mm;
+    border: 0.6pt solid #8a7a68;
+    background: #e4dfd6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.2mm;
+  }
+  .art span {
+    font-family: system-ui, sans-serif;
+    font-size: 12pt;
+    color: #6a5e54;
+    letter-spacing: 0.04em;
+  }
+
+  .type {
+    background: var(--bar);
+    color: #fff;
+    font-family: system-ui, sans-serif;
+    font-size: 6pt;
+    padding: 0.9mm 1.2mm;
+    margin-bottom: 1.2mm;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .text {
+    flex: 1;
+    border: 0.5pt solid #c4a882;
+    background: #fffcf7;
+    padding: 1mm 1.2mm;
+    overflow: hidden;
+    font-size: 6.2pt;
+    line-height: 1.25;
+  }
+  .rules {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .rules li { margin: 0.15mm 0; }
+  .rules li.bullet { padding-left: 2mm; }
+  .rules li.bullet::before { content: "• "; margin-left: -2mm; }
+  .rules li.sub { font-size: 5.8pt; color: #2a2018; }
+  .flavor {
+    margin: 1mm 0 0;
+    font-style: italic;
+    color: #5a4638;
+    font-size: 5.6pt;
+  }
+
+  .foot {
+    margin-top: 0.8mm;
+    font-family: system-ui, sans-serif;
+    font-size: 4.5pt;
+    color: #6a5e54;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media screen {
+    body { background: #d8d0c4; }
+    .sheet {
+      background: #fff;
+      margin: 8px auto;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    }
+  }
+</style>
+</head>
+<body>
+
+<section class="sheet cover">
+  <h1>Crown &amp; Court</h1>
+  <p class="sub">Playtest card proxies</p>
+  <p>Card set version: <code>3829e707413b8f83</code></p>
+  <p>King deck: <strong>42</strong> cards (print once)</p>
+  <p>Noble deck: <strong>40</strong> cards × <strong>1</strong>
+     (one deck per Noble)</p>
+  <ul>
+    <li>Print at <strong>100% / actual size</strong> (do not fit-to-page).</li>
+    <li>Paper: A4. Card size: 63 × 88 mm.</li>
+    <li>Cut on the red dashed guides.</li>
+    <li>Artwork intentionally blank — marked <em>playtest</em>.</li>
+  </ul>
+</section>
+
+<section class="sheet">
+  <p class="banner">KING DECK (42 cards) · sheet 1 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#6b1419;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Alliance Summit</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Can only be played if:</li><li class="bullet sub">You have a declared alliance with your target.</li><li>If your alliance is still active, allied players each gain 41 gold.</li></ul>
+    <p class="flavor">The crown rewards loyalty — when it suits the crown.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_alliance_summit_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Broken Crown</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>70 gold moves from your chosen opponent to you.</li><li>Then: your chosen opponent receive the “oathbreaker” status for 4 round(s).</li></ul>
+    <p class="flavor">Break faith with the realm, and the realm remembers.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_broken_crown_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Corruption Inquiry</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>Can only be played if:</li><li class="bullet sub">Your target previously chose “Invest Private” (within 2 rounds).</li><li>If they previously chose “Invest Private” in the last 2 rounds:</li><li class="bullet sub">Then: If they failed a dice roll on a prior card in the last 2 rounds:   Then: your chosen opponent lose 132 gold.   Otherwise: your chosen opponent lose 65 gold.</li><li class="bullet sub">Otherwise: your chosen opponent lose 32 gold.</li></ul>
+    <p class="flavor">The auditors arrive. Past choices are not forgotten.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_corruption_inquiry_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Court Intrigue</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent peek at a hidden card.</li></ul>
+    <p class="flavor">Secrets travel faster than armies.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_court_intrigue_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Crown Tribute</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>78 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">Every house pays the throne.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_crown_tribute_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Customs Seal</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 200 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 5 gold.</li></ul>
+    <p class="flavor">Wrong thief, wrong day — or wrong guess.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_customs_seal_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Decree Haste</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You may play an extra card next round.</li></ul>
+    <p class="flavor">The court moves at royal speed.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_decree_haste_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Diplomatic Immunity</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 5 gold.</li></ul>
+    <p class="flavor">The crown does not yield today.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_diplomatic_immunity_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Bastion Wall</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If you were attacked this round when this resolves, gold is protected (up to 90 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 25 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_bastion_wall_010</footer>
+</article>
+</div>
+</section>
+
+<section class="sheet">
+  <p class="banner">KING DECK (42 cards) · sheet 2 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#6b1419;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Border Levy</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You gain 78 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_border_levy_003</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Court Scribe</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_court_scribe_008</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#73201e">
+  <header class="card-head">
+    <h2 class="name">Crown Gambit</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Betrayal — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>88 gold moves from your chosen opponent to you.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_crown_gambit_014</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Haste Edict</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You may play an extra card next round.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_haste_edict_012</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#805a1a">
+  <header class="card-head">
+    <h2 class="name">Imperial Mandate</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Supercard — on reveal · Supercard</div>
+  <div class="text">
+    <ul class="rules"><li>You gain 145 gold.</li><li>Then: you draw 1 extra card(s).</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_imperial_mandate_015</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Iron Gate</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 25 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_iron_gate_011</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Ledger Audit</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_ledger_audit_009</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Mint Dues</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You gain 95 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_mint_dues_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Muster Call</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You draw 2 extra card(s).</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_muster_call_013</footer>
+</article>
+</div>
+</section>
+
+<section class="sheet">
+  <p class="banner">KING DECK (42 cards) · sheet 3 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#6b1419;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Quarter Search</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent discard 2 card(s).</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_quarter_search_007</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Royal Pact</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If your alliance is still active, allied players each gain 72 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_royal_pact_004</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Sealed Warrant II</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent discard 1 card(s).</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_sealed_warrant_006</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Summit Oath</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If your alliance is still active, allied players each gain 58 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_summit_oath_005</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Toll Bridge</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>55 gold moves from your chosen opponent to you.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · king_expand_toll_bridge_002</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Extra Audience</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You draw 1 extra card(s).</li></ul>
+    <p class="flavor">Another petition, another card up your sleeve.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_extra_audience_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#73201e">
+  <header class="card-head">
+    <h2 class="name">False Summons</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Betrayal — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>10 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">Come to court — and leave your purse.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_false_summons_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#805a1a">
+  <header class="card-head">
+    <h2 class="name">Imperial Edict</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Supercard — on reveal · Supercard</div>
+  <div class="text">
+    <ul class="rules"><li>You gain 170 gold.</li><li>Then: you lose 110 gold.</li></ul>
+    <p class="flavor">Absolute power extracts absolute cost.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_imperial_edict_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Iron Curtain</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 120 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 5 gold.</li></ul>
+    <p class="flavor">The treasury closes its gates.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_iron_curtain_001</footer>
+</article>
+</div>
+</section>
+
+<section class="sheet">
+  <p class="banner">KING DECK (42 cards) · sheet 4 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#6b1419;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Loyal Guard</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Supercard</div>
+  <div class="text">
+    <ul class="rules"><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 8 gold.</li></ul>
+    <p class="flavor">The crown does not fall while he stands.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_loyal_guard_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Noble Containment</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent play one fewer card next round.</li></ul>
+    <p class="flavor">Sit down. You have said enough.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_noble_containment_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Regal Momentum</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>You draw 1 extra card(s).</li></ul>
+    <p class="flavor">Momentum favors the throne.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_regal_momentum_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Royal Alliance Pact</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If your alliance is still active, allied players each gain 58 gold.</li></ul>
+    <p class="flavor">Loyalty rewarded — if it holds.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_alliance_pact_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Royal Audit</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+    <p class="flavor">Transparency, demanded from everyone but the crown.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_audit_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Royal Decree</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent discard 1 card(s).</li></ul>
+    <p class="flavor">By order of the crown, discard your plans.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_decree_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Grain Toll</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent chooses one path:</li><li class="bullet sub">Pay the Tariff</li><li class="bullet sub">Hide the Cargo</li><li>If “Pay the Tariff” is chosen:</li><li class="bullet sub">70 gold moves from your chosen opponent to you.</li><li>If “Hide the Cargo” is chosen: roll a d6 (need 5+).</li><li class="bullet sub">Success: your chosen opponent gain 35 gold.</li><li class="bullet sub">Failure: 100 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">Every wagon pays the crown before it passes.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_edict_25_025</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Harbor Dues</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>62 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">The quay master collects — for the throne.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_edict_26_026</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Garrison Inspection</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent discard 1 card(s).</li></ul>
+    <p class="flavor">Soldiers toss the saddlebags. Something always falls out.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_edict_27_027</footer>
+</article>
+</div>
+</section>
+
+<section class="sheet">
+  <p class="banner">KING DECK (42 cards) · sheet 5 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#6b1419;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Royal Census</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Conditional on status (see technical details).</li></ul>
+    <p class="flavor">Clerks count heads — and hands.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_edict_28_028</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Crown Patronage</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If your alliance is still active, allied players each gain 54 gold.</li></ul>
+    <p class="flavor">Favor flows to those who stand beside the throne.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_edict_29_029</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Vault Seal</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 110 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 5 gold.</li></ul>
+    <p class="flavor">The seal holds — if thieves come knocking.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_edict_30_030</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#805a1a">
+  <header class="card-head">
+    <h2 class="name">Royal Pardon</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Supercard — on reveal · Supercard</div>
+  <div class="text">
+    <ul class="rules"><li>You gain 120 gold.</li><li>Then: you lose 90 gold.</li></ul>
+    <p class="flavor">Mercy has its price — paid by others.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_royal_pardon_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Sealed Warrant</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>Conditional on status (see technical details).</li></ul>
+    <p class="flavor">Signed, sealed, confiscated.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_sealed_warrant_001</footer>
+</article>
+
+<article class="card" style="--accent:#6b1419;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Spy Master</h2>
+    <span class="badge">KING</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent peek at a hidden card.</li></ul>
+    <p class="flavor">Eyes everywhere, even in your hand.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · king_spy_master_001</footer>
+</article>
+<div class="card empty"></div><div class="card empty"></div><div class="card empty"></div></div>
+</section>
+
+<section class="sheet">
+  <p class="banner">NOBLE DECK (40 cards) · sheet 1 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#1f4761;--bar:#805a1a">
+  <header class="card-head">
+    <h2 class="name">Assassin&#x27;s Blade</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Supercard — on reveal · Supercard</div>
+  <div class="text">
+    <ul class="rules"><li>235 gold moves from the King to you.</li><li>Then: you receive the “marked” status for 3 round(s).</li></ul>
+    <p class="flavor">One cut, one crown closer.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_assassins_blade_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#73201e">
+  <header class="card-head">
+    <h2 class="name">Backstab Deal</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Betrayal — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>Can only be played if:</li><li class="bullet sub">You have a declared alliance with your target.</li><li>60 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">The knife was always in the deal.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_backstab_deal_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Blackmail</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>78 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">Pay up, or everyone hears.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_blackmail_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Bodyguard</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>If you were attacked this round when this resolves, gold is protected (up to 120 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 5 gold.</li></ul>
+    <p class="flavor">You hired him to stop the wrong kind of theft.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_bodyguard_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#73201e">
+  <header class="card-head">
+    <h2 class="name">Broken Vow</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Betrayal — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Can only be played if:</li><li class="bullet sub">You have a declared alliance with your target.</li><li>30 gold moves from your chosen opponent to you.</li><li>Then: you receive the “oathbreaker” status for 3 round(s).</li></ul>
+    <p class="flavor">Promises are for peasants.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_broken_vow_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#73201e">
+  <header class="card-head">
+    <h2 class="name">Coup Plot</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Betrayal — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>Can only be played if:</li><li class="bullet sub">You have a declared alliance with your target.</li><li>125 gold moves from your chosen opponent to you.</li><li>Then: you receive the “marked” status for 2 round(s).</li></ul>
+    <p class="flavor">The dagger was always in the handshake.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_coup_plot_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Smuggler&#x27;s Tithe</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Choose one path:</li><li class="bullet sub">Take a Quiet Cut</li><li class="bullet sub">Run a Deep Route</li><li>If “Take a Quiet Cut” is chosen:</li><li class="bullet sub">you gain 35 gold.</li><li>If “Run a Deep Route” is chosen: roll a d6 (need 5+).</li><li class="bullet sub">Success: you gain 95 gold.</li><li class="bullet sub">Failure: you lose 25 gold.</li><li class="bullet sub">On failure they also get “marked” for 1 round(s).</li></ul>
+    <p class="flavor">What the crown doesn&#x27;t see, you keep.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_31_031</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#73201e">
+  <header class="card-head">
+    <h2 class="name">Shakedown</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Betrayal — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>26 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">Pay up, or explain yourself to the guards.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_32_032</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Cut Supply Lines</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent discard 1 card(s).</li></ul>
+    <p class="flavor">No carriages reach the palace tonight.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_33_033</footer>
+</article>
+</div>
+</section>
+
+<section class="sheet">
+  <p class="banner">NOBLE DECK (40 cards) · sheet 2 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#1f4761;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Stolen Ledger</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent peek at a hidden card.</li></ul>
+    <p class="flavor">Their secrets are yours for a night.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_34_034</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Neighborhood Pact</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If your alliance is still active, allied players each gain 30 gold.</li></ul>
+    <p class="flavor">Your neighbors watch your back — for a share.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_35_035</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Slip Away</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You draw 1 extra card(s).</li></ul>
+    <p class="flavor">Leave the hall before the verdict lands.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_36_036</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Hidden Ledger</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>The King peek at a hidden card.</li></ul>
+    <p class="flavor">Even kings leave a paper trail.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_37_037</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#73201e">
+  <header class="card-head">
+    <h2 class="name">Back-Alley Stab</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Betrayal — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>20 gold moves from your chosen opponent to you.</li><li>Then: you receive the “marked” status for 1 round(s).</li></ul>
+    <p class="flavor">The knife is quiet; the debt is not.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_39_039</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Night Collection</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Choose one path:</li><li class="bullet sub">Collect Quietly</li><li class="bullet sub">Stage a Shakedown</li><li>If “Collect Quietly” is chosen:</li><li class="bullet sub">you gain 30 gold.</li><li>If “Stage a Shakedown” is chosen: roll a d6 (need 5+).</li><li class="bullet sub">Success: 60 gold moves from your chosen opponent to you.</li><li class="bullet sub">Failure: you lose 20 gold.</li><li class="bullet sub">On failure they also get “discredited” for 1 round(s).</li></ul>
+    <p class="flavor">Rent comes due after dark.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_court_gambit_40_040</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Development Fund II</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>Choose one path:</li><li class="bullet sub">Public Works</li><li class="bullet sub">Private Enrichment</li><li class="bullet sub">Cook the Books</li><li>If “Public Works” is chosen: roll a d6 (need 4+).</li><li class="bullet sub">Success: you gain 140 gold.</li><li class="bullet sub">Failure: you lose 68 gold.</li><li>If “Private Enrichment” is chosen: roll a d6 (need 4+).</li><li class="bullet sub">Success: you gain 189 gold.</li><li class="bullet sub">Failure: you lose 42 gold.</li><li class="bullet sub">On failure they also get “corrupt” for 3 round(s).</li><li>If “Cook the Books” is chosen:</li><li class="bullet sub">you gain 70 gold. Then: you receive the “corrupt” status for 2 round(s).</li></ul>
+    <p class="flavor">Progress has a price — and a roll of the dice.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_development_fund_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Double Agent</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>You draw 2 extra card(s).</li></ul>
+    <p class="flavor">Two masters, twice the options.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_double_agent_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Embargo</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent play one fewer card next round.</li></ul>
+    <p class="flavor">Your trade routes are closed.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_embargo_001</footer>
+</article>
+</div>
+</section>
+
+<section class="sheet">
+  <p class="banner">NOBLE DECK (40 cards) · sheet 3 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#1f4761;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Blood Oath</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If your alliance is still active, allied players each gain 55 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_blood_oath_005</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Body Double</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 25 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_body_double_011</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#73201e">
+  <header class="card-head">
+    <h2 class="name">Coup Plot II</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Betrayal — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>75 gold moves from the King to you.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_coup_plot_014</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Courier Swap</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You draw 2 extra card(s).</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_courier_swap_013</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#805a1a">
+  <header class="card-head">
+    <h2 class="name">Grand Conspiracy</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Supercard — on reveal · Supercard</div>
+  <div class="text">
+    <ul class="rules"><li>120 gold moves from the King to you.</li><li>Then: you draw 1 extra card(s).</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_grand_conspiracy_015</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Hidden Cache II</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If you were attacked this round when this resolves, gold is protected (up to 85 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 25 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_hidden_cache_010</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Merchant League</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You gain 70 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_merchant_league_003</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#664c26">
+  <header class="card-head">
+    <h2 class="name">Night Ride</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Tempo — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You may play an extra card next round.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_night_ride_012</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Poisoned Chalice</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent discard 2 card(s).</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_poisoned_chalice_007</footer>
+</article>
+</div>
+</section>
+
+<section class="sheet">
+  <p class="banner">NOBLE DECK (40 cards) · sheet 4 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#1f4761;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Sabotage</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent discard 1 card(s).</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_sabotage_006</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Secret Compact</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If your alliance is still active, allied players each gain 65 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_secret_compact_004</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Silk Route</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You gain 88 gold.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_silk_route_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Smuggler&#x27;s Cut</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>52 gold moves from the King to you.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_smugglers_cut_002</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Spy Network</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_spy_network_008</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#405866">
+  <header class="card-head">
+    <h2 class="name">Whisper Ring</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Information — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+    
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_expand_whisper_ring_009</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Fence Goods</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>74 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">What the crown loses, you gain.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_fence_goods_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#593872">
+  <header class="card-head">
+    <h2 class="name">Forged Deeds</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Disruption — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>You steal 1 card(s) from your chosen opponent.</li></ul>
+    <p class="flavor">Paperwork is a weapon.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_forged_deeds_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Gambler&#x27;s Wager</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>Choose one path:</li><li class="bullet sub">Double Down</li><li>If “Double Down” is chosen: roll a d6 (need 5+).</li><li class="bullet sub">Success: you gain 111 gold.</li><li class="bullet sub">Failure: you lose 53 gold.</li></ul>
+    <p class="flavor">Fortune favors the reckless. Sometimes.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_gamblers_wager_001</footer>
+</article>
+</div>
+</section>
+
+<section class="sheet">
+  <p class="banner">NOBLE DECK (40 cards) · sheet 5 · cut on red dashes · 63×88 mm</p>
+  <div class="grid">
+<article class="card" style="--accent:#1f4761;--bar:#34527a">
+  <header class="card-head">
+    <h2 class="name">Hidden Cache</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Protection — reactive · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 100 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="bullet sub">you lose 5 gold.</li></ul>
+    <p class="flavor">Coins buried where thieves won&#x27;t look.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_hidden_cache_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Loan Shark</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Rare</div>
+  <div class="text">
+    <ul class="rules"><li>88 gold moves from your chosen opponent to you.</li></ul>
+    <p class="flavor">Interest due — in gold, not gratitude.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_loan_shark_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#8c6b1f">
+  <header class="card-head">
+    <h2 class="name">Market Manipulation</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Economy — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>You gain 93 gold.</li></ul>
+    <p class="flavor">Buy low. Sell to whoever&#x27;s desperate.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_market_manipulation_001</footer>
+</article>
+
+<article class="card" style="--accent:#1f4761;--bar:#2e6647">
+  <header class="card-head">
+    <h2 class="name">Mob Contract</h2>
+    <span class="badge">NOBLE</span>
+  </header>
+  <div class="art"><span>playtest</span></div>
+  <div class="type">Alliance — on reveal · Common</div>
+  <div class="text">
+    <ul class="rules"><li>If your alliance is still active, allied players each gain 55 gold.</li></ul>
+    <p class="flavor">Strength in numbers — for a price.</p>
+  </div>
+  <footer class="foot">Crown &amp; Court · noble_mob_contract_001</footer>
+</article>
+<div class="card empty"></div><div class="card empty"></div><div class="card empty"></div><div class="card empty"></div><div class="card empty"></div></div>
+</section>
+
+</body>
+</html>

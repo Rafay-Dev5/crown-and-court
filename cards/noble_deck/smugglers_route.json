@@ -1,0 +1,20 @@
+{
+  "id": "noble_smugglers_route_001",
+  "name": "Smuggler's Route",
+  "owner_type": "noble",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "draw_extra",
+    "params": {
+      "target": "self",
+      "count": 1
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Goods arrive by paths the tax collectors never see."
+}

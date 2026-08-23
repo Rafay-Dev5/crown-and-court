@@ -1,0 +1,22 @@
+{
+  "id": "noble_blackmail_001",
+  "name": "Blackmail",
+  "owner_type": "noble",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 78,
+      "as_theft": true
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Pay up, or everyone hears."
+}

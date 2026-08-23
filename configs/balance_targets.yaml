@@ -1,0 +1,40 @@
+# Balance targets for automated tuning (numeric knobs only)
+# Core rules below are locked — never change via auto_tune or balance scripts.
+locked_rules:
+  king_start_gold: 1000
+  noble_start_gold: 600
+  king_plays_per_round: 3
+  king_redraw: 3
+
+# Sign-off gates at 385 games (make signoff --no-tune)
+assisted_win_rate_max: 0.12
+shield_hit_rate_min: 0.25
+shield_hit_rate_max: 0.70
+whiff_penalty_rate_max: 0.75
+seat_win_rate_spread_max: 0.15
+role_win_rate_min: 0.35
+role_win_rate_max: 0.45
+tune_step_pct: 0.10
+max_tune_passes: 5
+
+# Phase C entry — ALL must pass before training scale (5k+ episodes).
+# Do not start Phase C until every item below is checked off in PROJECT_STATUS.md §9.
+phase_c_requires:
+  signoff_games: 385
+  assisted_win_rate_max: 0.12
+  shield_hit_rate_min: 0.25
+  shield_hit_rate_max: 0.70
+  role_win_rate_min: 0.35
+  role_win_rate_max: 0.45
+  seat_win_rate_spread_max: 0.20
+  richer_observation_space: true
+  reward_shaping_toggle: true
+  reward_shaping_off_for_measurement: true
+  assisted_win_mechanics:
+    - bilateral_trade_gift_cap
+    - tighter_assisted_win_metric
+    - bot_negotiation_volume_tuned
+
+# Parameter grid succession band (PRD §9)
+succession_rate_min: 0.40
+succession_rate_max: 0.80

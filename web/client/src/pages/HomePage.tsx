@@ -1,0 +1,109 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useGameSocket } from "../hooks/useGameSocket";
+import { useGameStore } from "../store";
+
+export default function HomePage() {
+  const [mode, setMode] = useState<"menu" | "create" | "join">("menu");
+  const [joinCode, setJoinCode] = useState("");
+  const { createLobby, joinLobby, connected } = useGameSocket();
+  const { playerName, setPlayerName, error } = useGameStore();
+
+  const handleCreate = () => {
+    if (!playerName.trim()) return;
+    createLobby(playerName.trim());
+  };
+
+  const handleJoin = () => {
+    if (!playerName.trim() || !joinCode.trim()) return;
+    joinLobby(joinCode.trim().toUpperCase(), playerName.trim());
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-8"
+      >
+        <img src="/assets/crown.svg" alt="" className="w-16 h-16 mx-auto mb-4" />
+        <h1 className="text-5xl font-display text-royal-gold tracking-wider mb-2">
+          Crown & Court
+        </h1>
+        <p className="text-parchment/80 text-lg italic">
+          Gold, bluffing, alliances, and succession
+        </p>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="panel-parchment p-8 w-full max-w-md shadow-2xl"
+      >
+        {!connected && (
+          <p className="text-center text-sm mb-4 text-amber-800">Connecting to server...</p>
+        )}
+        {error && (
+          <p className="text-center text-sm mb-4 text-red-700 bg-red-100 rounded p-2">{error}</p>
+        )}
+
+        <label className="block mb-4">
+          <span className="text-sm font-semibold">Your Name</span>
+          <input
+            type="text"
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            maxLength={24}
+            placeholder="Enter display name"
+            className="mt-1 w-full px-4 py-2 rounded-lg border-2 border-royal-gold/50 bg-white/80 text-royal-dark focus:outline-none focus:border-royal-gold"
+          />
+        </label>
+
+        {mode === "menu" && (
+          <div className="flex flex-col gap-3">
+            <button className="btn-royal w-full" onClick={() => setMode("create")} disabled={!connected}>
+              Create Lobby
+            </button>
+            <button className="btn-outline w-full" onClick={() => setMode("join")} disabled={!connected}>
+              Join with Code
+            </button>
+          </div>
+        )}
+
+        {mode === "create" && (
+          <div className="flex flex-col gap-3">
+            <button className="btn-royal w-full" onClick={handleCreate} disabled={!playerName.trim()}>
+              Create & Enter Lobby
+            </button>
+            <button className="btn-outline w-full" onClick={() => setMode("menu")}>
+              Back
+            </button>
+          </div>
+        )}
+
+        {mode === "join" && (
+          <div className="flex flex-col gap-3">
+            <input
+              type="text"
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+              placeholder="Room code (e.g. ABCD)"
+              className="w-full px-4 py-2 rounded-lg border-2 border-royal-gold/50 bg-white/80 text-royal-dark focus:outline-none focus:border-royal-gold uppercase tracking-widest text-center"
+            />
+            <button className="btn-royal w-full" onClick={handleJoin} disabled={!playerName.trim() || !joinCode.trim()}>
+              Join Lobby
+            </button>
+            <button className="btn-outline w-full" onClick={() => setMode("menu")}>
+              Back
+            </button>
+          </div>
+        )}
+      </motion.div>
+
+      <div className="mt-8 text-center text-parchment/60 text-sm max-w-md">
+        <p>4 players · 4 matches · 4 rounds each</p>
+        <p className="mt-2">First to 10 points wins the game. Everyone gets to be King once.</p>
+      </div>
+    </div>
+  );
+}

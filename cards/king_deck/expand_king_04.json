@@ -1,0 +1,24 @@
+{
+  "id": "king_expand_royal_pact_004",
+  "name": "Royal Pact",
+  "owner_type": "king",
+  "category": "alliance",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "alliance_bonus",
+    "params": {
+      "amount": 72,
+      "players": [
+        "self",
+        "target"
+      ]
+    }
+  },
+  "tags": [
+    "alliance"
+  ],
+  "flavor_text": "Expansion design \u2014 Royal Pact.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

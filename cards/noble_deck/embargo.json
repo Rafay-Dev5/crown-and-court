@@ -1,0 +1,19 @@
+{
+  "id": "noble_embargo_001",
+  "name": "Embargo",
+  "owner_type": "noble",
+  "category": "disruption",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "skip_next_play",
+    "params": {
+      "target": "target"
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Your trade routes are closed."
+}

@@ -1,0 +1,37 @@
+{
+  "id": "noble_bodyguard_001",
+  "name": "Bodyguard",
+  "owner_type": "noble",
+  "category": "protection",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "protect_gold",
+    "params": {
+      "target": "self",
+      "amount": 120,
+      "duration_rounds": 1,
+      "specificity": "targeted",
+      "blocks": "force_discard",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self"
+      }
+    }
+  },
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 5
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "synergy_tags": [
+    "noble_defense"
+  ],
+  "flavor_text": "You hired him to stop the wrong kind of theft."
+}

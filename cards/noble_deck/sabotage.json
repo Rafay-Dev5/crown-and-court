@@ -1,0 +1,20 @@
+{
+  "id": "noble_sabotage_001",
+  "name": "Sabotage",
+  "owner_type": "noble",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "force_discard",
+    "params": {
+      "target": "target",
+      "count": 1
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "A single spark in the right place."
+}

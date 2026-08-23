@@ -1,0 +1,27 @@
+{
+  "id": "noble_public_scandal_001",
+  "name": "Public Scandal",
+  "owner_type": "noble",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "reveal_hand",
+    "params": {
+      "target": "target"
+    },
+    "secondary_effect": {
+      "primitive": "force_discard",
+      "params": {
+        "target": "target",
+        "count": 1
+      }
+    }
+  },
+  "tags": [
+    "disruption",
+    "information"
+  ],
+  "flavor_text": "Secrets spilled in the square."
+}

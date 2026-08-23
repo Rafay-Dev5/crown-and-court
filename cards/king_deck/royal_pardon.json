@@ -1,0 +1,32 @@
+{
+  "id": "king_royal_pardon_001",
+  "name": "Royal Pardon",
+  "owner_type": "king",
+  "category": "supercard",
+  "rarity": "supercard",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_gain",
+    "params": {
+      "target": "self",
+      "amount": 120
+    },
+    "secondary_effect": {
+      "primitive": "gold_loss",
+      "params": {
+        "target": "self",
+        "amount": 90
+      }
+    }
+  },
+  "tags": [
+    "economy",
+    "supercard"
+  ],
+  "synergy_tags": [
+    "king_economy"
+  ],
+  "flavor_text": "Mercy has its price \u2014 paid by others.",
+  "designer_notes": "Nerfed from 300 flat gain; supercard now has built-in cost on reveal."
+}

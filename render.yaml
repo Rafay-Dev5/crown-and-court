@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: crown-court
+    runtime: docker
+    dockerfilePath: ./web/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000

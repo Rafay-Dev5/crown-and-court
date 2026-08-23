@@ -1,0 +1,21 @@
+{
+  "id": "noble_court_gambit_33_033",
+  "name": "Cut Supply Lines",
+  "owner_type": "noble",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "force_discard",
+    "params": {
+      "target": "target",
+      "count": 1
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "No carriages reach the palace tonight.",
+  "designer_notes": "Replaced resize stub; Noble disruption via discard (PRD \u00a710)."
+}

@@ -1,0 +1,25 @@
+{
+  "id": "noble_backstab_deal_001",
+  "name": "Backstab Deal",
+  "owner_type": "noble",
+  "category": "betrayal",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 60,
+      "as_theft": true
+    }
+  },
+  "requires_state": {
+    "alliance_declared_with_target": true
+  },
+  "tags": [
+    "betrayal"
+  ],
+  "flavor_text": "The knife was always in the deal."
+}

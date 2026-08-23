@@ -1,0 +1,20 @@
+{
+  "id": "king_extra_audience_001",
+  "name": "Extra Audience",
+  "owner_type": "king",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "draw_extra",
+    "params": {
+      "target": "self",
+      "count": 1
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Another petition, another card up your sleeve."
+}

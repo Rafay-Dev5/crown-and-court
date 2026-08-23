@@ -1,0 +1,20 @@
+{
+  "id": "noble_market_manipulation_001",
+  "name": "Market Manipulation",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_gain",
+    "params": {
+      "target": "self",
+      "amount": 93
+    }
+  },
+  "tags": [
+    "targets_gold"
+  ],
+  "flavor_text": "Buy low. Sell to whoever's desperate."
+}

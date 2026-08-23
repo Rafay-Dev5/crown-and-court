@@ -1,0 +1,22 @@
+{
+  "id": "noble_fence_goods_001",
+  "name": "Fence Goods",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 74,
+      "as_theft": true
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "What the crown loses, you gain."
+}

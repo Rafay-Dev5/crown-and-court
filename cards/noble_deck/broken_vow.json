@@ -1,0 +1,33 @@
+{
+  "id": "noble_broken_vow_001",
+  "name": "Broken Vow",
+  "owner_type": "noble",
+  "category": "betrayal",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 30,
+      "as_theft": true
+    },
+    "secondary_effect": {
+      "primitive": "mark_status",
+      "params": {
+        "target": "self",
+        "status_name": "oathbreaker",
+        "duration_rounds": 3
+      }
+    }
+  },
+  "requires_state": {
+    "alliance_declared_with_target": true
+  },
+  "tags": [
+    "betrayal"
+  ],
+  "flavor_text": "Promises are for peasants."
+}

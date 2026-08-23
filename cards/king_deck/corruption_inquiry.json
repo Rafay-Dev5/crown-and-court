@@ -1,0 +1,61 @@
+{
+  "id": "king_corruption_inquiry_001",
+  "name": "Corruption Inquiry",
+  "owner_type": "king",
+  "category": "disruption",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "conditional_swing",
+    "params": {
+      "condition": {
+        "prior_choice": "invest_private",
+        "target": "target",
+        "within_rounds": 2
+      },
+      "effect_if_true": {
+        "primitive": "conditional_swing",
+        "params": {
+          "condition": {
+            "dice_failed": true,
+            "card_id": "noble_development_fund_001",
+            "target": "target",
+            "within_rounds": 2
+          },
+          "effect_if_true": {
+            "primitive": "gold_loss",
+            "params": {
+              "target": "target",
+              "amount": 132
+            }
+          },
+          "effect_if_false": {
+            "primitive": "gold_loss",
+            "params": {
+              "target": "target",
+              "amount": 65
+            }
+          }
+        }
+      },
+      "effect_if_false": {
+        "primitive": "gold_loss",
+        "params": {
+          "target": "target",
+          "amount": 32
+        }
+      }
+    }
+  },
+  "requires_state": {
+    "target_prior_choice": "invest_private",
+    "within_rounds": 2
+  },
+  "tags": [
+    "disruption",
+    "conditional"
+  ],
+  "flavor_text": "The auditors arrive. Past choices are not forgotten.",
+  "designer_notes": "Amplified penalty if target chose private enrichment and failed the Development Fund roll."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "king_decree_haste_001",
+  "name": "Decree Haste",
+  "owner_type": "king",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "extra_play",
+    "params": {
+      "target": "self",
+      "count": 1
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "The court moves at royal speed."
+}

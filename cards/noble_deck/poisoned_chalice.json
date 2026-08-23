@@ -1,0 +1,26 @@
+{
+  "id": "noble_poisoned_chalice_001",
+  "name": "Poisoned Chalice",
+  "owner_type": "noble",
+  "category": "betrayal",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 138,
+      "as_theft": true
+    }
+  },
+  "requires_state": {
+    "alliance_declared_with_target": true
+  },
+  "tags": [
+    "betrayal",
+    "targets_gold"
+  ],
+  "flavor_text": "Trust, bottled and served cold."
+}

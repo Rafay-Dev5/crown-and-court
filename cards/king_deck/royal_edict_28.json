@@ -1,0 +1,40 @@
+{
+  "id": "king_royal_edict_28_028",
+  "name": "Royal Census",
+  "owner_type": "king",
+  "category": "information",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "conditional_on_status",
+    "params": {
+      "target": "target",
+      "status_name": "discredited",
+      "effect_if_present": {
+        "primitive": "reveal_hand",
+        "params": {
+          "target": "target"
+        },
+        "secondary_effect": {
+          "primitive": "force_discard",
+          "params": {
+            "target": "target",
+            "count": 1
+          }
+        }
+      },
+      "effect_if_absent": {
+        "primitive": "reveal_hand",
+        "params": {
+          "target": "target"
+        }
+      }
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Clerks count heads \u2014 and hands.",
+  "designer_notes": "Reveals a target hand publicly; discredited targets must also discard 1."
+}

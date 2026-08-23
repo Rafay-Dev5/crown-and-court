@@ -1,0 +1,47 @@
+{
+  "id": "noble_gamblers_wager_001",
+  "name": "Gambler's Wager",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "dice_swing",
+    "params": {
+      "choices": [
+        {
+          "id": "bold",
+          "label": "Double Down"
+        }
+      ],
+      "branches": {
+        "bold": {
+          "die": {
+            "sides": 6,
+            "target_min": 5
+          },
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": {
+              "target": "self",
+              "amount": 111
+            }
+          },
+          "on_failure": {
+            "primitive": "gold_loss",
+            "params": {
+              "target": "self",
+              "amount": 53
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    "economy",
+    "dice"
+  ],
+  "flavor_text": "Fortune favors the reckless. Sometimes."
+}

@@ -1,0 +1,27 @@
+{
+  "id": "noble_court_gambit_35_035",
+  "name": "Neighborhood Pact",
+  "owner_type": "noble",
+  "category": "alliance",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "alliance_bonus",
+    "params": {
+      "amount": 30,
+      "players": [
+        "self",
+        "target"
+      ]
+    }
+  },
+  "tags": [
+    "alliance"
+  ],
+  "synergy_tags": [
+    "noble_alliance"
+  ],
+  "flavor_text": "Your neighbors watch your back — for a share.",
+  "designer_notes": "Replaced resize stub; Noble alliance (PRD §10)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "noble_rumor_mill_001",
+  "name": "Rumor Mill",
+  "owner_type": "noble",
+  "category": "information",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "reveal_hand",
+    "params": {
+      "target": "target"
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Truth optional, damage guaranteed."
+}

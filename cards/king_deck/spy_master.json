@@ -1,0 +1,20 @@
+{
+  "id": "king_spy_master_001",
+  "name": "Spy Master",
+  "owner_type": "king",
+  "category": "information",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "peek_card",
+    "params": {
+      "target": "target",
+      "card_index": 0
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Eyes everywhere, even in your hand."
+}

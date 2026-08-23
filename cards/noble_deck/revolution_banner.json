@@ -1,0 +1,35 @@
+{
+  "id": "noble_revolution_banner_001",
+  "name": "Revolution Banner",
+  "owner_type": "noble",
+  "category": "supercard",
+  "rarity": "supercard",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "conditional_swing",
+    "params": {
+      "condition": {
+        "gold_gt_king": true
+      },
+      "effect_if_true": {
+        "primitive": "gold_gain",
+        "params": {
+          "target": "self",
+          "amount": 200
+        }
+      },
+      "effect_if_false": {
+        "primitive": "gold_loss",
+        "params": {
+          "target": "self",
+          "amount": 150
+        }
+      }
+    }
+  },
+  "tags": [
+    "supercard"
+  ],
+  "flavor_text": "Lead the uprising \u2014 or pay for the attempt."
+}

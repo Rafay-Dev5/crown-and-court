@@ -1,0 +1,21 @@
+{
+  "id": "noble_whisper_campaign_001",
+  "name": "Whisper Campaign",
+  "owner_type": "noble",
+  "category": "information",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "mark_status",
+    "params": {
+      "target": "target",
+      "status_name": "discredited",
+      "duration_rounds": 2
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Reputation erodes one whisper at a time."
+}

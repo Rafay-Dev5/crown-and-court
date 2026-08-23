@@ -1,0 +1,35 @@
+{
+  "id": "king_expand_bastion_wall_010",
+  "name": "Bastion Wall",
+  "owner_type": "king",
+  "category": "protection",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "protect_gold",
+    "params": {
+      "target": "self",
+      "amount": 90,
+      "duration_rounds": 1,
+      "specificity": "targeted",
+      "blocks": "force_discard",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self"
+      }
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "flavor_text": "Expansion design \u2014 Bastion Wall.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps.",
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 25
+    }
+  }
+}

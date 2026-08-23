@@ -1,0 +1,19 @@
+{
+  "id": "king_noble_containment_001",
+  "name": "Noble Containment",
+  "owner_type": "king",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "skip_next_play",
+    "params": {
+      "target": "target"
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Sit down. You have said enough."
+}

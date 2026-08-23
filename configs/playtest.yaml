@@ -1,0 +1,10 @@
+num_players: 6
+n_rounds: 3
+hand_size: 8
+king_start_gold: 1000
+noble_start_gold: 600
+negotiation_ticks: 4
+succession_checker: earned_gold
+alternate_turn_direction: true
+playtest_mode: true
+llm_negotiator_seat: null

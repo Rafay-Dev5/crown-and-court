@@ -1,0 +1,29 @@
+{
+  "id": "king_imperial_edict_001",
+  "name": "Imperial Edict",
+  "owner_type": "king",
+  "category": "supercard",
+  "rarity": "supercard",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_gain",
+    "params": {
+      "target": "self",
+      "amount": 170
+    },
+    "secondary_effect": {
+      "primitive": "gold_loss",
+      "params": {
+        "target": "self",
+        "amount": 110
+      }
+    }
+  },
+  "tags": [
+    "supercard",
+    "economy"
+  ],
+  "flavor_text": "Absolute power extracts absolute cost.",
+  "designer_notes": "High upside with built-in drawback on same reveal."
+}

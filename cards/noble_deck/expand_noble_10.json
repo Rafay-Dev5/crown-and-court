@@ -1,0 +1,35 @@
+{
+  "id": "noble_expand_hidden_cache_010",
+  "name": "Hidden Cache II",
+  "owner_type": "noble",
+  "category": "protection",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "protect_gold",
+    "params": {
+      "target": "self",
+      "amount": 85,
+      "duration_rounds": 1,
+      "specificity": "targeted",
+      "blocks": "force_discard",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self"
+      }
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "flavor_text": "Expansion design \u2014 Hidden Cache II.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps.",
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 25
+    }
+  }
+}

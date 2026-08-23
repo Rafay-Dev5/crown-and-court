@@ -1,0 +1,20 @@
+{
+  "id": "noble_spy_network_001",
+  "name": "Spy Network",
+  "owner_type": "noble",
+  "category": "information",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "peek_card",
+    "params": {
+      "target": "target",
+      "card_index": 0
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Whispers travel faster than horses."
+}

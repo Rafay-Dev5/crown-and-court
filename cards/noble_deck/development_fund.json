@@ -1,0 +1,100 @@
+{
+  "id": "noble_development_fund_001",
+  "name": "Development Fund II",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "dice_swing",
+    "params": {
+      "state_key": "development_fund",
+      "choices": [
+        {
+          "id": "invest_public",
+          "label": "Public Works"
+        },
+        {
+          "id": "invest_private",
+          "label": "Private Enrichment"
+        },
+        {
+          "id": "cook_the_books",
+          "label": "Cook the Books"
+        }
+      ],
+      "branches": {
+        "invest_public": {
+          "die": {
+            "sides": 6,
+            "target_min": 4
+          },
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": {
+              "target": "self",
+              "amount": 140
+            }
+          },
+          "on_failure": {
+            "primitive": "gold_loss",
+            "params": {
+              "target": "self",
+              "amount": 68
+            }
+          }
+        },
+        "invest_private": {
+          "die": {
+            "sides": 6,
+            "target_min": 4
+          },
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": {
+              "target": "self",
+              "amount": 189
+            }
+          },
+          "on_failure": {
+            "primitive": "gold_loss",
+            "params": {
+              "target": "self",
+              "amount": 42
+            }
+          },
+          "on_failure_status": {
+            "target": "self",
+            "status_name": "corrupt",
+            "duration_rounds": 3
+          }
+        },
+        "cook_the_books": {
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": {
+              "target": "self",
+              "amount": 70
+            },
+            "secondary_effect": {
+              "primitive": "mark_status",
+              "params": {
+                "target": "self",
+                "status_name": "corrupt",
+                "duration_rounds": 2
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    "economy",
+    "dice",
+    "choice"
+  ],
+  "flavor_text": "Progress has a price \u2014 and a roll of the dice.",
+  "designer_notes": "Player chooses public works, private enrichment, or a no-roll cook-the-books line that grants 70 now and corrupts you for 2 rounds."
+}

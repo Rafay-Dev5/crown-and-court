@@ -1,0 +1,31 @@
+{
+  "id": "noble_court_gambit_39_039",
+  "name": "Back-Alley Stab",
+  "owner_type": "noble",
+  "category": "betrayal",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 20,
+      "as_theft": true
+    },
+    "secondary_effect": {
+      "primitive": "mark_status",
+      "params": {
+        "target": "self",
+        "status_name": "marked",
+        "duration_rounds": 1
+      }
+    }
+  },
+  "tags": [
+    "betrayal"
+  ],
+  "flavor_text": "The knife is quiet; the debt is not.",
+  "designer_notes": "Replaced resize stub; Noble betrayal with cost (PRD \u00a710)."
+}

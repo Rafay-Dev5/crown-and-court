@@ -1,0 +1,24 @@
+{
+  "id": "noble_court_gambit_32_032",
+  "name": "Shakedown",
+  "owner_type": "noble",
+  "category": "betrayal",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 26,
+      "as_theft": true
+    }
+  },
+  "tags": [
+    "betrayal",
+    "targets_gold"
+  ],
+  "flavor_text": "Pay up, or explain yourself to the guards.",
+  "designer_notes": "Replaced resize stub; Noble theft (PRD §10)."
+}

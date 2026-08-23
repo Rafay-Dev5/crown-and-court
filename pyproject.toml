@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crown-and-court"
+version = "0.1.0"
+description = "Crown & Court simulation and balance lab"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "jsonschema>=4.0",
+    "pettingzoo>=1.24",
+    "gymnasium>=0.29",
+    "numpy>=1.26",
+    "torch>=2.2",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+    "openai>=1.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=4.0"]
+
+[project.scripts]
+crown-play = "engine.play:main"
+crown-validate = "engine.validate:main"
+crown-sweep = "analytics.sweeps:main"
+crown-report = "analytics.report_generator:main"
+crown-train = "training.trainer:main"
+crown-kingmaker = "analytics.kingmaker_test:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["engine*", "env*", "agents*", "training*", "analytics*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

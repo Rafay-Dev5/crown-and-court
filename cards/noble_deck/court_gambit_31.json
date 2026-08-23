@@ -1,0 +1,56 @@
+{
+  "id": "noble_court_gambit_31_031",
+  "name": "Smuggler's Tithe",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "dice_swing",
+    "params": {
+      "choices": [
+        { "id": "quiet_cut", "label": "Take a Quiet Cut" },
+        { "id": "deep_route", "label": "Run a Deep Route" }
+      ],
+      "branches": {
+        "quiet_cut": {
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": {
+              "target": "self",
+              "amount": 35
+            }
+          }
+        },
+        "deep_route": {
+          "die": { "sides": 6, "target_min": 5 },
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": {
+              "target": "self",
+              "amount": 95
+            }
+          },
+          "on_failure": {
+            "primitive": "gold_loss",
+            "params": {
+              "target": "self",
+              "amount": 25
+            }
+          },
+          "on_failure_status": {
+            "target": "self",
+            "status_name": "marked",
+            "duration_rounds": 1
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "What the crown doesn't see, you keep.",
+  "designer_notes": "Safe route gives 35; deep route gives 95 on 5+, but failure costs 25 and leaves you marked for 1 round."
+}

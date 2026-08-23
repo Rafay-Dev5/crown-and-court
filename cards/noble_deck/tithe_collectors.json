@@ -1,0 +1,20 @@
+{
+  "id": "noble_tithe_collectors_001",
+  "name": "Tithe Collectors",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_gain",
+    "params": {
+      "target": "self",
+      "amount": 88
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "God's share \u2014 and yours."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "noble_expand_night_ride_012",
+  "name": "Night Ride",
+  "owner_type": "noble",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "extra_play",
+    "params": {
+      "target": "self",
+      "count": 1
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Expansion design \u2014 Night Ride.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

@@ -1,0 +1,58 @@
+{
+  "id": "noble_court_gambit_40_040",
+  "name": "Night Collection",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "dice_swing",
+    "params": {
+      "choices": [
+        { "id": "collect", "label": "Collect Quietly" },
+        { "id": "shakedown", "label": "Stage a Shakedown" }
+      ],
+      "branches": {
+        "collect": {
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": {
+              "target": "self",
+              "amount": 30
+            }
+          }
+        },
+        "shakedown": {
+          "die": { "sides": 6, "target_min": 5 },
+          "on_success": {
+            "primitive": "gold_transfer",
+            "params": {
+              "from": "target",
+              "to": "self",
+              "amount": 60,
+              "as_theft": true
+            }
+          },
+          "on_failure": {
+            "primitive": "gold_loss",
+            "params": {
+              "target": "self",
+              "amount": 20
+            }
+          },
+          "on_failure_status": {
+            "target": "self",
+            "status_name": "discredited",
+            "duration_rounds": 1
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "Rent comes due after dark.",
+  "designer_notes": "Quiet collection gives 30; shakedown steals 60 on 5+, but failure costs 20 and leaves you discredited for 1 round."
+}

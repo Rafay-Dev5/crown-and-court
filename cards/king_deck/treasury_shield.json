@@ -1,0 +1,37 @@
+{
+  "id": "king_treasury_shield_001",
+  "name": "Treasury Shield",
+  "owner_type": "king",
+  "category": "protection",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "protect_gold",
+    "params": {
+      "target": "self",
+      "amount": 150,
+      "duration_rounds": 1,
+      "specificity": "generic",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self",
+        "attack_type": "gold_theft"
+      }
+    }
+  },
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 5
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "synergy_tags": [
+    "king_defense"
+  ],
+  "flavor_text": "The vault doors hold \u2014 for now."
+}

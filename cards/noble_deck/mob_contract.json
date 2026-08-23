@@ -1,0 +1,26 @@
+{
+  "id": "noble_mob_contract_001",
+  "name": "Mob Contract",
+  "owner_type": "noble",
+  "category": "alliance",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "alliance_bonus",
+    "params": {
+      "amount": 55,
+      "players": [
+        "self",
+        "target"
+      ]
+    }
+  },
+  "tags": [
+    "alliance"
+  ],
+  "synergy_tags": [
+    "noble_alliance"
+  ],
+  "flavor_text": "Strength in numbers \u2014 for a price."
+}

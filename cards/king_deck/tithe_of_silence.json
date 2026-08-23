@@ -1,0 +1,59 @@
+{
+  "id": "king_tithe_of_silence_001",
+  "name": "Tithe of Silence",
+  "owner_type": "king",
+  "category": "disruption",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "dice_swing",
+    "params": {
+      "choice_seat": "target",
+      "choices": [
+        { "id": "stipend", "label": "Accept Stipend" },
+        { "id": "gamble", "label": "Gamble for More" }
+      ],
+      "branches": {
+        "stipend": {
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": { "target": "target", "amount": 40 },
+            "secondary_effect": {
+              "primitive": "gold_gain",
+              "params": { "target": "self", "amount": 80 },
+              "secondary_effect": {
+                "primitive": "mark_status",
+                "params": {
+                  "target": "target",
+                  "status_name": "oathbreaker",
+                  "duration_rounds": 3
+                }
+              }
+            }
+          }
+        },
+        "gamble": {
+          "die": { "sides": 6, "target_min": 5 },
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": { "target": "target", "amount": 150 }
+          },
+          "on_failure": {
+            "primitive": "gold_transfer",
+            "params": { "from": "target", "to": "self", "amount": 100 }
+          },
+          "on_failure_status": {
+            "target": "target",
+            "status_name": "corrupt",
+            "duration_rounds": 2
+          }
+        }
+      }
+    }
+  },
+  "tags": ["corruption", "dice", "targets_noble"],
+  "synergy_tags": ["king_corruption"],
+  "flavor_text": "Take the King's coin quietly, or reach for more.",
+  "designer_notes": "Stipend: Noble +40, King +80, Noble oathbreaker 2 rounds (no negotiation gifts). Gamble: d6 5-6 +150; fail -100 to King + corrupt 2 rounds."
+}

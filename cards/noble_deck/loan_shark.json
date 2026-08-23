@@ -1,0 +1,22 @@
+{
+  "id": "noble_loan_shark_001",
+  "name": "Loan Shark",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 88,
+      "as_theft": true
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "Interest due \u2014 in gold, not gratitude."
+}

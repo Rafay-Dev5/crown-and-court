@@ -1,0 +1,39 @@
+{
+  "id": "king_sealed_warrant_001",
+  "name": "Sealed Warrant",
+  "owner_type": "king",
+  "category": "disruption",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "conditional_on_status",
+    "params": {
+      "target": "target",
+      "status_name": "marked",
+      "effect_if_present": {
+        "primitive": "gold_transfer",
+        "params": {
+          "from": "target",
+          "to": "self",
+          "amount": 100,
+          "as_theft": true
+        }
+      },
+      "effect_if_absent": {
+        "primitive": "gold_transfer",
+        "params": {
+          "from": "target",
+          "to": "self",
+          "amount": 80,
+          "as_theft": true
+        }
+      }
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Signed, sealed, confiscated.",
+  "designer_notes": "Steals 80 gold by default, or 100 against marked targets (+25%)."
+}

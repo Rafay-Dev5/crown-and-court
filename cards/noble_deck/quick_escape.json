@@ -1,0 +1,20 @@
+{
+  "id": "noble_quick_escape_001",
+  "name": "Quick Escape",
+  "owner_type": "noble",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "draw_extra",
+    "params": {
+      "target": "self",
+      "count": 1
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Leave fast, plan faster."
+}

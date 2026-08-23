@@ -1,0 +1,20 @@
+{
+  "id": "king_expand_court_scribe_008",
+  "name": "Court Scribe",
+  "owner_type": "king",
+  "category": "information",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "reveal_hand",
+    "params": {
+      "target": "target"
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Expansion design \u2014 Court Scribe.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

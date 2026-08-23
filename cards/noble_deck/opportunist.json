@@ -1,0 +1,20 @@
+{
+  "id": "noble_opportunist_001",
+  "name": "Opportunist",
+  "owner_type": "noble",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "extra_play",
+    "params": {
+      "target": "self",
+      "count": 1
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Strike while the court blinks."
+}

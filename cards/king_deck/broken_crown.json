@@ -1,0 +1,32 @@
+{
+  "id": "king_broken_crown_001",
+  "name": "Broken Crown",
+  "owner_type": "king",
+  "category": "disruption",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 70,
+      "as_theft": true
+    },
+    "secondary_effect": {
+      "primitive": "mark_status",
+      "params": {
+        "target": "target",
+        "status_name": "oathbreaker",
+        "duration_rounds": 4
+      }
+    }
+  },
+  "tags": [
+    "disruption",
+    "targets_gold"
+  ],
+  "flavor_text": "Break faith with the realm, and the realm remembers.",
+  "designer_notes": "Steals 70 from a Noble and brands them oathbreaker for 3 rounds, blocking negotiation gifts while tagged."
+}

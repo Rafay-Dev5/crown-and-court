@@ -1,0 +1,26 @@
+{
+  "id": "king_royal_alliance_pact_001",
+  "name": "Royal Alliance Pact",
+  "owner_type": "king",
+  "category": "alliance",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "alliance_bonus",
+    "params": {
+      "amount": 58,
+      "players": [
+        "self",
+        "target"
+      ]
+    }
+  },
+  "tags": [
+    "alliance"
+  ],
+  "synergy_tags": [
+    "king_alliance"
+  ],
+  "flavor_text": "Loyalty rewarded \u2014 if it holds."
+}

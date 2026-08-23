@@ -1,0 +1,38 @@
+{
+  "id": "noble_ward_001",
+  "name": "Ward",
+  "owner_type": "noble",
+  "category": "protection",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "protect_gold",
+    "params": {
+      "target": "self",
+      "amount": 100,
+      "duration_rounds": 1,
+      "specificity": "generic",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self",
+        "attack_type": "gold_theft"
+      }
+    }
+  },
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 5
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "synergy_tags": [
+    "noble_defense"
+  ],
+  "flavor_text": "A guarded purse \u2014 if anyone tries to take it.",
+  "designer_notes": "Generic self-shield: modest reward on hit, small penalty on whiff (25% scale applied automatically for generic specificity)."
+}

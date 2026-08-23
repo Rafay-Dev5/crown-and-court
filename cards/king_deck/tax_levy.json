@@ -1,0 +1,20 @@
+{
+  "id": "king_tax_levy_001",
+  "name": "Tax Levy",
+  "owner_type": "king",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_gain",
+    "params": {
+      "target": "self",
+      "amount": 62
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "The crown's share comes due."
+}

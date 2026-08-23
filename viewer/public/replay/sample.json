@@ -1,0 +1,1595 @@
+[
+  {
+    "type": "game_setup",
+    "round": 1,
+    "phase": "negotiation",
+    "num_players": 6,
+    "starting_king_seat": 3,
+    "starting_king_person": 3,
+    "seed": 50384
+  },
+  {
+    "type": "round_start",
+    "round": 1,
+    "phase": "negotiation"
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 3
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "propose_alliance",
+    "round": 1,
+    "phase": "negotiation",
+    "proposal_id": "p1",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 3
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "propose_alliance",
+    "round": 1,
+    "phase": "negotiation",
+    "proposal_id": "p2",
+    "proposer": 5,
+    "targets": [
+      0
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "propose_alliance",
+    "round": 1,
+    "phase": "negotiation",
+    "proposal_id": "p3",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 3
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 1,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "propose_alliance",
+    "round": 1,
+    "phase": "negotiation",
+    "proposal_id": "p4",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_complete",
+    "round": 1,
+    "phase": "negotiation",
+    "ticks": 3
+  },
+  {
+    "type": "succession_check_complete",
+    "round": 1,
+    "phase": "succession",
+    "ascending": null
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_expand_sealed_warrant_006",
+    "name": "Sealed Warrant II"
+  },
+  {
+    "type": "force_discard",
+    "round": 1,
+    "phase": "playing",
+    "seat": 4,
+    "count": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_expand_mint_dues_001",
+    "name": "Mint Dues"
+  },
+  {
+    "type": "gold_gain",
+    "round": 1,
+    "phase": "playing",
+    "seat": 3,
+    "amount": 95,
+    "person": 3
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_royal_edict_28_028",
+    "name": "Royal Census"
+  },
+  {
+    "type": "reveal_hand",
+    "round": 1,
+    "phase": "playing",
+    "seat": 4,
+    "cards": [
+      "noble_backstab_deal_001",
+      "noble_expand_sabotage_006",
+      "noble_forged_deeds_001",
+      "noble_expand_spy_network_008",
+      "noble_expand_night_ride_012"
+    ]
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 4,
+    "card_id": "noble_hidden_cache_001",
+    "name": "Hidden Cache"
+  },
+  {
+    "type": "shield_registered",
+    "round": 1,
+    "phase": "playing",
+    "seat": 4,
+    "card_id": "noble_hidden_cache_001",
+    "blocks": "gold_theft",
+    "specificity": "generic"
+  },
+  {
+    "type": "protect_gold",
+    "round": 1,
+    "phase": "playing",
+    "seat": 4,
+    "params": {
+      "target": "self",
+      "amount": 100,
+      "duration_rounds": 1,
+      "specificity": "generic",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self",
+        "attack_type": "gold_theft"
+      }
+    }
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 4,
+    "card_id": "noble_expand_smugglers_cut_002",
+    "name": "Smuggler's Cut"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 1,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 4,
+    "amount": 52,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 5,
+    "card_id": "noble_expand_blood_oath_005",
+    "name": "Blood Oath"
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 5,
+    "card_id": "noble_court_gambit_40_040",
+    "name": "Night Collection"
+  },
+  {
+    "type": "choice_made",
+    "round": 1,
+    "phase": "playing",
+    "seat": 5,
+    "choice_id": "shakedown",
+    "card_id": "noble_court_gambit_40_040"
+  },
+  {
+    "type": "dice_roll",
+    "round": 1,
+    "phase": "playing",
+    "seat": 5,
+    "roll": 6,
+    "sides": 6,
+    "target_min": 5,
+    "success": true,
+    "card_id": "noble_court_gambit_40_040"
+  },
+  {
+    "type": "gold_loss",
+    "round": 1,
+    "phase": "playing",
+    "seat": 5,
+    "amount": 20,
+    "person": 5
+  },
+  {
+    "type": "mark_status",
+    "round": 1,
+    "phase": "playing",
+    "seat": 5,
+    "status": "discredited",
+    "duration": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 0,
+    "card_id": "noble_market_manipulation_001",
+    "name": "Market Manipulation"
+  },
+  {
+    "type": "gold_gain",
+    "round": 1,
+    "phase": "playing",
+    "seat": 0,
+    "amount": 93,
+    "person": 0
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 1,
+    "card_id": "noble_gamblers_wager_001",
+    "name": "Gambler's Wager"
+  },
+  {
+    "type": "choice_made",
+    "round": 1,
+    "phase": "playing",
+    "seat": 1,
+    "choice_id": "bold",
+    "card_id": "noble_gamblers_wager_001"
+  },
+  {
+    "type": "dice_roll",
+    "round": 1,
+    "phase": "playing",
+    "seat": 1,
+    "roll": 2,
+    "sides": 6,
+    "target_min": 5,
+    "success": false,
+    "card_id": "noble_gamblers_wager_001"
+  },
+  {
+    "type": "gold_loss",
+    "round": 1,
+    "phase": "playing",
+    "seat": 1,
+    "amount": 53,
+    "person": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_expand_smugglers_cut_002",
+    "name": "Smuggler's Cut"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 1,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 2,
+    "amount": 52,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 1,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_expand_night_ride_012",
+    "name": "Night Ride"
+  },
+  {
+    "type": "extra_play",
+    "round": 1,
+    "phase": "playing",
+    "seat": 2,
+    "count": 1
+  },
+  {
+    "type": "protection_whiff",
+    "round": 1,
+    "phase": "playing",
+    "seat": 4,
+    "card_id": "noble_hidden_cache_001",
+    "penalty_scale": 0.25,
+    "whiff_reason": "no_matching_attack",
+    "trigger_type": "attacked_this_phase",
+    "attacks_on_self": 1,
+    "resolution": "deferred"
+  },
+  {
+    "type": "gold_loss",
+    "round": 1,
+    "phase": "playing",
+    "seat": 4,
+    "amount": 1,
+    "person": 4
+  },
+  {
+    "type": "succession_check_complete",
+    "round": 1,
+    "phase": "succession",
+    "ascending": null
+  },
+  {
+    "type": "round_start",
+    "round": 2,
+    "phase": "succession"
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 3
+  },
+  {
+    "type": "propose_alliance",
+    "round": 2,
+    "phase": "negotiation",
+    "proposal_id": "p5",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "alliance_formed",
+    "round": 2,
+    "phase": "negotiation",
+    "members": [
+      2,
+      3
+    ]
+  },
+  {
+    "type": "proposal_accepted",
+    "round": 2,
+    "phase": "negotiation",
+    "proposal_id": "p5",
+    "accepter": 3
+  },
+  {
+    "type": "propose_alliance",
+    "round": 2,
+    "phase": "negotiation",
+    "proposal_id": "p6",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "alliance_formed",
+    "round": 2,
+    "phase": "negotiation",
+    "members": [
+      2,
+      3
+    ]
+  },
+  {
+    "type": "proposal_accepted",
+    "round": 2,
+    "phase": "negotiation",
+    "proposal_id": "p6",
+    "accepter": 3
+  },
+  {
+    "type": "propose_alliance",
+    "round": 2,
+    "phase": "negotiation",
+    "proposal_id": "p7",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 2,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "negotiation_complete",
+    "round": 2,
+    "phase": "negotiation",
+    "ticks": 3
+  },
+  {
+    "type": "succession_check_complete",
+    "round": 2,
+    "phase": "succession",
+    "ascending": null
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_alliance_summit_001",
+    "name": "Alliance Summit"
+  },
+  {
+    "type": "alliance_bonus",
+    "round": 2,
+    "phase": "playing",
+    "seats": [
+      3,
+      2
+    ],
+    "amount": 41
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_expand_imperial_mandate_015",
+    "name": "Imperial Mandate"
+  },
+  {
+    "type": "gold_gain",
+    "round": 2,
+    "phase": "playing",
+    "seat": 3,
+    "amount": 145,
+    "person": 3
+  },
+  {
+    "type": "draw_extra",
+    "round": 2,
+    "phase": "playing",
+    "seat": 3,
+    "count": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_royal_audit_001",
+    "name": "Royal Audit"
+  },
+  {
+    "type": "reveal_hand",
+    "round": 2,
+    "phase": "playing",
+    "seat": 2,
+    "cards": [
+      "noble_court_gambit_40_040",
+      "noble_court_gambit_31_031",
+      "noble_broken_vow_001",
+      "noble_expand_grand_conspiracy_015",
+      "noble_expand_poisoned_chalice_007",
+      "noble_embargo_001"
+    ]
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_bodyguard_001",
+    "name": "Bodyguard"
+  },
+  {
+    "type": "shield_registered",
+    "round": 2,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_bodyguard_001",
+    "blocks": "force_discard",
+    "specificity": "targeted"
+  },
+  {
+    "type": "protect_gold",
+    "round": 2,
+    "phase": "playing",
+    "seat": 2,
+    "params": {
+      "target": "self",
+      "amount": 120,
+      "duration_rounds": 1,
+      "specificity": "targeted",
+      "blocks": "force_discard",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self"
+      }
+    }
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_expand_silk_route_001",
+    "name": "Silk Route"
+  },
+  {
+    "type": "gold_gain",
+    "round": 2,
+    "phase": "playing",
+    "seat": 2,
+    "amount": 88,
+    "person": 2
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 1,
+    "card_id": "noble_expand_coup_plot_014",
+    "name": "Coup Plot II"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 2,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 1,
+    "amount": 75,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 1,
+    "card_id": "noble_coup_plot_001",
+    "name": "Coup Plot"
+  },
+  {
+    "type": "card_precondition_failed",
+    "round": 2,
+    "phase": "playing",
+    "card_id": "noble_coup_plot_001",
+    "seat": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 0,
+    "card_id": "noble_coup_plot_001",
+    "name": "Coup Plot"
+  },
+  {
+    "type": "card_precondition_failed",
+    "round": 2,
+    "phase": "playing",
+    "card_id": "noble_coup_plot_001",
+    "seat": 0
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 0,
+    "card_id": "noble_expand_blood_oath_005",
+    "name": "Blood Oath"
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 5,
+    "card_id": "noble_forged_deeds_001",
+    "name": "Forged Deeds"
+  },
+  {
+    "type": "steal_card",
+    "round": 2,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 5,
+    "count": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 5,
+    "card_id": "noble_market_manipulation_001",
+    "name": "Market Manipulation"
+  },
+  {
+    "type": "gold_gain",
+    "round": 2,
+    "phase": "playing",
+    "seat": 5,
+    "amount": 93,
+    "person": 5
+  },
+  {
+    "type": "card_revealed",
+    "round": 2,
+    "phase": "playing",
+    "seat": 4,
+    "card_id": "noble_court_gambit_31_031",
+    "name": "Smuggler's Tithe"
+  },
+  {
+    "type": "choice_made",
+    "round": 2,
+    "phase": "playing",
+    "seat": 4,
+    "choice_id": "quiet_cut",
+    "card_id": "noble_court_gambit_31_031"
+  },
+  {
+    "type": "gold_gain",
+    "round": 2,
+    "phase": "playing",
+    "seat": 4,
+    "amount": 35,
+    "person": 4
+  },
+  {
+    "type": "protection_whiff",
+    "round": 2,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_bodyguard_001",
+    "penalty_scale": 1.0,
+    "whiff_reason": "no_matching_attack",
+    "trigger_type": "attacked_this_phase",
+    "attacks_on_self": 0,
+    "resolution": "deferred"
+  },
+  {
+    "type": "gold_loss",
+    "round": 2,
+    "phase": "playing",
+    "seat": 2,
+    "amount": 5,
+    "person": 2
+  },
+  {
+    "type": "succession_check_complete",
+    "round": 2,
+    "phase": "succession",
+    "ascending": null
+  },
+  {
+    "type": "round_start",
+    "round": 3,
+    "phase": "succession"
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 3
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "propose_alliance",
+    "round": 3,
+    "phase": "negotiation",
+    "proposal_id": "p8",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "alliance_formed",
+    "round": 3,
+    "phase": "negotiation",
+    "members": [
+      2,
+      3
+    ]
+  },
+  {
+    "type": "proposal_accepted",
+    "round": 3,
+    "phase": "negotiation",
+    "proposal_id": "p8",
+    "accepter": 3
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "propose_alliance",
+    "round": 3,
+    "phase": "negotiation",
+    "proposal_id": "p9",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 3
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 3,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "propose_alliance",
+    "round": 3,
+    "phase": "negotiation",
+    "proposal_id": "p10",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_complete",
+    "round": 3,
+    "phase": "negotiation",
+    "ticks": 3
+  },
+  {
+    "type": "succession_check_complete",
+    "round": 3,
+    "phase": "succession",
+    "ascending": null
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_diplomatic_immunity_001",
+    "name": "Diplomatic Immunity"
+  },
+  {
+    "type": "block_succession",
+    "round": 3,
+    "phase": "playing",
+    "seat": 3,
+    "duration": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_loyal_guard_001",
+    "name": "Loyal Guard"
+  },
+  {
+    "type": "block_succession",
+    "round": 3,
+    "phase": "playing",
+    "seat": 3,
+    "duration": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_expand_royal_pact_004",
+    "name": "Royal Pact"
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 4,
+    "card_id": "noble_gamblers_wager_001",
+    "name": "Gambler's Wager"
+  },
+  {
+    "type": "choice_made",
+    "round": 3,
+    "phase": "playing",
+    "seat": 4,
+    "choice_id": "bold",
+    "card_id": "noble_gamblers_wager_001"
+  },
+  {
+    "type": "dice_roll",
+    "round": 3,
+    "phase": "playing",
+    "seat": 4,
+    "roll": 5,
+    "sides": 6,
+    "target_min": 5,
+    "success": true,
+    "card_id": "noble_gamblers_wager_001"
+  },
+  {
+    "type": "gold_loss",
+    "round": 3,
+    "phase": "playing",
+    "seat": 4,
+    "amount": 53,
+    "person": 4
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 5,
+    "card_id": "noble_expand_coup_plot_014",
+    "name": "Coup Plot II"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 3,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 5,
+    "amount": 75,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 5,
+    "card_id": "noble_fence_goods_001",
+    "name": "Fence Goods"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 3,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 5,
+    "amount": 74,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 0,
+    "card_id": "noble_fence_goods_001",
+    "name": "Fence Goods"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 3,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 0,
+    "amount": 74,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 1,
+    "card_id": "noble_expand_poisoned_chalice_007",
+    "name": "Poisoned Chalice"
+  },
+  {
+    "type": "force_discard",
+    "round": 3,
+    "phase": "playing",
+    "seat": 3,
+    "count": 2
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 1,
+    "card_id": "noble_broken_vow_001",
+    "name": "Broken Vow"
+  },
+  {
+    "type": "card_precondition_failed",
+    "round": 3,
+    "phase": "playing",
+    "card_id": "noble_broken_vow_001",
+    "seat": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_court_gambit_31_031",
+    "name": "Smuggler's Tithe"
+  },
+  {
+    "type": "choice_made",
+    "round": 3,
+    "phase": "playing",
+    "seat": 2,
+    "choice_id": "deep_route",
+    "card_id": "noble_court_gambit_31_031"
+  },
+  {
+    "type": "dice_roll",
+    "round": 3,
+    "phase": "playing",
+    "seat": 2,
+    "roll": 4,
+    "sides": 6,
+    "target_min": 5,
+    "success": false,
+    "card_id": "noble_court_gambit_31_031"
+  },
+  {
+    "type": "gold_loss",
+    "round": 3,
+    "phase": "playing",
+    "seat": 2,
+    "amount": 25,
+    "person": 2
+  },
+  {
+    "type": "mark_status",
+    "round": 3,
+    "phase": "playing",
+    "seat": 2,
+    "status": "marked",
+    "duration": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 3,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_fence_goods_001",
+    "name": "Fence Goods"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 3,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 2,
+    "amount": 74,
+    "blocked": false
+  },
+  {
+    "type": "protection_hit",
+    "round": 3,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_diplomatic_immunity_001",
+    "trigger_type": "succession_imminent",
+    "attacks_on_self": 5,
+    "resolution": "deferred"
+  },
+  {
+    "type": "protection_hit",
+    "round": 3,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_loyal_guard_001",
+    "trigger_type": "succession_imminent",
+    "attacks_on_self": 5,
+    "resolution": "deferred"
+  },
+  {
+    "type": "succession_blocked",
+    "round": 3,
+    "phase": "succession"
+  },
+  {
+    "type": "succession_check_complete",
+    "round": 3,
+    "phase": "succession",
+    "ascending": null
+  },
+  {
+    "type": "round_start",
+    "round": 4,
+    "phase": "succession"
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 3
+  },
+  {
+    "type": "propose_alliance",
+    "round": 4,
+    "phase": "negotiation",
+    "proposal_id": "p11",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "alliance_formed",
+    "round": 4,
+    "phase": "negotiation",
+    "members": [
+      2,
+      3
+    ]
+  },
+  {
+    "type": "proposal_accepted",
+    "round": 4,
+    "phase": "negotiation",
+    "proposal_id": "p11",
+    "accepter": 3
+  },
+  {
+    "type": "propose_alliance",
+    "round": 4,
+    "phase": "negotiation",
+    "proposal_id": "p12",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 3
+  },
+  {
+    "type": "propose_alliance",
+    "round": 4,
+    "phase": "negotiation",
+    "proposal_id": "p13",
+    "proposer": 2,
+    "targets": [
+      3
+    ]
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 1
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 0
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 5
+  },
+  {
+    "type": "negotiation_pass",
+    "round": 4,
+    "phase": "negotiation",
+    "seat": 4
+  },
+  {
+    "type": "negotiation_complete",
+    "round": 4,
+    "phase": "negotiation",
+    "ticks": 3
+  },
+  {
+    "type": "succession_blocked",
+    "round": 4,
+    "phase": "succession"
+  },
+  {
+    "type": "succession_check_complete",
+    "round": 4,
+    "phase": "succession",
+    "ascending": null
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_expand_toll_bridge_002",
+    "name": "Toll Bridge"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 4,
+    "phase": "playing",
+    "from_seat": 2,
+    "to_seat": 3,
+    "amount": 55,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_expand_quarter_search_007",
+    "name": "Quarter Search"
+  },
+  {
+    "type": "force_discard",
+    "round": 4,
+    "phase": "playing",
+    "seat": 2,
+    "count": 2
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 3,
+    "card_id": "king_decree_haste_001",
+    "name": "Decree Haste"
+  },
+  {
+    "type": "extra_play",
+    "round": 4,
+    "phase": "playing",
+    "seat": 3,
+    "count": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_expand_hidden_cache_010",
+    "name": "Hidden Cache II"
+  },
+  {
+    "type": "shield_registered",
+    "round": 4,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_expand_hidden_cache_010",
+    "blocks": "force_discard",
+    "specificity": "targeted"
+  },
+  {
+    "type": "protect_gold",
+    "round": 4,
+    "phase": "playing",
+    "seat": 2,
+    "params": {
+      "target": "self",
+      "amount": 85,
+      "duration_rounds": 1,
+      "specificity": "targeted",
+      "blocks": "force_discard",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self"
+      }
+    }
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_blackmail_001",
+    "name": "Blackmail"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 4,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 2,
+    "amount": 78,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 1,
+    "card_id": "noble_market_manipulation_001",
+    "name": "Market Manipulation"
+  },
+  {
+    "type": "gold_gain",
+    "round": 4,
+    "phase": "playing",
+    "seat": 1,
+    "amount": 93,
+    "person": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 0,
+    "card_id": "noble_loan_shark_001",
+    "name": "Loan Shark"
+  },
+  {
+    "type": "gold_transfer",
+    "round": 4,
+    "phase": "playing",
+    "from_seat": 3,
+    "to_seat": 0,
+    "amount": 88,
+    "blocked": false
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 5,
+    "card_id": "king_expand_court_scribe_008",
+    "name": "Court Scribe"
+  },
+  {
+    "type": "reveal_hand",
+    "round": 4,
+    "phase": "playing",
+    "seat": 3,
+    "cards": [
+      "king_iron_curtain_001",
+      "king_expand_bastion_wall_010",
+      "king_court_intrigue_001"
+    ]
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 5,
+    "card_id": "noble_expand_night_ride_012",
+    "name": "Night Ride"
+  },
+  {
+    "type": "extra_play",
+    "round": 4,
+    "phase": "playing",
+    "seat": 5,
+    "count": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 4,
+    "card_id": "noble_expand_sabotage_006",
+    "name": "Sabotage"
+  },
+  {
+    "type": "force_discard",
+    "round": 4,
+    "phase": "playing",
+    "seat": 3,
+    "count": 1
+  },
+  {
+    "type": "card_revealed",
+    "round": 4,
+    "phase": "playing",
+    "seat": 4,
+    "card_id": "noble_expand_spy_network_008",
+    "name": "Spy Network"
+  },
+  {
+    "type": "reveal_hand",
+    "round": 4,
+    "phase": "playing",
+    "seat": 3,
+    "cards": [
+      "king_expand_bastion_wall_010",
+      "king_court_intrigue_001"
+    ]
+  },
+  {
+    "type": "protection_hit",
+    "round": 4,
+    "phase": "playing",
+    "seat": 2,
+    "card_id": "noble_expand_hidden_cache_010",
+    "trigger_type": "attacked_this_phase",
+    "attacks_on_self": 2,
+    "resolution": "deferred"
+  },
+  {
+    "type": "succession",
+    "round": 4,
+    "phase": "succession",
+    "former_king_seat": 3,
+    "new_king_seat": 0,
+    "new_king_person": 0
+  },
+  {
+    "type": "succession_check_complete",
+    "round": 4,
+    "phase": "succession",
+    "ascending": 0
+  },
+  {
+    "type": "game_end",
+    "round": 5,
+    "phase": "game_end",
+    "winner_seat": 0,
+    "winner_person": 0
+  }
+]

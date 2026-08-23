@@ -1,0 +1,31 @@
+{
+  "id": "noble_assassins_blade_001",
+  "name": "Assassin's Blade",
+  "owner_type": "noble",
+  "category": "supercard",
+  "rarity": "supercard",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "king",
+      "to": "self",
+      "amount": 235,
+      "as_theft": true
+    },
+    "secondary_effect": {
+      "primitive": "mark_status",
+      "params": {
+        "target": "self",
+        "status_name": "marked",
+        "duration_rounds": 3
+      }
+    }
+  },
+  "tags": [
+    "supercard",
+    "betrayal"
+  ],
+  "flavor_text": "One cut, one crown closer."
+}

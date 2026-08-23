@@ -1,0 +1,52 @@
+import { motion } from "framer-motion";
+import { useGameSocket } from "../hooks/useGameSocket";
+import { useGameStore } from "../store";
+
+export default function MatchIntroPage() {
+  const { beginMatch } = useGameSocket();
+  const { matchNumber, matchIntro, meta } = useGameStore();
+
+  const kingName = matchIntro?.kingName ?? "Unknown";
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center max-w-lg"
+      >
+        <p className="text-royal-gold font-display text-xl tracking-widest mb-4">
+          MATCH {matchNumber} OF {meta?.total_matches ?? 4}
+        </p>
+
+        <motion.div
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3, type: "spring" }}
+          className="panel-parchment p-8 mb-8"
+        >
+          <motion.img
+            src="/assets/crown.svg"
+            alt="Crown"
+            className="w-20 h-20 mx-auto mb-4"
+            animate={{ rotate: [0, -5, 5, 0] }}
+            transition={{ repeat: Infinity, duration: 3 }}
+          />
+          <h2 className="text-2xl font-display text-royal-dark">
+            {kingName} is Starting King
+          </h2>
+          <p className="text-royal-dark/70 mt-2 italic">
+            Round 1 · Turn direction: clockwise
+          </p>
+        </motion.div>
+
+        <button
+          className="btn-royal px-12"
+          onClick={() => beginMatch(matchNumber)}
+        >
+          Begin Match
+        </button>
+      </motion.div>
+    </div>
+  );
+}

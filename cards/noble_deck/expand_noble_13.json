@@ -1,0 +1,21 @@
+{
+  "id": "noble_expand_courier_swap_013",
+  "name": "Courier Swap",
+  "owner_type": "noble",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "draw_extra",
+    "params": {
+      "target": "self",
+      "count": 2
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Expansion design \u2014 Courier Swap.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

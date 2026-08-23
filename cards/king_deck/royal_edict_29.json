@@ -1,0 +1,27 @@
+{
+  "id": "king_royal_edict_29_029",
+  "name": "Crown Patronage",
+  "owner_type": "king",
+  "category": "alliance",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "alliance_bonus",
+    "params": {
+      "amount": 54,
+      "players": [
+        "self",
+        "target"
+      ]
+    }
+  },
+  "tags": [
+    "alliance"
+  ],
+  "synergy_tags": [
+    "king_alliance"
+  ],
+  "flavor_text": "Favor flows to those who stand beside the throne.",
+  "designer_notes": "Replaced resize stub; King alliance payout (PRD §10)."
+}

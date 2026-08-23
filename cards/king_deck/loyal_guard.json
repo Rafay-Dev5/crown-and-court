@@ -1,0 +1,36 @@
+{
+  "id": "king_loyal_guard_001",
+  "name": "Loyal Guard",
+  "owner_type": "king",
+  "category": "protection",
+  "rarity": "supercard",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "block_succession",
+    "params": {
+      "scope": "next_check_this_round",
+      "duration_rounds": 1,
+      "trigger": {
+        "type": "succession_imminent"
+      },
+      "specificity": "targeted"
+    }
+  },
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 8
+    }
+  },
+  "tags": [
+    "protection",
+    "succession"
+  ],
+  "synergy_tags": [
+    "king_defense"
+  ],
+  "flavor_text": "The crown does not fall while he stands.",
+  "designer_notes": "Played blind like every other card. Resolves in King's slot; blocks next succession check if a Noble would qualify. Whiff: King loses 150 gold if no ascension was imminent. King-first resolution makes this a reliable defensive tool."
+}

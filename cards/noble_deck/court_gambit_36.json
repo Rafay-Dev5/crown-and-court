@@ -1,0 +1,21 @@
+{
+  "id": "noble_court_gambit_36_036",
+  "name": "Slip Away",
+  "owner_type": "noble",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "draw_extra",
+    "params": {
+      "target": "self",
+      "count": 1
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Leave the hall before the verdict lands.",
+  "designer_notes": "Replaced resize stub; Noble tempo (PRD \u00a710)."
+}

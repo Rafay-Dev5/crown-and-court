@@ -1,0 +1,23 @@
+{
+  "id": "noble_expand_coup_plot_014",
+  "name": "Coup Plot II",
+  "owner_type": "noble",
+  "category": "betrayal",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "king",
+      "to": "self",
+      "amount": 75,
+      "as_theft": true
+    }
+  },
+  "tags": [
+    "betrayal"
+  ],
+  "flavor_text": "Expansion design \u2014 Coup Plot II.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

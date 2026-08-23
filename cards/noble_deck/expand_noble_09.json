@@ -1,0 +1,20 @@
+{
+  "id": "noble_expand_whisper_ring_009",
+  "name": "Whisper Ring",
+  "owner_type": "noble",
+  "category": "information",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "reveal_hand",
+    "params": {
+      "target": "target"
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Expansion design \u2014 Whisper Ring.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

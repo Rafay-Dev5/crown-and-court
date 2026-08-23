@@ -1,0 +1,26 @@
+{
+  "id": "noble_rally_support_001",
+  "name": "Rally Support",
+  "owner_type": "noble",
+  "category": "alliance",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "alliance_bonus",
+    "params": {
+      "players": [
+        "self",
+        "target"
+      ],
+      "amount": 50
+    }
+  },
+  "requires_state": {
+    "alliance_declared_with_target": true
+  },
+  "tags": [
+    "alliance"
+  ],
+  "flavor_text": "Crowds love a cause \u2014 especially a profitable one."
+}

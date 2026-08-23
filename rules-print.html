@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crown &amp; Court — Rules</title>
+  <style>
+    :root {
+      --ink: #2c1810;
+      --muted: #5c4033;
+      --accent: #4a0e12;
+      --paper: #faf6ef;
+      --rule: #c4a882;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      font-size: 11pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      background: #e8dfd0;
+      line-height: 1.45;
+    }
+
+    .document {
+      max-width: 7.5in;
+      margin: 0 auto;
+      background: var(--paper);
+      box-shadow: 0 0 24px rgba(0, 0, 0, 0.12);
+    }
+
+    @page {
+      size: letter;
+      margin: 0.75in 0.85in;
+    }
+
+    @media print {
+      body { background: white; }
+      .document { box-shadow: none; max-width: none; }
+      .no-print { display: none !important; }
+      .page-break { break-before: page; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    .print-bar {
+      max-width: 7.5in;
+      margin: 0 auto 1rem;
+      padding: 0.75rem 1rem;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    .print-bar button {
+      font: inherit;
+      padding: 0.45rem 1rem;
+      background: var(--accent);
+      color: #faf6ef;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .cover {
+      min-height: 9.5in;
+      padding: 1.2in 1in 1in;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border-bottom: 3px double var(--accent);
+    }
+
+    .cover .eyebrow {
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .cover h1 {
+      font-size: 2.6rem;
+      font-weight: normal;
+      margin: 0 0 0.35rem;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    .cover .subtitle {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--muted);
+      margin: 0 0 2rem;
+    }
+
+    .cover .goal {
+      font-size: 1.05rem;
+      max-width: 28rem;
+      margin: 0 auto 2.5rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid var(--rule);
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    .cover .meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .content {
+      padding: 0.85in 1in 1in;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: normal;
+      color: var(--accent);
+      margin: 1.75rem 0 0.65rem;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid var(--rule);
+      break-after: avoid;
+    }
+
+    h2:first-child { margin-top: 0; }
+
+    h3 {
+      font-size: 1rem;
+      margin: 1.1rem 0 0.4rem;
+      break-after: avoid;
+    }
+
+    p { margin: 0.45rem 0; }
+
+    ul, ol {
+      margin: 0.4rem 0 0.65rem;
+      padding-left: 1.25rem;
+    }
+
+    li { margin: 0.2rem 0; }
+
+    .callout {
+      margin: 0.75rem 0;
+      padding: 0.65rem 0.85rem;
+      border-left: 4px solid var(--accent);
+      background: rgba(74, 14, 18, 0.06);
+      font-size: 0.95rem;
+    }
+
+    .callout strong { color: var(--accent); }
+
+    .flow {
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 0.55rem;
+      margin: 0.65rem 0;
+      border: 1px dashed var(--rule);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.55rem 0 0.85rem;
+      font-size: 0.92rem;
+      break-inside: avoid;
+    }
+
+    th, td {
+      border: 1px solid var(--rule);
+      padding: 0.35rem 0.5rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--accent);
+      color: #faf6ef;
+      font-weight: normal;
+    }
+
+    td.num, th.num { text-align: center; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media print {
+      .two-col { gap: 0.75rem; }
+    }
+
+    .footer-note {
+      margin-top: 1.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--rule);
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .cheat-sheet h2 { margin-top: 0; }
+
+    /* CARD CATALOG STYLES */
+
+    .card-catalog h3 {
+      margin-top: 1.5rem;
+    }
+    .card-entry {
+      margin: 0.85rem 0 1rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px dotted var(--rule);
+      break-inside: avoid;
+    }
+    .card-entry h4 {
+      margin: 0 0 0.25rem;
+      font-size: 1rem;
+      color: var(--accent);
+    }
+    .card-entry .meta {
+      font-weight: normal;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .card-entry .flavor {
+      margin: 0.2rem 0 0.35rem;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .card-effect {
+      margin: 0.25rem 0 0;
+      padding-left: 1.1rem;
+      font-size: 0.88rem;
+    }
+    .card-effect li { margin: 0.12rem 0; }
+    .card-effect li.sub { list-style: disc; }
+
+  </style>
+</head>
+<body>
+  <div class="print-bar no-print">
+    <strong>Crown &amp; Court — print edition</strong>
+    &nbsp;·&nbsp; Open this file in a browser, then use <strong>Print → Save as PDF</strong>.
+    &nbsp;
+    <button type="button" onclick="window.print()">Print / Save PDF</button>
+  </div>
+
+  <article class="document">
+    <header class="cover">
+      <p class="eyebrow">Player rules · v1</p>
+      <h1>Crown &amp; Court</h1>
+      <p class="subtitle">A political card game of gold, bluffing, alliances, and succession</p>
+      <p class="goal"><strong>Goal:</strong> Whoever holds the <strong>King’s seat</strong> when the final round ends wins the game.</p>
+      <p class="meta">
+        4–6 players · 5 rounds (3 for a quick game)<br />
+        King deck: 42 cards · Noble deck: 40 cards per Noble
+      </p>
+    </header>
+
+    <div class="content">
+      <h2>What you need</h2>
+      <table>
+        <thead>
+          <tr><th>Item</th><th class="num">Standard</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Players</td><td class="num"><strong>4–6</strong> (best at 6)</td></tr>
+          <tr><td>Rounds</td><td class="num"><strong>5</strong> (use <strong>3</strong> for a quick game)</td></tr>
+          <tr><td>King deck</td><td class="num">42 cards (one copy in play)</td></tr>
+          <tr><td>Noble deck</td><td class="num">40 cards (each Noble has their own shuffled copy)</td></tr>
+          <tr><td>Gold tokens or paper</td><td class="num">Track each player’s wealth</td></tr>
+          <tr><td>Pen &amp; paper (optional)</td><td class="num">Track <strong>earned gold</strong> separately from gifts</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Setup</h2>
+      <ol>
+        <li><strong>Choose the starting King</strong> — pick randomly, or agree on a house rule.</li>
+        <li><strong>Assign roles</strong> — the King uses the <strong>King deck</strong>; each Noble gets their own shuffled <strong>Noble deck</strong>.</li>
+        <li><strong>Starting gold</strong> — King: <strong>1,000</strong> · each Noble: <strong>600</strong>. All of this starts as <strong>earned gold</strong>.</li>
+        <li><strong>Deal hands</strong> — each player draws <strong>8</strong> cards.</li>
+        <li><strong>Turn direction</strong> — odd rounds go one way around the table; even rounds reverse.</li>
+      </ol>
+
+      <h2>Gold: earned vs. gifted</h2>
+      <div class="callout">
+        <strong>This is the most important rule.</strong> Only <strong>earned gold</strong> counts toward becoming King.
+      </div>
+      <ul>
+        <li><strong>Earned gold</strong> — starting wealth, card effects, and anything <em>not</em> a direct gift from another player during negotiation.</li>
+        <li><strong>Gifted gold</strong> — gold another player gave you during the <strong>negotiation phase</strong>. You can spend it, but it does <strong>not</strong> help you win the crown.</li>
+      </ul>
+      <p>Gold moved by <strong>card effects</strong> (theft, taxes, etc.) follows the card — not the gift rules.</p>
+
+      <div class="page-break"></div>
+
+      <h2>Roles &amp; succession</h2>
+      <p>One <strong>King’s seat</strong> exists at the table. The person there plays from the King deck; everyone else plays from the Noble deck.</p>
+      <p><strong>Succession checks</strong> happen twice each round:</p>
+      <ol>
+        <li>After <strong>negotiation</strong></li>
+        <li>After <strong>playing cards</strong></li>
+      </ol>
+      <p>At each check, if any Noble has <strong>more earned gold than the current King</strong>, the <strong>highest-earned Noble</strong> (ties broken by Noble play order that round) <strong>takes the crown</strong>.</p>
+      <p>When someone becomes King:</p>
+      <ul>
+        <li>They swap <strong>roles, deck, hand, and discard pile</strong> with the former King.</li>
+        <li><strong>Gold stays with the player</strong> — your coins follow you even if you change seats.</li>
+      </ul>
+      <p>Some cards can <strong>block succession</strong> for a check (e.g. <em>Loyal Guard</em>).</p>
+
+      <h2>Round structure</h2>
+      <p class="flow">Negotiation → Succession → Play cards → Succession → Next round</p>
+
+      <h3>1. Negotiation (4 table passes)</h3>
+      <p>Starting from the King, each player gets <strong>4 full passes</strong> around the table. On your turn you may:</p>
+      <ul>
+        <li><strong>Propose a trade</strong> — offer gold and/or cards; the other player may accept or reject.</li>
+        <li><strong>Propose an alliance</strong> — a declared pact (some cards require an active alliance).</li>
+        <li><strong>Make a conditional promise</strong> — table talk only; <strong>not binding</strong> unless a card says otherwise.</li>
+        <li><strong>Threaten or bluff</strong></li>
+        <li><strong>Pass</strong></li>
+      </ul>
+
+      <p><strong>Gift limits</strong> (recommended for balanced play):</p>
+      <table>
+        <thead>
+          <tr><th>Limit</th><th class="num">Amount</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Max gold per single gift</td><td class="num"><strong>120</strong></td></tr>
+          <tr><td>Max gold you can give per negotiation phase</td><td class="num"><strong>120</strong></td></tr>
+          <tr><td>Max gold in one trade (each side)</td><td class="num"><strong>120</strong></td></tr>
+          <tr><td>Max completed trades per player per phase</td><td class="num"><strong>2</strong></td></tr>
+        </tbody>
+      </table>
+      <p>At the end of negotiation → <strong>succession check</strong>.</p>
+
+      <h3>2. Play cards</h3>
+      <p>Everyone <strong>chooses cards face-down</strong>, then <strong>reveals in order</strong>:</p>
+      <ol>
+        <li><strong>King</strong> plays <strong>3</strong> cards (in the order they chose).</li>
+        <li>Each <strong>Noble</strong> plays <strong>2</strong> cards, in turn order from the King (respecting the round’s direction).</li>
+      </ol>
+      <p>Cards resolve one at a time. Some ask you to <strong>pick a target</strong> or <strong>make a choice</strong>.</p>
+      <p><strong>Redraw</strong> after all cards resolve:</p>
+      <ul>
+        <li><strong>King</strong> draws <strong>3</strong> cards.</li>
+        <li>Each <strong>Noble</strong> draws <strong>2</strong> cards.</li>
+      </ul>
+      <p>Hands refill up to <strong>8</strong> when possible (shuffle discard into deck when empty).</p>
+      <p>Then → <strong>second succession check</strong> → next round.</p>
+
+      <div class="page-break"></div>
+
+      <h2>Protection cards</h2>
+      <p><strong>Protection</strong> cards are a gamble:</p>
+      <ul>
+        <li>Play them <strong>face-down</strong> with your other cards.</li>
+        <li>After all cards are revealed, each protection card is checked:
+          <ul>
+            <li><strong>Hit</strong> — you guessed correctly; you get the benefit.</li>
+            <li><strong>Whiff</strong> — your read was wrong; you pay the penalty (usually losing gold).</li>
+          </ul>
+        </li>
+      </ul>
+      <p>The <strong>King resolves first</strong> each round, so King protection against succession is more reliable than Noble protection against attacks that have not happened yet.</p>
+
+      <h2>Card timing</h2>
+      <table>
+        <thead>
+          <tr><th>Timing</th><th>When it matters</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>On reveal</strong></td><td>Resolves when that card is flipped.</td></tr>
+          <tr><td><strong>Reactive / protection</strong></td><td>Played face-down; checked against what happened during the round.</td></tr>
+          <tr><td><strong>End of round</strong></td><td>Resolves after the round’s card play.</td></tr>
+          <tr><td><strong>Negotiation only</strong></td><td>Only usable during negotiation.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Card categories</h2>
+      <table>
+        <thead>
+          <tr><th>Category</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Economy</strong></td><td>Gain, steal, or move gold.</td></tr>
+          <tr><td><strong>Alliance</strong></td><td>Reward keeping a declared alliance.</td></tr>
+          <tr><td><strong>Betrayal</strong></td><td>Break an alliance for profit — often needs an active alliance first.</td></tr>
+          <tr><td><strong>Disruption</strong></td><td>Force discards, skip plays, mess with opponents.</td></tr>
+          <tr><td><strong>Protection</strong></td><td>Block theft, succession, or attacks — with whiff risk.</td></tr>
+          <tr><td><strong>Tempo</strong></td><td>Extra draws, extra plays, or skip effects.</td></tr>
+          <tr><td><strong>Information</strong></td><td>Peek at hidden information.</td></tr>
+          <tr><td><strong>Supercard</strong></td><td>Rare, high-impact cards with real drawbacks.</td></tr>
+        </tbody>
+      </table>
+      <p>Each player only draws from <strong>their role’s deck</strong>.</p>
+
+      <h2>Winning</h2>
+      <p>When the last round finishes, <strong>whoever sits in the King’s seat wins</strong>. There is no shared victory.</p>
+
+      <div class="page-break cheat-sheet"></div>
+
+      <section class="cheat-sheet">
+        <h2>Quick reference</h2>
+        <div class="two-col">
+          <table>
+            <thead>
+              <tr><th></th><th class="num">King</th><th class="num">Noble</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Starting gold</td><td class="num">1,000</td><td class="num">600</td></tr>
+              <tr><td>Cards played / round</td><td class="num">3</td><td class="num">2</td></tr>
+              <tr><td>Cards drawn after play</td><td class="num">3</td><td class="num">2</td></tr>
+              <tr><td>Hand size</td><td class="num">8</td><td class="num">8</td></tr>
+              <tr><td>Deck size</td><td class="num">42</td><td class="num">40 each</td></tr>
+            </tbody>
+          </table>
+          <table>
+            <thead>
+              <tr><th></th><th class="num">Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Rounds (standard)</td><td class="num">5</td></tr>
+              <tr><td>Rounds (quick)</td><td class="num">3</td></tr>
+              <tr><td>Negotiation passes</td><td class="num">4 around table</td></tr>
+              <tr><td>Succession uses</td><td class="num"><strong>Earned gold only</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Tips for your first game</h2>
+        <ol>
+          <li><strong>Track earned gold</strong> — jot down each player’s earned total when gifts happen.</li>
+          <li><strong>Negotiation is not optional</strong> — trades and alliances set up betrayal cards.</li>
+          <li><strong>The King goes first</strong> — plan reveals knowing the King’s cards resolve before Nobles’.</li>
+          <li><strong>Gifts are for influence, not the crown</strong> — bribes do not inflate succession score.</li>
+          <li><strong>Protection is a read</strong> — a wrong guess can hurt you.</li>
+        </ol>
+
+        <h2>Short game variant</h2>
+        <p>Play <strong>3 rounds</strong> instead of 5; keep all other standard numbers.</p>
+
+      <p class="footer-note">Good luck at court. Trust no one — especially the King.</p>
+      </section>
+
+      <!-- BEGIN CARD CATALOG -->
+<section class="card-catalog page-break">
+<h2>Card catalog</h2>
+<p>Play-deck cards used in the standard rules (<strong>42 King</strong> / <strong>40 Noble</strong>). Card set version: <code>3829e707413b8f83</code>.</p>
+<p>This list matches the simulation play decks (<code>king_deck_size</code> / <code>noble_deck_size</code>). Numbers and wording may change between playtest printings. Statuses named on cards (e.g. <em>oathbreaker</em>, <em>marked</em>, <em>corrupt</em>, <em>discredited</em>) are temporary tags from effects.</p>
+<h3>King deck</h3>
+<article class="card-entry">
+<h4>Border Levy <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Expansion design — Border Levy.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You gain 78 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Crown Tribute <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Every house pays the throne.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>78 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Grain Toll <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Every wagon pays the crown before it passes.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses one path:</li><li>Pay the Tariff</li><li>Hide the Cargo</li><li>If “Pay the Tariff” is chosen:</li><li class="sub">70 gold moves from your chosen opponent to you.</li><li>If “Hide the Cargo” is chosen: roll a d6 (need 5+).</li><li class="sub">Success: your chosen opponent gain 35 gold.</li><li class="sub">Failure: 100 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Harbor Dues <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">The quay master collects — for the throne.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>62 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Mint Dues <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Expansion design — Mint Dues.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You gain 95 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Toll Bridge <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Expansion design — Toll Bridge.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>55 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Alliance Summit <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">The crown rewards loyalty — when it suits the crown.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Can only be played if:</li><li>You have a declared alliance with your target.</li><li>If your alliance is still active, allied players each gain 41 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Crown Patronage <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">Favor flows to those who stand beside the throne.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 54 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Royal Alliance Pact <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">Loyalty rewarded — if it holds.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 58 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Royal Pact <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">Expansion design — Royal Pact.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 72 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Summit Oath <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">Expansion design — Summit Oath.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 58 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Crown Gambit <span class="meta">— Betrayal · Common</span></h4>
+<p class="flavor">Expansion design — Crown Gambit.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>88 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>False Summons <span class="meta">— Betrayal · Common</span></h4>
+<p class="flavor">Come to court — and leave your purse.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>10 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Broken Crown <span class="meta">— Disruption · Rare</span></h4>
+<p class="flavor">Break faith with the realm, and the realm remembers.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>70 gold moves from your chosen opponent to you.</li><li>Then: your chosen opponent receive the “oathbreaker” status for 4 round(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Corruption Inquiry <span class="meta">— Disruption · Rare</span></h4>
+<p class="flavor">The auditors arrive. Past choices are not forgotten.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Can only be played if:</li><li>Your target previously chose “Invest Private” (within 2 rounds).</li><li>If they previously chose “Invest Private” in the last 2 rounds:</li><li class="sub">Then: If they failed a dice roll on a prior card in the last 2 rounds:   Then: your chosen opponent lose 132 gold.   Otherwise: your chosen opponent lose 65 gold.</li><li class="sub">Otherwise: your chosen opponent lose 32 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Garrison Inspection <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">Soldiers toss the saddlebags. Something always falls out.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Noble Containment <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">Sit down. You have said enough.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent play one fewer card next round.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Quarter Search <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">Expansion design — Quarter Search.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 2 card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Royal Decree <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">By order of the crown, discard your plans.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Sealed Warrant <span class="meta">— Disruption · Rare</span></h4>
+<p class="flavor">Signed, sealed, confiscated.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Conditional on status (see technical details).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Sealed Warrant II <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">Expansion design — Sealed Warrant II.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Bastion Wall <span class="meta">— Protection · Common</span></h4>
+<p class="flavor">Expansion design — Bastion Wall.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round when this resolves, gold is protected (up to 90 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 25 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Customs Seal <span class="meta">— Protection · Rare</span></h4>
+<p class="flavor">Wrong thief, wrong day — or wrong guess.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 200 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 5 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Diplomatic Immunity <span class="meta">— Protection · Rare</span></h4>
+<p class="flavor">The crown does not yield today.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 5 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Iron Curtain <span class="meta">— Protection · Common</span></h4>
+<p class="flavor">The treasury closes its gates.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 120 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 5 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Iron Gate <span class="meta">— Protection · Common</span></h4>
+<p class="flavor">Expansion design — Iron Gate.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 25 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Loyal Guard <span class="meta">— Protection · Supercard</span></h4>
+<p class="flavor">The crown does not fall while he stands.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 8 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Vault Seal <span class="meta">— Protection · Common</span></h4>
+<p class="flavor">The seal holds — if thieves come knocking.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 110 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 5 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Decree Haste <span class="meta">— Tempo · Common</span></h4>
+<p class="flavor">The court moves at royal speed.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You may play an extra card next round.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Extra Audience <span class="meta">— Tempo · Common</span></h4>
+<p class="flavor">Another petition, another card up your sleeve.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You draw 1 extra card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Haste Edict <span class="meta">— Tempo · Common</span></h4>
+<p class="flavor">Expansion design — Haste Edict.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You may play an extra card next round.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Muster Call <span class="meta">— Tempo · Common</span></h4>
+<p class="flavor">Expansion design — Muster Call.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You draw 2 extra card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Regal Momentum <span class="meta">— Tempo · Rare</span></h4>
+<p class="flavor">Momentum favors the throne.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You draw 1 extra card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Court Intrigue <span class="meta">— Information · Rare</span></h4>
+<p class="flavor">Secrets travel faster than armies.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent peek at a hidden card.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Court Scribe <span class="meta">— Information · Common</span></h4>
+<p class="flavor">Expansion design — Court Scribe.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Ledger Audit <span class="meta">— Information · Common</span></h4>
+<p class="flavor">Expansion design — Ledger Audit.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Royal Audit <span class="meta">— Information · Common</span></h4>
+<p class="flavor">Transparency, demanded from everyone but the crown.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Royal Census <span class="meta">— Information · Common</span></h4>
+<p class="flavor">Clerks count heads — and hands.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Conditional on status (see technical details).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Spy Master <span class="meta">— Information · Rare</span></h4>
+<p class="flavor">Eyes everywhere, even in your hand.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent peek at a hidden card.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Imperial Edict <span class="meta">— Supercard · Supercard</span></h4>
+<p class="flavor">Absolute power extracts absolute cost.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You gain 170 gold.</li><li>Then: you lose 110 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Imperial Mandate <span class="meta">— Supercard · Supercard</span></h4>
+<p class="flavor">Expansion design — Imperial Mandate.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You gain 145 gold.</li><li>Then: you draw 1 extra card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Royal Pardon <span class="meta">— Supercard · Supercard</span></h4>
+<p class="flavor">Mercy has its price — paid by others.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You gain 120 gold.</li><li>Then: you lose 90 gold.</li></ul>
+</article>
+<h3 class="page-break">Noble deck</h3>
+<article class="card-entry">
+<h4>Development Fund II <span class="meta">— Economy · Rare</span></h4>
+<p class="flavor">Progress has a price — and a roll of the dice.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Public Works</li><li>Private Enrichment</li><li>Cook the Books</li><li>If “Public Works” is chosen: roll a d6 (need 4+).</li><li class="sub">Success: you gain 140 gold.</li><li class="sub">Failure: you lose 68 gold.</li><li>If “Private Enrichment” is chosen: roll a d6 (need 4+).</li><li class="sub">Success: you gain 189 gold.</li><li class="sub">Failure: you lose 42 gold.</li><li class="sub">On failure they also get “corrupt” for 3 round(s).</li><li>If “Cook the Books” is chosen:</li><li class="sub">you gain 70 gold. Then: you receive the “corrupt” status for 2 round(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Fence Goods <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">What the crown loses, you gain.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>74 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Gambler&#x27;s Wager <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Fortune favors the reckless. Sometimes.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Double Down</li><li>If “Double Down” is chosen: roll a d6 (need 5+).</li><li class="sub">Success: you gain 111 gold.</li><li class="sub">Failure: you lose 53 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Loan Shark <span class="meta">— Economy · Rare</span></h4>
+<p class="flavor">Interest due — in gold, not gratitude.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>88 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Market Manipulation <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Buy low. Sell to whoever&#x27;s desperate.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You gain 93 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Merchant League <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Expansion design — Merchant League.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You gain 70 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Night Collection <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Rent comes due after dark.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Collect Quietly</li><li>Stage a Shakedown</li><li>If “Collect Quietly” is chosen:</li><li class="sub">you gain 30 gold.</li><li>If “Stage a Shakedown” is chosen: roll a d6 (need 5+).</li><li class="sub">Success: 60 gold moves from your chosen opponent to you.</li><li class="sub">Failure: you lose 20 gold.</li><li class="sub">On failure they also get “discredited” for 1 round(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Silk Route <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Expansion design — Silk Route.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You gain 88 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Smuggler&#x27;s Cut <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">Expansion design — Smuggler&#x27;s Cut.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>52 gold moves from the King to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Smuggler&#x27;s Tithe <span class="meta">— Economy · Common</span></h4>
+<p class="flavor">What the crown doesn&#x27;t see, you keep.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Take a Quiet Cut</li><li>Run a Deep Route</li><li>If “Take a Quiet Cut” is chosen:</li><li class="sub">you gain 35 gold.</li><li>If “Run a Deep Route” is chosen: roll a d6 (need 5+).</li><li class="sub">Success: you gain 95 gold.</li><li class="sub">Failure: you lose 25 gold.</li><li class="sub">On failure they also get “marked” for 1 round(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Blood Oath <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">Expansion design — Blood Oath.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 55 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Mob Contract <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">Strength in numbers — for a price.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 55 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Neighborhood Pact <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">Your neighbors watch your back — for a share.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 30 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Secret Compact <span class="meta">— Alliance · Common</span></h4>
+<p class="flavor">Expansion design — Secret Compact.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 65 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Back-Alley Stab <span class="meta">— Betrayal · Common</span></h4>
+<p class="flavor">The knife is quiet; the debt is not.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>20 gold moves from your chosen opponent to you.</li><li>Then: you receive the “marked” status for 1 round(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Backstab Deal <span class="meta">— Betrayal · Rare</span></h4>
+<p class="flavor">The knife was always in the deal.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Can only be played if:</li><li>You have a declared alliance with your target.</li><li>60 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Broken Vow <span class="meta">— Betrayal · Common</span></h4>
+<p class="flavor">Promises are for peasants.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Can only be played if:</li><li>You have a declared alliance with your target.</li><li>30 gold moves from your chosen opponent to you.</li><li>Then: you receive the “oathbreaker” status for 3 round(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Coup Plot <span class="meta">— Betrayal · Rare</span></h4>
+<p class="flavor">The dagger was always in the handshake.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Can only be played if:</li><li>You have a declared alliance with your target.</li><li>125 gold moves from your chosen opponent to you.</li><li>Then: you receive the “marked” status for 2 round(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Coup Plot II <span class="meta">— Betrayal · Common</span></h4>
+<p class="flavor">Expansion design — Coup Plot II.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>75 gold moves from the King to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Shakedown <span class="meta">— Betrayal · Common</span></h4>
+<p class="flavor">Pay up, or explain yourself to the guards.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>26 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Blackmail <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">Pay up, or everyone hears.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>78 gold moves from your chosen opponent to you.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Cut Supply Lines <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">No carriages reach the palace tonight.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Embargo <span class="meta">— Disruption · Rare</span></h4>
+<p class="flavor">Your trade routes are closed.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent play one fewer card next round.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Forged Deeds <span class="meta">— Disruption · Rare</span></h4>
+<p class="flavor">Paperwork is a weapon.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You steal 1 card(s) from your chosen opponent.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Poisoned Chalice <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">Expansion design — Poisoned Chalice.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 2 card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Sabotage <span class="meta">— Disruption · Common</span></h4>
+<p class="flavor">Expansion design — Sabotage.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Body Double <span class="meta">— Protection · Common</span></h4>
+<p class="flavor">Expansion design — Body Double.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 25 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Bodyguard <span class="meta">— Protection · Rare</span></h4>
+<p class="flavor">You hired him to stop the wrong kind of theft.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round when this resolves, gold is protected (up to 120 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 5 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Hidden Cache <span class="meta">— Protection · Common</span></h4>
+<p class="flavor">Coins buried where thieves won&#x27;t look.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 100 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 5 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Hidden Cache II <span class="meta">— Protection · Common</span></h4>
+<p class="flavor">Expansion design — Hidden Cache II.</p>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round when this resolves, gold is protected (up to 85 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 25 gold.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Courier Swap <span class="meta">— Tempo · Common</span></h4>
+<p class="flavor">Expansion design — Courier Swap.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You draw 2 extra card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Double Agent <span class="meta">— Tempo · Rare</span></h4>
+<p class="flavor">Two masters, twice the options.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You draw 2 extra card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Night Ride <span class="meta">— Tempo · Common</span></h4>
+<p class="flavor">Expansion design — Night Ride.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You may play an extra card next round.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Slip Away <span class="meta">— Tempo · Common</span></h4>
+<p class="flavor">Leave the hall before the verdict lands.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You draw 1 extra card(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Hidden Ledger <span class="meta">— Information · Common</span></h4>
+<p class="flavor">Even kings leave a paper trail.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>The King peek at a hidden card.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Spy Network <span class="meta">— Information · Common</span></h4>
+<p class="flavor">Expansion design — Spy Network.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Stolen Ledger <span class="meta">— Information · Common</span></h4>
+<p class="flavor">Their secrets are yours for a night.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent peek at a hidden card.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Whisper Ring <span class="meta">— Information · Common</span></h4>
+<p class="flavor">Expansion design — Whisper Ring.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
+</article>
+<article class="card-entry">
+<h4>Assassin&#x27;s Blade <span class="meta">— Supercard · Supercard</span></h4>
+<p class="flavor">One cut, one crown closer.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>235 gold moves from the King to you.</li><li>Then: you receive the “marked” status for 3 round(s).</li></ul>
+</article>
+<article class="card-entry">
+<h4>Grand Conspiracy <span class="meta">— Supercard · Supercard</span></h4>
+<p class="flavor">Expansion design — Grand Conspiracy.</p>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>120 gold moves from the King to you.</li><li>Then: you draw 1 extra card(s).</li></ul>
+</article>
+</section>
+<!-- END CARD CATALOG -->
+
+    </div>
+  </article>
+</body>
+</html>

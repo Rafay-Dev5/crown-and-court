@@ -1,0 +1,49 @@
+{
+  "id": "noble_peoples_levy_001",
+  "name": "People's Levy",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "dice_swing",
+    "params": {
+      "choices": [
+        { "id": "organize", "label": "Organize Donations" },
+        { "id": "squeeze", "label": "Squeeze the Crowd" }
+      ],
+      "branches": {
+        "organize": {
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": { "target": "self", "amount": 45 }
+          }
+        },
+        "squeeze": {
+          "die": { "sides": 6, "target_min": 5 },
+          "on_success": {
+            "primitive": "gold_transfer",
+            "params": { "from": "target", "to": "self", "amount": 110, "as_theft": true }
+          },
+          "on_failure": {
+            "primitive": "gold_loss",
+            "params": { "target": "self", "amount": 35 }
+          },
+          "on_failure_status": {
+            "target": "self",
+            "status_name": "oathbreaker",
+            "duration_rounds": 2
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    "economy",
+    "dice",
+    "choice"
+  ],
+  "flavor_text": "A crowd can fund a cause or turn on the hand that shook it down.",
+  "designer_notes": "Safe line gains 45. Greedy line targets the King for 110 on 5+, but failure costs 35 and makes you discredited for 2 rounds."
+}

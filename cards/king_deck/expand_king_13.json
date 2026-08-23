@@ -1,0 +1,21 @@
+{
+  "id": "king_expand_muster_call_013",
+  "name": "Muster Call",
+  "owner_type": "king",
+  "category": "tempo",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "draw_extra",
+    "params": {
+      "target": "self",
+      "count": 2
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Expansion design \u2014 Muster Call.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

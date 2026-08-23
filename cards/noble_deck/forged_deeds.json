@@ -1,0 +1,21 @@
+{
+  "id": "noble_forged_deeds_001",
+  "name": "Forged Deeds",
+  "owner_type": "noble",
+  "category": "disruption",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "steal_card",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "count": 1
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Paperwork is a weapon."
+}

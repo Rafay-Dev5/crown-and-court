@@ -1,0 +1,37 @@
+{
+  "id": "noble_hidden_cache_001",
+  "name": "Hidden Cache",
+  "owner_type": "noble",
+  "category": "protection",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "protect_gold",
+    "params": {
+      "target": "self",
+      "amount": 100,
+      "duration_rounds": 1,
+      "specificity": "generic",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self",
+        "attack_type": "gold_theft"
+      }
+    }
+  },
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 5
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "synergy_tags": [
+    "noble_defense"
+  ],
+  "flavor_text": "Coins buried where thieves won't look."
+}

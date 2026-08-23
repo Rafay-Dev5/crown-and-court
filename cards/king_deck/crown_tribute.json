@@ -1,0 +1,21 @@
+{
+  "id": "king_crown_tribute_001",
+  "name": "Crown Tribute",
+  "owner_type": "king",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 78
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "Every house pays the throne."
+}

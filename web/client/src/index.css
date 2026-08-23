@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --color-royal-dark: #2a0f14;
+  --color-royal-darker: #1a080c;
+  --color-royal-gold: #c9a227;
+  --color-royal-gold-light: #e8c547;
+  --color-parchment: #f4e8d0;
+  --color-parchment-dark: #d4c4a8;
+  --color-noble-silver: #a8b4c0;
+  --color-felt: #1a4d2e;
+  --font-display: "Cinzel", serif;
+  --font-body: "Lora", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  background: radial-gradient(ellipse at center, #3d1520 0%, var(--color-royal-darker) 70%);
+  color: var(--color-parchment);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+
+.card-back {
+  background: linear-gradient(135deg, #4a1942 0%, #2a0f14 50%, #1a080c 100%);
+  border: 2px solid var(--color-royal-gold);
+  border-radius: 8px;
+}
+
+.card-face {
+  background: linear-gradient(180deg, var(--color-parchment) 0%, var(--color-parchment-dark) 100%);
+  color: #2a0f14;
+  border: 2px solid var(--color-royal-gold);
+  border-radius: 8px;
+}
+
+.gold-glow {
+  box-shadow: 0 0 20px rgba(201, 162, 39, 0.4), inset 0 0 10px rgba(201, 162, 39, 0.1);
+}
+
+.silver-trim {
+  box-shadow: 0 0 10px rgba(168, 180, 192, 0.3);
+}
+
+.felt-table {
+  background:
+    radial-gradient(ellipse at center, #2d6b42 0%, var(--color-felt) 60%, #0f2818 100%);
+  border: 4px solid var(--color-royal-gold);
+  border-radius: 50%;
+}
+
+.btn-royal {
+  @apply px-6 py-3 rounded-lg font-display font-semibold transition-all duration-200;
+  background: linear-gradient(180deg, var(--color-royal-gold-light) 0%, var(--color-royal-gold) 100%);
+  color: var(--color-royal-dark);
+  border: 2px solid #8b6914;
+}
+.btn-royal:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(201, 162, 39, 0.4);
+}
+.btn-royal:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  @apply px-6 py-3 rounded-lg font-display border-2 transition-all duration-200;
+  border-color: var(--color-royal-gold);
+  color: var(--color-royal-gold);
+  background: transparent;
+}
+.btn-outline:hover {
+  background: rgba(201, 162, 39, 0.1);
+}
+
+.panel-parchment {
+  background: linear-gradient(180deg, var(--color-parchment) 0%, var(--color-parchment-dark) 100%);
+  color: var(--color-royal-dark);
+  border: 2px solid var(--color-royal-gold);
+  border-radius: 12px;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-royal-gold);
+  border-radius: 3px;
+}

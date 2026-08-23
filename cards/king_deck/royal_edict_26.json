@@ -1,0 +1,24 @@
+{
+  "id": "king_royal_edict_26_026",
+  "name": "Harbor Dues",
+  "owner_type": "king",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 62,
+      "as_theft": true
+    }
+  },
+  "tags": [
+    "economy",
+    "targets_gold"
+  ],
+  "flavor_text": "The quay master collects — for the throne.",
+  "designer_notes": "Replaced resize stub; light King levy on a noble (PRD §10)."
+}

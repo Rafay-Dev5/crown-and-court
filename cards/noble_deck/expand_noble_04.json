@@ -1,0 +1,24 @@
+{
+  "id": "noble_expand_secret_compact_004",
+  "name": "Secret Compact",
+  "owner_type": "noble",
+  "category": "alliance",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "alliance_bonus",
+    "params": {
+      "amount": 65,
+      "players": [
+        "self",
+        "target"
+      ]
+    }
+  },
+  "tags": [
+    "alliance"
+  ],
+  "flavor_text": "Expansion design \u2014 Secret Compact.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

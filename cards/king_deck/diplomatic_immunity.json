@@ -1,0 +1,31 @@
+{
+  "id": "king_diplomatic_immunity_001",
+  "name": "Diplomatic Immunity",
+  "owner_type": "king",
+  "category": "protection",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "block_succession",
+    "params": {
+      "scope": "next_check_this_round",
+      "duration_rounds": 1,
+      "trigger": {
+        "type": "succession_imminent"
+      }
+    }
+  },
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 5
+    }
+  },
+  "tags": [
+    "protection",
+    "succession"
+  ],
+  "flavor_text": "The crown does not yield today."
+}

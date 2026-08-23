@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 72" fill="none">
+  <rect width="48" height="72" rx="4" fill="#2a0f14" stroke="#c9a227" stroke-width="2"/>
+  <path d="M24 12 L28 28 L36 24 L32 40 L40 48 L24 44 L8 48 L16 40 L12 24 L20 28 Z" fill="#c9a227" opacity="0.6"/>
+  <text x="24" y="62" text-anchor="middle" fill="#c9a227" font-size="8" font-family="serif">C&amp;C</text>
+</svg>

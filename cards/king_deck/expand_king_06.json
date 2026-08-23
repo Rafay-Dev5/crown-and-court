@@ -1,0 +1,21 @@
+{
+  "id": "king_expand_sealed_warrant_006",
+  "name": "Sealed Warrant II",
+  "owner_type": "king",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "force_discard",
+    "params": {
+      "target": "target",
+      "count": 1
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Expansion design \u2014 Sealed Warrant II.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

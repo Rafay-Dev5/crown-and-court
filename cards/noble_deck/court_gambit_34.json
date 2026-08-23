@@ -1,0 +1,21 @@
+{
+  "id": "noble_court_gambit_34_034",
+  "name": "Stolen Ledger",
+  "owner_type": "noble",
+  "category": "information",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "peek_card",
+    "params": {
+      "target": "target",
+      "card_index": 0
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Their secrets are yours for a night.",
+  "designer_notes": "Replaced resize stub; Noble information (PRD \u00a710)."
+}

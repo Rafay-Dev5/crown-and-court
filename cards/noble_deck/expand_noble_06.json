@@ -1,0 +1,21 @@
+{
+  "id": "noble_expand_sabotage_006",
+  "name": "Sabotage",
+  "owner_type": "noble",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "force_discard",
+    "params": {
+      "target": "target",
+      "count": 1
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Expansion design \u2014 Sabotage.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

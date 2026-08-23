@@ -1,0 +1,19 @@
+{
+  "id": "king_royal_audit_001",
+  "name": "Royal Audit",
+  "owner_type": "king",
+  "category": "information",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "reveal_hand",
+    "params": {
+      "target": "target"
+    }
+  },
+  "tags": [
+    "information"
+  ],
+  "flavor_text": "Transparency, demanded from everyone but the crown."
+}

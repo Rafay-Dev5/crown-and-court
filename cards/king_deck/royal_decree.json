@@ -1,0 +1,20 @@
+{
+  "id": "king_royal_decree_001",
+  "name": "Royal Decree",
+  "owner_type": "king",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "force_discard",
+    "params": {
+      "target": "target",
+      "count": 1
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "By order of the crown, discard your plans."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "king_royal_edict_27_027",
+  "name": "Garrison Inspection",
+  "owner_type": "king",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "force_discard",
+    "params": {
+      "target": "target",
+      "count": 1
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Soldiers toss the saddlebags. Something always falls out.",
+  "designer_notes": "Replaced resize stub; King disruption (PRD \u00a710)."
+}

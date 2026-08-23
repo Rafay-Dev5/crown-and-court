@@ -1,0 +1,23 @@
+{
+  "id": "king_expand_toll_bridge_002",
+  "name": "Toll Bridge",
+  "owner_type": "king",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 55,
+      "as_theft": true
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "Expansion design \u2014 Toll Bridge.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

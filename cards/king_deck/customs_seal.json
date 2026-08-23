@@ -1,0 +1,34 @@
+{
+  "id": "king_customs_seal_001",
+  "name": "Customs Seal",
+  "owner_type": "king",
+  "category": "protection",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "protect_gold",
+    "params": {
+      "target": "self",
+      "amount": 200,
+      "duration_rounds": 1,
+      "specificity": "generic",
+      "trigger": {
+        "type": "attacked_this_phase",
+        "target": "self",
+        "attack_type": "gold_theft"
+      }
+    }
+  },
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 5
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "flavor_text": "Wrong thief, wrong day \u2014 or wrong guess."
+}

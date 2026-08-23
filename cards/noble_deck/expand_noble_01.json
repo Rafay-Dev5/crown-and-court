@@ -1,0 +1,21 @@
+{
+  "id": "noble_expand_silk_route_001",
+  "name": "Silk Route",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_gain",
+    "params": {
+      "target": "self",
+      "amount": 88
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "Expansion design \u2014 Silk Route.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

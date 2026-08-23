@@ -1,0 +1,23 @@
+{
+  "id": "noble_expand_smugglers_cut_002",
+  "name": "Smuggler's Cut",
+  "owner_type": "noble",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "king",
+      "to": "self",
+      "amount": 52,
+      "as_theft": true
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "Expansion design \u2014 Smuggler's Cut.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

@@ -1,0 +1,1571 @@
+{
+  "status": "ready",
+  "generated_at": 1783350747.265551,
+  "card_set_version": "3829e707413b8f83",
+  "games_run": 385,
+  "min_recommended_games": 385,
+  "methodology": {
+    "bots": "league_heuristic",
+    "seat_bots": [
+      "hoard",
+      "hoard",
+      "ally_neighbor",
+      "exploit",
+      "hoard",
+      "exploit"
+    ],
+    "bots_layman": "Each seat runs a different play style (cautious, aggressive, alliance-focused, etc.) with smart dice/card choices \u2014 not random.",
+    "purpose": "Simulate intentional play styles to stress-test cards and kingmaking rules.",
+    "developer_note": "Sweep uses agents.heuristic seat_bots + smart_choice_policy. Training rotates PPO updates across all seats."
+  },
+  "training_choices_note": {
+    "layman": "Balance sweeps use smart heuristic choices for every seat. During training, each seat gets its own learned policy that picks cards and dice branches; opponents still use heuristics with smart choices.",
+    "trained_seat": "Rotates across all seats when train_all_seats is true. Policy picks play indices and choice branches.",
+    "opponent_bots": "League heuristics with smart_choice_policy (not random)."
+  },
+  "headlines": {
+    "assisted_win_rate": 0.033766233766233764,
+    "assisted_status": "good",
+    "assisted_layman": "In 3% of games, the winner had received gifted gold during the game. Lower is better \u2014 high values suggest kingmaking or runaway gifts.",
+    "shield_hit_rate": 0.4992481203007519,
+    "shield_block_rate": 0.006766917293233083,
+    "shield_layman": "Protection guesses resolved correctly 50% of the time; shields blocked attacks 1% of plays.",
+    "started_as_king_win_rate": 0.34285714285714286,
+    "started_as_noble_win_rate": 0.6571428571428571,
+    "role_layman": "The player who started as King won 34% of games; Nobles who started behind won 66%."
+  },
+  "seat_chart": [
+    {
+      "seat": 0,
+      "label": "Seat 0",
+      "win_rate": 0.14545454545454545,
+      "wins": 56,
+      "games": 385,
+      "delta_vs_fair": -0.02121212121212121,
+      "layman": "Sat here at the start and won 56 of 385 games (15%). Fair share would be about 17%."
+    },
+    {
+      "seat": 1,
+      "label": "Seat 1",
+      "win_rate": 0.18181818181818182,
+      "wins": 70,
+      "games": 385,
+      "delta_vs_fair": 0.015151515151515166,
+      "layman": "Sat here at the start and won 70 of 385 games (18%). Fair share would be about 17%."
+    },
+    {
+      "seat": 2,
+      "label": "Seat 2",
+      "win_rate": 0.16883116883116883,
+      "wins": 65,
+      "games": 385,
+      "delta_vs_fair": 0.0021645021645021745,
+      "layman": "Sat here at the start and won 65 of 385 games (17%). Fair share would be about 17%."
+    },
+    {
+      "seat": 3,
+      "label": "Seat 3",
+      "win_rate": 0.11948051948051948,
+      "wins": 46,
+      "games": 385,
+      "delta_vs_fair": -0.04718614718614718,
+      "layman": "Sat here at the start and won 46 of 385 games (12%). Fair share would be about 17%."
+    },
+    {
+      "seat": 4,
+      "label": "Seat 4",
+      "win_rate": 0.16103896103896104,
+      "wins": 62,
+      "games": 385,
+      "delta_vs_fair": -0.00562770562770562,
+      "layman": "Sat here at the start and won 62 of 385 games (16%). Fair share would be about 17%."
+    },
+    {
+      "seat": 5,
+      "label": "Seat 5",
+      "win_rate": 0.22337662337662337,
+      "wins": 86,
+      "games": 385,
+      "delta_vs_fair": 0.05670995670995671,
+      "layman": "Sat here at the start and won 86 of 385 games (22%). Fair share would be about 17%."
+    }
+  ],
+  "card_contributions": [
+    {
+      "id": "king_expand_imperial_mandate_015",
+      "name": "Imperial Mandate",
+      "times_played": 83,
+      "games_with_card": 83,
+      "wins_when_played": 50,
+      "win_rate_when_played": 0.6024096385542169,
+      "delta_vs_fair": 0.4357429718875503,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 50 of 83 games (60%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "noble_assassins_blade_001",
+      "name": "Assassin's Blade",
+      "times_played": 270,
+      "games_with_card": 208,
+      "wins_when_played": 122,
+      "win_rate_when_played": 0.5865384615384616,
+      "delta_vs_fair": 0.41987179487179493,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 122 of 208 games (59%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_crown_gambit_014",
+      "name": "Crown Gambit",
+      "times_played": 86,
+      "games_with_card": 86,
+      "wins_when_played": 48,
+      "win_rate_when_played": 0.5581395348837209,
+      "delta_vs_fair": 0.3914728682170543,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 48 of 86 games (56%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_imperial_edict_001",
+      "name": "Imperial Edict",
+      "times_played": 102,
+      "games_with_card": 102,
+      "wins_when_played": 51,
+      "win_rate_when_played": 0.5,
+      "delta_vs_fair": 0.33333333333333337,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 51 of 102 games (50%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_iron_gate_011",
+      "name": "Iron Gate",
+      "times_played": 93,
+      "games_with_card": 93,
+      "wins_when_played": 46,
+      "win_rate_when_played": 0.4946236559139785,
+      "delta_vs_fair": 0.32795698924731187,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 46 of 93 games (49%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_sealed_warrant_001",
+      "name": "Sealed Warrant",
+      "times_played": 92,
+      "games_with_card": 92,
+      "wins_when_played": 44,
+      "win_rate_when_played": 0.4782608695652174,
+      "delta_vs_fair": 0.3115942028985508,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 44 of 92 games (48%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_broken_crown_001",
+      "name": "Broken Crown",
+      "times_played": 84,
+      "games_with_card": 84,
+      "wins_when_played": 40,
+      "win_rate_when_played": 0.47619047619047616,
+      "delta_vs_fair": 0.30952380952380953,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 40 of 84 games (48%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_noble_containment_001",
+      "name": "Noble Containment",
+      "times_played": 93,
+      "games_with_card": 93,
+      "wins_when_played": 44,
+      "win_rate_when_played": 0.4731182795698925,
+      "delta_vs_fair": 0.30645161290322587,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 44 of 93 games (47%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_spy_master_001",
+      "name": "Spy Master",
+      "times_played": 77,
+      "games_with_card": 77,
+      "wins_when_played": 36,
+      "win_rate_when_played": 0.4675324675324675,
+      "delta_vs_fair": 0.30086580086580084,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 36 of 77 games (47%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_pardon_001",
+      "name": "Royal Pardon",
+      "times_played": 86,
+      "games_with_card": 86,
+      "wins_when_played": 40,
+      "win_rate_when_played": 0.46511627906976744,
+      "delta_vs_fair": 0.29844961240310075,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 40 of 86 games (47%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_royal_pact_004",
+      "name": "Royal Pact",
+      "times_played": 90,
+      "games_with_card": 90,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.45555555555555555,
+      "delta_vs_fair": 0.28888888888888886,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 41 of 90 games (46%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_loyal_guard_001",
+      "name": "Loyal Guard",
+      "times_played": 66,
+      "games_with_card": 66,
+      "wins_when_played": 30,
+      "win_rate_when_played": 0.45454545454545453,
+      "delta_vs_fair": 0.28787878787878785,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 30 of 66 games (45%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_court_intrigue_001",
+      "name": "Court Intrigue",
+      "times_played": 86,
+      "games_with_card": 86,
+      "wins_when_played": 39,
+      "win_rate_when_played": 0.45348837209302323,
+      "delta_vs_fair": 0.28682170542635654,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 39 of 86 games (45%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_crown_tribute_001",
+      "name": "Crown Tribute",
+      "times_played": 139,
+      "games_with_card": 139,
+      "wins_when_played": 63,
+      "win_rate_when_played": 0.45323741007194246,
+      "delta_vs_fair": 0.2865707434052758,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 63 of 139 games (45%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_edict_28_028",
+      "name": "Royal Census",
+      "times_played": 103,
+      "games_with_card": 103,
+      "wins_when_played": 46,
+      "win_rate_when_played": 0.44660194174757284,
+      "delta_vs_fair": 0.2799352750809062,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 46 of 103 games (45%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_decree_001",
+      "name": "Royal Decree",
+      "times_played": 79,
+      "games_with_card": 79,
+      "wins_when_played": 35,
+      "win_rate_when_played": 0.4430379746835443,
+      "delta_vs_fair": 0.2763713080168776,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 35 of 79 games (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_diplomatic_immunity_001",
+      "name": "Diplomatic Immunity",
+      "times_played": 93,
+      "games_with_card": 93,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.44086021505376344,
+      "delta_vs_fair": 0.27419354838709675,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 41 of 93 games (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_summit_oath_005",
+      "name": "Summit Oath",
+      "times_played": 94,
+      "games_with_card": 94,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.43617021276595747,
+      "delta_vs_fair": 0.26950354609929084,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 41 of 94 games (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_court_scribe_008",
+      "name": "Court Scribe",
+      "times_played": 85,
+      "games_with_card": 85,
+      "wins_when_played": 37,
+      "win_rate_when_played": 0.43529411764705883,
+      "delta_vs_fair": 0.2686274509803922,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 37 of 85 games (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_false_summons_001",
+      "name": "False Summons",
+      "times_played": 99,
+      "games_with_card": 99,
+      "wins_when_played": 43,
+      "win_rate_when_played": 0.43434343434343436,
+      "delta_vs_fair": 0.26767676767676774,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 43 of 99 games (43%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_decree_haste_001",
+      "name": "Decree Haste",
+      "times_played": 95,
+      "games_with_card": 95,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.43157894736842106,
+      "delta_vs_fair": 0.26491228070175443,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 41 of 95 games (43%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_regal_momentum_001",
+      "name": "Regal Momentum",
+      "times_played": 79,
+      "games_with_card": 79,
+      "wins_when_played": 34,
+      "win_rate_when_played": 0.43037974683544306,
+      "delta_vs_fair": 0.26371308016877637,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 34 of 79 games (43%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_sealed_warrant_006",
+      "name": "Sealed Warrant II",
+      "times_played": 86,
+      "games_with_card": 86,
+      "wins_when_played": 37,
+      "win_rate_when_played": 0.43023255813953487,
+      "delta_vs_fair": 0.26356589147286824,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 37 of 86 games (43%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_edict_26_026",
+      "name": "Harbor Dues",
+      "times_played": 153,
+      "games_with_card": 153,
+      "wins_when_played": 65,
+      "win_rate_when_played": 0.42483660130718953,
+      "delta_vs_fair": 0.25816993464052285,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 65 of 153 games (42%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_muster_call_013",
+      "name": "Muster Call",
+      "times_played": 86,
+      "games_with_card": 86,
+      "wins_when_played": 36,
+      "win_rate_when_played": 0.4186046511627907,
+      "delta_vs_fair": 0.25193798449612403,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 36 of 86 games (42%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_quarter_search_007",
+      "name": "Quarter Search",
+      "times_played": 77,
+      "games_with_card": 77,
+      "wins_when_played": 32,
+      "win_rate_when_played": 0.4155844155844156,
+      "delta_vs_fair": 0.24891774891774895,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 32 of 77 games (42%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_ledger_audit_009",
+      "name": "Ledger Audit",
+      "times_played": 73,
+      "games_with_card": 73,
+      "wins_when_played": 30,
+      "win_rate_when_played": 0.410958904109589,
+      "delta_vs_fair": 0.24429223744292236,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 30 of 73 games (41%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_edict_27_027",
+      "name": "Garrison Inspection",
+      "times_played": 93,
+      "games_with_card": 93,
+      "wins_when_played": 38,
+      "win_rate_when_played": 0.40860215053763443,
+      "delta_vs_fair": 0.24193548387096778,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 38 of 93 games (41%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_border_levy_003",
+      "name": "Border Levy",
+      "times_played": 130,
+      "games_with_card": 130,
+      "wins_when_played": 53,
+      "win_rate_when_played": 0.4076923076923077,
+      "delta_vs_fair": 0.24102564102564103,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 53 of 130 games (41%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_extra_audience_001",
+      "name": "Extra Audience",
+      "times_played": 86,
+      "games_with_card": 86,
+      "wins_when_played": 35,
+      "win_rate_when_played": 0.4069767441860465,
+      "delta_vs_fair": 0.24031007751937986,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 35 of 86 games (41%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_audit_001",
+      "name": "Royal Audit",
+      "times_played": 84,
+      "games_with_card": 84,
+      "wins_when_played": 34,
+      "win_rate_when_played": 0.40476190476190477,
+      "delta_vs_fair": 0.2380952380952381,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 34 of 84 games (40%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_mint_dues_001",
+      "name": "Mint Dues",
+      "times_played": 133,
+      "games_with_card": 133,
+      "wins_when_played": 53,
+      "win_rate_when_played": 0.39849624060150374,
+      "delta_vs_fair": 0.23182957393483708,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 53 of 133 games (40%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_edict_29_029",
+      "name": "Crown Patronage",
+      "times_played": 103,
+      "games_with_card": 103,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.39805825242718446,
+      "delta_vs_fair": 0.2313915857605178,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 41 of 103 games (40%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_toll_bridge_002",
+      "name": "Toll Bridge",
+      "times_played": 148,
+      "games_with_card": 148,
+      "wins_when_played": 58,
+      "win_rate_when_played": 0.3918918918918919,
+      "delta_vs_fair": 0.22522522522522523,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 58 of 148 games (39%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_edict_25_025",
+      "name": "Grain Toll",
+      "times_played": 127,
+      "games_with_card": 127,
+      "wins_when_played": 49,
+      "win_rate_when_played": 0.3858267716535433,
+      "delta_vs_fair": 0.21916010498687663,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 49 of 127 games (39%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_alliance_pact_001",
+      "name": "Royal Alliance Pact",
+      "times_played": 102,
+      "games_with_card": 102,
+      "wins_when_played": 38,
+      "win_rate_when_played": 0.37254901960784315,
+      "delta_vs_fair": 0.2058823529411765,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 38 of 102 games (37%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_corruption_inquiry_001",
+      "name": "Corruption Inquiry",
+      "times_played": 104,
+      "games_with_card": 104,
+      "wins_when_played": 37,
+      "win_rate_when_played": 0.3557692307692308,
+      "delta_vs_fair": 0.18910256410256412,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 37 of 104 games (36%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_alliance_summit_001",
+      "name": "Alliance Summit",
+      "times_played": 99,
+      "games_with_card": 99,
+      "wins_when_played": 35,
+      "win_rate_when_played": 0.35353535353535354,
+      "delta_vs_fair": 0.18686868686868688,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 35 of 99 games (35%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_haste_edict_012",
+      "name": "Haste Edict",
+      "times_played": 87,
+      "games_with_card": 87,
+      "wins_when_played": 30,
+      "win_rate_when_played": 0.3448275862068966,
+      "delta_vs_fair": 0.17816091954022992,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 30 of 87 games (34%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "noble_blackmail_001",
+      "name": "Blackmail",
+      "times_played": 286,
+      "games_with_card": 213,
+      "wins_when_played": 62,
+      "win_rate_when_played": 0.29107981220657275,
+      "delta_vs_fair": 0.1244131455399061,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 62 of 213 games (29%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "noble_expand_grand_conspiracy_015",
+      "name": "Grand Conspiracy",
+      "times_played": 256,
+      "games_with_card": 203,
+      "wins_when_played": 59,
+      "win_rate_when_played": 0.29064039408866993,
+      "delta_vs_fair": 0.12397372742200327,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 59 of 203 games (29%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "noble_fence_goods_001",
+      "name": "Fence Goods",
+      "times_played": 525,
+      "games_with_card": 310,
+      "wins_when_played": 89,
+      "win_rate_when_played": 0.2870967741935484,
+      "delta_vs_fair": 0.12043010752688174,
+      "verdict": "overperformer",
+      "layman": "When this card hit the table, the player who played it won 89 of 310 games (29%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "noble_market_manipulation_001",
+      "name": "Market Manipulation",
+      "times_played": 530,
+      "games_with_card": 306,
+      "wins_when_played": 83,
+      "win_rate_when_played": 0.27124183006535946,
+      "delta_vs_fair": 0.1045751633986928,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 83 of 306 games (27%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_merchant_league_003",
+      "name": "Merchant League",
+      "times_played": 528,
+      "games_with_card": 304,
+      "wins_when_played": 80,
+      "win_rate_when_played": 0.2631578947368421,
+      "delta_vs_fair": 0.09649122807017543,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 80 of 304 games (26%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_loan_shark_001",
+      "name": "Loan Shark",
+      "times_played": 526,
+      "games_with_card": 312,
+      "wins_when_played": 81,
+      "win_rate_when_played": 0.25961538461538464,
+      "delta_vs_fair": 0.09294871794871798,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 81 of 312 games (26%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_silk_route_001",
+      "name": "Silk Route",
+      "times_played": 487,
+      "games_with_card": 298,
+      "wins_when_played": 77,
+      "win_rate_when_played": 0.25838926174496646,
+      "delta_vs_fair": 0.0917225950782998,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 77 of 298 games (26%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_smugglers_cut_002",
+      "name": "Smuggler's Cut",
+      "times_played": 521,
+      "games_with_card": 311,
+      "wins_when_played": 77,
+      "win_rate_when_played": 0.24758842443729903,
+      "delta_vs_fair": 0.08092175777063237,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 77 of 311 games (25%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_coup_plot_014",
+      "name": "Coup Plot II",
+      "times_played": 253,
+      "games_with_card": 191,
+      "wins_when_played": 40,
+      "win_rate_when_played": 0.2094240837696335,
+      "delta_vs_fair": 0.04275741710296685,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 40 of 191 games (21%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_40_040",
+      "name": "Night Collection",
+      "times_played": 546,
+      "games_with_card": 313,
+      "wins_when_played": 62,
+      "win_rate_when_played": 0.19808306709265175,
+      "delta_vs_fair": 0.03141640042598509,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 62 of 313 games (20%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_35_035",
+      "name": "Neighborhood Pact",
+      "times_played": 337,
+      "games_with_card": 245,
+      "wins_when_played": 40,
+      "win_rate_when_played": 0.16326530612244897,
+      "delta_vs_fair": -0.003401360544217691,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 40 of 245 games (16%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_coup_plot_001",
+      "name": "Coup Plot",
+      "times_played": 296,
+      "games_with_card": 217,
+      "wins_when_played": 35,
+      "win_rate_when_played": 0.16129032258064516,
+      "delta_vs_fair": -0.005376344086021501,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 35 of 217 games (16%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_poisoned_chalice_007",
+      "name": "Poisoned Chalice",
+      "times_played": 283,
+      "games_with_card": 214,
+      "wins_when_played": 34,
+      "win_rate_when_played": 0.1588785046728972,
+      "delta_vs_fair": -0.007788161993769471,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 34 of 214 games (16%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_39_039",
+      "name": "Back-Alley Stab",
+      "times_played": 287,
+      "games_with_card": 207,
+      "wins_when_played": 32,
+      "win_rate_when_played": 0.15458937198067632,
+      "delta_vs_fair": -0.012077294685990336,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 32 of 207 games (15%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_32_032",
+      "name": "Shakedown",
+      "times_played": 263,
+      "games_with_card": 207,
+      "wins_when_played": 32,
+      "win_rate_when_played": 0.15458937198067632,
+      "delta_vs_fair": -0.012077294685990336,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 32 of 207 games (15%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_blood_oath_005",
+      "name": "Blood Oath",
+      "times_played": 340,
+      "games_with_card": 243,
+      "wins_when_played": 37,
+      "win_rate_when_played": 0.1522633744855967,
+      "delta_vs_fair": -0.014403292181069949,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 37 of 243 games (15%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_31_031",
+      "name": "Smuggler's Tithe",
+      "times_played": 547,
+      "games_with_card": 320,
+      "wins_when_played": 48,
+      "win_rate_when_played": 0.15,
+      "delta_vs_fair": -0.016666666666666663,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 48 of 320 games (15%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_sabotage_006",
+      "name": "Sabotage",
+      "times_played": 277,
+      "games_with_card": 214,
+      "wins_when_played": 31,
+      "win_rate_when_played": 0.14485981308411214,
+      "delta_vs_fair": -0.02180685358255452,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 31 of 214 games (14%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_secret_compact_004",
+      "name": "Secret Compact",
+      "times_played": 343,
+      "games_with_card": 240,
+      "wins_when_played": 34,
+      "win_rate_when_played": 0.14166666666666666,
+      "delta_vs_fair": -0.024999999999999994,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 34 of 240 games (14%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_spy_network_008",
+      "name": "Spy Network",
+      "times_played": 277,
+      "games_with_card": 208,
+      "wins_when_played": 28,
+      "win_rate_when_played": 0.1346153846153846,
+      "delta_vs_fair": -0.03205128205128205,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 28 of 208 games (13%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_mob_contract_001",
+      "name": "Mob Contract",
+      "times_played": 330,
+      "games_with_card": 235,
+      "wins_when_played": 31,
+      "win_rate_when_played": 0.13191489361702127,
+      "delta_vs_fair": -0.034751773049645385,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 31 of 235 games (13%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_whisper_ring_009",
+      "name": "Whisper Ring",
+      "times_played": 276,
+      "games_with_card": 215,
+      "wins_when_played": 28,
+      "win_rate_when_played": 0.13023255813953488,
+      "delta_vs_fair": -0.036434108527131776,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 28 of 215 games (13%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_courier_swap_013",
+      "name": "Courier Swap",
+      "times_played": 301,
+      "games_with_card": 225,
+      "wins_when_played": 29,
+      "win_rate_when_played": 0.1288888888888889,
+      "delta_vs_fair": -0.03777777777777777,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 29 of 225 games (13%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_backstab_deal_001",
+      "name": "Backstab Deal",
+      "times_played": 255,
+      "games_with_card": 203,
+      "wins_when_played": 25,
+      "win_rate_when_played": 0.12315270935960591,
+      "delta_vs_fair": -0.043513957307060744,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 25 of 203 games (12%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_37_037",
+      "name": "Hidden Ledger",
+      "times_played": 298,
+      "games_with_card": 227,
+      "wins_when_played": 27,
+      "win_rate_when_played": 0.11894273127753303,
+      "delta_vs_fair": -0.04772393538913362,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 27 of 227 games (12%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_night_ride_012",
+      "name": "Night Ride",
+      "times_played": 276,
+      "games_with_card": 211,
+      "wins_when_played": 25,
+      "win_rate_when_played": 0.11848341232227488,
+      "delta_vs_fair": -0.048183254344391774,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 25 of 211 games (12%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_embargo_001",
+      "name": "Embargo",
+      "times_played": 287,
+      "games_with_card": 215,
+      "wins_when_played": 25,
+      "win_rate_when_played": 0.11627906976744186,
+      "delta_vs_fair": -0.0503875968992248,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 25 of 215 games (12%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_double_agent_001",
+      "name": "Double Agent",
+      "times_played": 294,
+      "games_with_card": 221,
+      "wins_when_played": 25,
+      "win_rate_when_played": 0.11312217194570136,
+      "delta_vs_fair": -0.0535444947209653,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 25 of 221 games (11%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_33_033",
+      "name": "Cut Supply Lines",
+      "times_played": 288,
+      "games_with_card": 222,
+      "wins_when_played": 25,
+      "win_rate_when_played": 0.11261261261261261,
+      "delta_vs_fair": -0.05405405405405404,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 25 of 222 games (11%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_forged_deeds_001",
+      "name": "Forged Deeds",
+      "times_played": 280,
+      "games_with_card": 210,
+      "wins_when_played": 22,
+      "win_rate_when_played": 0.10476190476190476,
+      "delta_vs_fair": -0.06190476190476189,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 22 of 210 games (10%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_body_double_011",
+      "name": "Body Double",
+      "times_played": 277,
+      "games_with_card": 206,
+      "wins_when_played": 21,
+      "win_rate_when_played": 0.10194174757281553,
+      "delta_vs_fair": -0.06472491909385113,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 21 of 206 games (10%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_34_034",
+      "name": "Stolen Ledger",
+      "times_played": 257,
+      "games_with_card": 201,
+      "wins_when_played": 18,
+      "win_rate_when_played": 0.08955223880597014,
+      "delta_vs_fair": -0.07711442786069651,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 18 of 201 games (9%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_gamblers_wager_001",
+      "name": "Gambler's Wager",
+      "times_played": 503,
+      "games_with_card": 302,
+      "wins_when_played": 26,
+      "win_rate_when_played": 0.08609271523178808,
+      "delta_vs_fair": -0.08057395143487858,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 26 of 302 games (9%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_court_gambit_36_036",
+      "name": "Slip Away",
+      "times_played": 227,
+      "games_with_card": 187,
+      "wins_when_played": 16,
+      "win_rate_when_played": 0.0855614973262032,
+      "delta_vs_fair": -0.08110516934046345,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 16 of 187 games (9%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_bodyguard_001",
+      "name": "Bodyguard",
+      "times_played": 275,
+      "games_with_card": 224,
+      "wins_when_played": 19,
+      "win_rate_when_played": 0.08482142857142858,
+      "delta_vs_fair": -0.08184523809523808,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 19 of 224 games (8%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_hidden_cache_001",
+      "name": "Hidden Cache",
+      "times_played": 263,
+      "games_with_card": 215,
+      "wins_when_played": 17,
+      "win_rate_when_played": 0.07906976744186046,
+      "delta_vs_fair": -0.0875968992248062,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 17 of 215 games (8%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_broken_vow_001",
+      "name": "Broken Vow",
+      "times_played": 278,
+      "games_with_card": 204,
+      "wins_when_played": 16,
+      "win_rate_when_played": 0.0784313725490196,
+      "delta_vs_fair": -0.08823529411764705,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 16 of 204 games (8%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_expand_hidden_cache_010",
+      "name": "Hidden Cache II",
+      "times_played": 254,
+      "games_with_card": 210,
+      "wins_when_played": 16,
+      "win_rate_when_played": 0.0761904761904762,
+      "delta_vs_fair": -0.09047619047619046,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 16 of 210 games (8%). Within expected range for random playtesting."
+    },
+    {
+      "id": "noble_development_fund_001",
+      "name": "Development Fund II",
+      "times_played": 497,
+      "games_with_card": 295,
+      "wins_when_played": 20,
+      "win_rate_when_played": 0.06779661016949153,
+      "delta_vs_fair": -0.09887005649717513,
+      "verdict": "balanced",
+      "layman": "When this card hit the table, the player who played it won 20 of 295 games (7%). Within expected range for random playtesting."
+    },
+    {
+      "id": "king_customs_seal_001",
+      "name": "Customs Seal",
+      "times_played": 3,
+      "games_with_card": 3,
+      "wins_when_played": 0,
+      "win_rate_when_played": 0.0,
+      "delta_vs_fair": -0.16666666666666666,
+      "verdict": "too_few_games",
+      "layman": "When this card hit the table, the player who played it won 0 of 3 games (0%). Not enough data yet \u2014 play more simulated games."
+    },
+    {
+      "id": "king_expand_bastion_wall_010",
+      "name": "Bastion Wall",
+      "times_played": 2,
+      "games_with_card": 2,
+      "wins_when_played": 0,
+      "win_rate_when_played": 0.0,
+      "delta_vs_fair": -0.16666666666666666,
+      "verdict": "too_few_games",
+      "layman": "When this card hit the table, the player who played it won 0 of 2 games (0%). Not enough data yet \u2014 play more simulated games."
+    },
+    {
+      "id": "king_iron_curtain_001",
+      "name": "Iron Curtain",
+      "times_played": 3,
+      "games_with_card": 3,
+      "wins_when_played": 0,
+      "win_rate_when_played": 0.0,
+      "delta_vs_fair": -0.16666666666666666,
+      "verdict": "too_few_games",
+      "layman": "When this card hit the table, the player who played it won 0 of 3 games (0%). Not enough data yet \u2014 play more simulated games."
+    },
+    {
+      "id": "king_royal_edict_30_030",
+      "name": "Vault Seal",
+      "times_played": 1,
+      "games_with_card": 1,
+      "wins_when_played": 0,
+      "win_rate_when_played": 0.0,
+      "delta_vs_fair": -0.16666666666666666,
+      "verdict": "too_few_games",
+      "layman": "When this card hit the table, the player who played it won 0 of 1 games (0%). Not enough data yet \u2014 play more simulated games."
+    }
+  ],
+  "card_contributions_by_role": [
+    {
+      "id": "king_expand_muster_call_013",
+      "name": "Muster Call",
+      "played_as_role": "noble",
+      "games_with_card": 1,
+      "wins_when_played": 1,
+      "win_rate_when_played": 1.0,
+      "delta_vs_fair": 0.8333333333333334,
+      "verdict": "too_few_games",
+      "layman": "Played as Noble in 1 games \u2014 won 1 (100%). Not enough data yet \u2014 play more simulated games."
+    },
+    {
+      "id": "king_spy_master_001",
+      "name": "Spy Master",
+      "played_as_role": "noble",
+      "games_with_card": 1,
+      "wins_when_played": 1,
+      "win_rate_when_played": 1.0,
+      "delta_vs_fair": 0.8333333333333334,
+      "verdict": "too_few_games",
+      "layman": "Played as Noble in 1 games \u2014 won 1 (100%). Not enough data yet \u2014 play more simulated games."
+    },
+    {
+      "id": "king_expand_imperial_mandate_015",
+      "name": "Imperial Mandate",
+      "played_as_role": "king",
+      "games_with_card": 83,
+      "wins_when_played": 50,
+      "win_rate_when_played": 0.6024096385542169,
+      "delta_vs_fair": 0.4357429718875503,
+      "verdict": "overperformer",
+      "layman": "Played as King in 83 games \u2014 won 50 (60%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "noble_assassins_blade_001",
+      "name": "Assassin's Blade",
+      "played_as_role": "noble",
+      "games_with_card": 208,
+      "wins_when_played": 122,
+      "win_rate_when_played": 0.5865384615384616,
+      "delta_vs_fair": 0.41987179487179493,
+      "verdict": "overperformer",
+      "layman": "Played as Noble in 208 games \u2014 won 122 (59%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_crown_gambit_014",
+      "name": "Crown Gambit",
+      "played_as_role": "king",
+      "games_with_card": 84,
+      "wins_when_played": 48,
+      "win_rate_when_played": 0.5714285714285714,
+      "delta_vs_fair": 0.40476190476190477,
+      "verdict": "overperformer",
+      "layman": "Played as King in 84 games \u2014 won 48 (57%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_iron_gate_011",
+      "name": "Iron Gate",
+      "played_as_role": "king",
+      "games_with_card": 91,
+      "wins_when_played": 46,
+      "win_rate_when_played": 0.5054945054945055,
+      "delta_vs_fair": 0.33882783882783885,
+      "verdict": "overperformer",
+      "layman": "Played as King in 91 games \u2014 won 46 (51%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_imperial_edict_001",
+      "name": "Imperial Edict",
+      "played_as_role": "king",
+      "games_with_card": 101,
+      "wins_when_played": 51,
+      "win_rate_when_played": 0.504950495049505,
+      "delta_vs_fair": 0.3382838283828383,
+      "verdict": "overperformer",
+      "layman": "Played as King in 101 games \u2014 won 51 (50%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_border_levy_003",
+      "name": "Border Levy",
+      "played_as_role": "noble",
+      "games_with_card": 2,
+      "wins_when_played": 1,
+      "win_rate_when_played": 0.5,
+      "delta_vs_fair": 0.33333333333333337,
+      "verdict": "too_few_games",
+      "layman": "Played as Noble in 2 games \u2014 won 1 (50%). Not enough data yet \u2014 play more simulated games."
+    },
+    {
+      "id": "king_broken_crown_001",
+      "name": "Broken Crown",
+      "played_as_role": "king",
+      "games_with_card": 81,
+      "wins_when_played": 40,
+      "win_rate_when_played": 0.49382716049382713,
+      "delta_vs_fair": 0.3271604938271605,
+      "verdict": "overperformer",
+      "layman": "Played as King in 81 games \u2014 won 40 (49%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_sealed_warrant_001",
+      "name": "Sealed Warrant",
+      "played_as_role": "king",
+      "games_with_card": 91,
+      "wins_when_played": 44,
+      "win_rate_when_played": 0.4835164835164835,
+      "delta_vs_fair": 0.31684981684981683,
+      "verdict": "overperformer",
+      "layman": "Played as King in 91 games \u2014 won 44 (48%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_noble_containment_001",
+      "name": "Noble Containment",
+      "played_as_role": "king",
+      "games_with_card": 92,
+      "wins_when_played": 44,
+      "win_rate_when_played": 0.4782608695652174,
+      "delta_vs_fair": 0.3115942028985508,
+      "verdict": "overperformer",
+      "layman": "Played as King in 92 games \u2014 won 44 (48%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_pardon_001",
+      "name": "Royal Pardon",
+      "played_as_role": "king",
+      "games_with_card": 85,
+      "wins_when_played": 40,
+      "win_rate_when_played": 0.47058823529411764,
+      "delta_vs_fair": 0.303921568627451,
+      "verdict": "overperformer",
+      "layman": "Played as King in 85 games \u2014 won 40 (47%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_court_intrigue_001",
+      "name": "Court Intrigue",
+      "played_as_role": "king",
+      "games_with_card": 84,
+      "wins_when_played": 39,
+      "win_rate_when_played": 0.4642857142857143,
+      "delta_vs_fair": 0.29761904761904767,
+      "verdict": "overperformer",
+      "layman": "Played as King in 84 games \u2014 won 39 (46%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_royal_pact_004",
+      "name": "Royal Pact",
+      "played_as_role": "king",
+      "games_with_card": 89,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.4606741573033708,
+      "delta_vs_fair": 0.29400749063670417,
+      "verdict": "overperformer",
+      "layman": "Played as King in 89 games \u2014 won 41 (46%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_spy_master_001",
+      "name": "Spy Master",
+      "played_as_role": "king",
+      "games_with_card": 76,
+      "wins_when_played": 35,
+      "win_rate_when_played": 0.4605263157894737,
+      "delta_vs_fair": 0.29385964912280704,
+      "verdict": "overperformer",
+      "layman": "Played as King in 76 games \u2014 won 35 (46%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_crown_tribute_001",
+      "name": "Crown Tribute",
+      "played_as_role": "king",
+      "games_with_card": 138,
+      "wins_when_played": 63,
+      "win_rate_when_played": 0.45652173913043476,
+      "delta_vs_fair": 0.28985507246376807,
+      "verdict": "overperformer",
+      "layman": "Played as King in 138 games \u2014 won 63 (46%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_loyal_guard_001",
+      "name": "Loyal Guard",
+      "played_as_role": "king",
+      "games_with_card": 66,
+      "wins_when_played": 30,
+      "win_rate_when_played": 0.45454545454545453,
+      "delta_vs_fair": 0.28787878787878785,
+      "verdict": "overperformer",
+      "layman": "Played as King in 66 games \u2014 won 30 (45%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_edict_28_028",
+      "name": "Royal Census",
+      "played_as_role": "king",
+      "games_with_card": 103,
+      "wins_when_played": 46,
+      "win_rate_when_played": 0.44660194174757284,
+      "delta_vs_fair": 0.2799352750809062,
+      "verdict": "overperformer",
+      "layman": "Played as King in 103 games \u2014 won 46 (45%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_diplomatic_immunity_001",
+      "name": "Diplomatic Immunity",
+      "played_as_role": "king",
+      "games_with_card": 92,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.44565217391304346,
+      "delta_vs_fair": 0.27898550724637683,
+      "verdict": "overperformer",
+      "layman": "Played as King in 92 games \u2014 won 41 (45%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_decree_001",
+      "name": "Royal Decree",
+      "played_as_role": "king",
+      "games_with_card": 79,
+      "wins_when_played": 35,
+      "win_rate_when_played": 0.4430379746835443,
+      "delta_vs_fair": 0.2763713080168776,
+      "verdict": "overperformer",
+      "layman": "Played as King in 79 games \u2014 won 35 (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_false_summons_001",
+      "name": "False Summons",
+      "played_as_role": "king",
+      "games_with_card": 95,
+      "wins_when_played": 42,
+      "win_rate_when_played": 0.4421052631578947,
+      "delta_vs_fair": 0.27543859649122804,
+      "verdict": "overperformer",
+      "layman": "Played as King in 95 games \u2014 won 42 (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_court_scribe_008",
+      "name": "Court Scribe",
+      "played_as_role": "king",
+      "games_with_card": 84,
+      "wins_when_played": 37,
+      "win_rate_when_played": 0.44047619047619047,
+      "delta_vs_fair": 0.27380952380952384,
+      "verdict": "overperformer",
+      "layman": "Played as King in 84 games \u2014 won 37 (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_summit_oath_005",
+      "name": "Summit Oath",
+      "played_as_role": "king",
+      "games_with_card": 94,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.43617021276595747,
+      "delta_vs_fair": 0.26950354609929084,
+      "verdict": "overperformer",
+      "layman": "Played as King in 94 games \u2014 won 41 (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_decree_haste_001",
+      "name": "Decree Haste",
+      "played_as_role": "king",
+      "games_with_card": 94,
+      "wins_when_played": 41,
+      "win_rate_when_played": 0.43617021276595747,
+      "delta_vs_fair": 0.26950354609929084,
+      "verdict": "overperformer",
+      "layman": "Played as King in 94 games \u2014 won 41 (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_sealed_warrant_006",
+      "name": "Sealed Warrant II",
+      "played_as_role": "king",
+      "games_with_card": 85,
+      "wins_when_played": 37,
+      "win_rate_when_played": 0.43529411764705883,
+      "delta_vs_fair": 0.2686274509803922,
+      "verdict": "overperformer",
+      "layman": "Played as King in 85 games \u2014 won 37 (44%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_edict_26_026",
+      "name": "Harbor Dues",
+      "played_as_role": "king",
+      "games_with_card": 150,
+      "wins_when_played": 65,
+      "win_rate_when_played": 0.43333333333333335,
+      "delta_vs_fair": 0.2666666666666667,
+      "verdict": "overperformer",
+      "layman": "Played as King in 150 games \u2014 won 65 (43%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_regal_momentum_001",
+      "name": "Regal Momentum",
+      "played_as_role": "king",
+      "games_with_card": 79,
+      "wins_when_played": 34,
+      "win_rate_when_played": 0.43037974683544306,
+      "delta_vs_fair": 0.26371308016877637,
+      "verdict": "overperformer",
+      "layman": "Played as King in 79 games \u2014 won 34 (43%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_quarter_search_007",
+      "name": "Quarter Search",
+      "played_as_role": "king",
+      "games_with_card": 75,
+      "wins_when_played": 32,
+      "win_rate_when_played": 0.4266666666666667,
+      "delta_vs_fair": 0.26,
+      "verdict": "overperformer",
+      "layman": "Played as King in 75 games \u2014 won 32 (43%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_royal_edict_27_027",
+      "name": "Garrison Inspection",
+      "played_as_role": "king",
+      "games_with_card": 91,
+      "wins_when_played": 38,
+      "win_rate_when_played": 0.4175824175824176,
+      "delta_vs_fair": 0.2509157509157509,
+      "verdict": "overperformer",
+      "layman": "Played as King in 91 games \u2014 won 38 (42%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    },
+    {
+      "id": "king_expand_ledger_audit_009",
+      "name": "Ledger Audit",
+      "played_as_role": "king",
+      "games_with_card": 72,
+      "wins_when_played": 30,
+      "win_rate_when_played": 0.4166666666666667,
+      "delta_vs_fair": 0.25,
+      "verdict": "overperformer",
+      "layman": "Played as King in 72 games \u2014 won 30 (42%). May be too strong \u2014 consider nerfing numbers or raising cost."
+    }
+  ],
+  "diagnostics": {
+    "games": 385,
+    "assisted_win_rate": 0.033766233766233764,
+    "assisted_win_modes": {
+      "starting_king_received_gifts": 4,
+      "ascended_noble_received_gifts": 9
+    },
+    "protection_hit_rate": 0.4992481203007519,
+    "shield_block_count": 9,
+    "shield_block_rate": 0.006766917293233083,
+    "whiff_reasons": {
+      "no_matching_attack": 666
+    },
+    "trigger_types": {
+      "succession_imminent": 529,
+      "attacked_this_phase": 801
+    },
+    "shield_by_card": {
+      "noble_expand_body_double_011": {
+        "hit": 112,
+        "whiff": 165,
+        "block": 0
+      },
+      "noble_expand_hidden_cache_010": {
+        "hit": 157,
+        "whiff": 97,
+        "block": 3
+      },
+      "noble_bodyguard_001": {
+        "hit": 164,
+        "whiff": 111,
+        "block": 2
+      },
+      "king_expand_iron_gate_011": {
+        "hit": 31,
+        "whiff": 62,
+        "block": 0
+      },
+      "noble_hidden_cache_001": {
+        "hit": 108,
+        "whiff": 155,
+        "block": 4
+      },
+      "king_diplomatic_immunity_001": {
+        "hit": 51,
+        "whiff": 42,
+        "block": 0
+      },
+      "king_loyal_guard_001": {
+        "hit": 36,
+        "whiff": 30,
+        "block": 0
+      },
+      "king_customs_seal_001": {
+        "hit": 3,
+        "whiff": 0,
+        "block": 0
+      },
+      "king_expand_bastion_wall_010": {
+        "hit": 1,
+        "whiff": 1,
+        "block": 0
+      },
+      "king_iron_curtain_001": {
+        "hit": 1,
+        "whiff": 2,
+        "block": 0
+      },
+      "king_royal_edict_30_030": {
+        "hit": 0,
+        "whiff": 1,
+        "block": 0
+      }
+    }
+  },
+  "kingmaker": {
+    "fix_works": true,
+    "gold_only_ascension": 1.0,
+    "earned_gold_ascension": 0.0,
+    "layman": "We tested a rigged scenario: a losing player gifts gold to a friend. Without the earned-gold rule, that friend becomes King 100% of the time. With the rule, it drops to 0%."
+  },
+  "signoff_comparison": {
+    "standard_tuned_run": {
+      "games": 100,
+      "card_set_version": "3829e707413b8f83",
+      "score": {
+        "assisted_win_rate": 0.01,
+        "shield_hit_rate": 0.4696969696969697,
+        "started_as_king_win_rate": 0.39,
+        "seat_win_spread": 0.07,
+        "role_win_rate_in_band": true,
+        "shield_in_prd_band": true,
+        "assisted_under_cap": true,
+        "sample_sufficient": false,
+        "gates_passed": 4,
+        "gates_total": 5,
+        "signoff_ready": false,
+        "phase_c_ready": false
+      },
+      "metrics": {
+        "assisted_win_rate": 0.01,
+        "shield_hit_rate": 0.4696969696969697,
+        "role_win_rate": {
+          "started_as_king": 0.39,
+          "started_as_noble": 0.61
+        }
+      }
+    },
+    "prd_sample_run": {
+      "games": 385,
+      "card_set_version": "3829e707413b8f83",
+      "score": {
+        "assisted_win_rate": 0.033766233766233764,
+        "shield_hit_rate": 0.4992481203007519,
+        "started_as_king_win_rate": 0.34285714285714286,
+        "seat_win_spread": 0.10389610389610389,
+        "role_win_rate_in_band": false,
+        "shield_in_prd_band": true,
+        "assisted_under_cap": true,
+        "sample_sufficient": true,
+        "gates_passed": 4,
+        "gates_total": 5,
+        "signoff_ready": false,
+        "phase_c_ready": false
+      },
+      "metrics": {
+        "assisted_win_rate": 0.033766233766233764,
+        "assisted_win_modes": {
+          "starting_king_received_gifts": 4,
+          "ascended_noble_received_gifts": 9
+        },
+        "shield_hit_rate": 0.4992481203007519,
+        "shield_block_rate": 0.006766917293233083,
+        "role_win_rate": {
+          "started_as_king": 0.34285714285714286,
+          "started_as_noble": 0.6571428571428571
+        }
+      },
+      "diagnostics": {
+        "games": 385,
+        "assisted_win_rate": 0.033766233766233764,
+        "assisted_win_modes": {
+          "starting_king_received_gifts": 4,
+          "ascended_noble_received_gifts": 9
+        },
+        "protection_hit_rate": 0.4992481203007519,
+        "shield_block_count": 9,
+        "shield_block_rate": 0.006766917293233083,
+        "whiff_reasons": {
+          "no_matching_attack": 666
+        },
+        "trigger_types": {
+          "succession_imminent": 529,
+          "attacked_this_phase": 801
+        },
+        "shield_by_card": {
+          "noble_expand_body_double_011": {
+            "hit": 112,
+            "whiff": 165,
+            "block": 0
+          },
+          "noble_expand_hidden_cache_010": {
+            "hit": 157,
+            "whiff": 97,
+            "block": 3
+          },
+          "noble_bodyguard_001": {
+            "hit": 164,
+            "whiff": 111,
+            "block": 2
+          },
+          "king_expand_iron_gate_011": {
+            "hit": 31,
+            "whiff": 62,
+            "block": 0
+          },
+          "noble_hidden_cache_001": {
+            "hit": 108,
+            "whiff": 155,
+            "block": 4
+          },
+          "king_diplomatic_immunity_001": {
+            "hit": 51,
+            "whiff": 42,
+            "block": 0
+          },
+          "king_loyal_guard_001": {
+            "hit": 36,
+            "whiff": 30,
+            "block": 0
+          },
+          "king_customs_seal_001": {
+            "hit": 3,
+            "whiff": 0,
+            "block": 0
+          },
+          "king_expand_bastion_wall_010": {
+            "hit": 1,
+            "whiff": 1,
+            "block": 0
+          },
+          "king_iron_curtain_001": {
+            "hit": 1,
+            "whiff": 2,
+            "block": 0
+          },
+          "king_royal_edict_30_030": {
+            "hit": 0,
+            "whiff": 1,
+            "block": 0
+          }
+        }
+      }
+    },
+    "recommendation": "prd_385",
+    "reason": "Both pass equally; prefer 385 games for statistical sign-off per PRD."
+  },
+  "tune": {
+    "passes": 5,
+    "changes_count": 2,
+    "recommendations": [
+      "Assisted win rate 12.99% exceeds max 12.00%; reducing betrayal/theft gold amounts by 9%.",
+      "Negotiation gift cap lowered 78 -> 70 to reduce kingmaking gifts."
+    ]
+  },
+  "metric_explanations": {
+    "seat_position_win_rate": "How often each starting seat wins. Uneven rates may mean a seating bug.",
+    "role_win_rate": "Win rate for players who started as King vs Noble. Shows if starting role is unfair.",
+    "card_pick_rate": "How often a card gets played when it could be. Low = dead card; very high = auto-include.",
+    "card_win_contribution": "Win rate in games where this card was played, vs overall. High = possible overperformer.",
+    "card_win_contribution_by_role": "Win rate split by whether the player was King or Noble when the card was played. Use this before nerfing \u2014 raw contribution confounds role with card power.",
+    "assisted_win_rate": "Games where the winner's person received negotiation gold_gifted events (to_person == winner_person).",
+    "assisted_win_rate_seat": "Legacy seat-based assisted metric (to_seat == winner_seat).",
+    "assisted_win_modes": "Why assisted wins happened (stacking, starting king gifts, etc.).",
+    "shield_hit_rate": "Protection trigger resolved as a correct guess at end of playing phase.",
+    "shield_block_rate": "Active shields that actually blocked an attack (shield_blocked events).",
+    "whiff_penalty_rate": "Protection guesses that whiffed and triggered on_whiff_penalty.",
+    "protection_net_ev": "Average gold swing per protection card play (hits and whiffs combined).",
+    "skill_gap": "How much trained bots beat random bots. Too low = no skill; too high = no room for luck.",
+    "exploitability": "How much a sharp counter-strategy beats your policy. Lower means harder to exploit.",
+    "promise_keep_rate": "Alliances and conditional promises kept vs broken. Tests negotiation meaning."
+  }
+}

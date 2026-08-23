@@ -1,0 +1,32 @@
+{
+  "id": "king_expand_iron_gate_011",
+  "name": "Iron Gate",
+  "owner_type": "king",
+  "category": "protection",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "reactive",
+  "effect": {
+    "primitive": "block_succession",
+    "params": {
+      "scope": "next_check_this_round",
+      "duration_rounds": 1,
+      "trigger": {
+        "type": "succession_imminent"
+      },
+      "specificity": "targeted"
+    }
+  },
+  "tags": [
+    "protection"
+  ],
+  "flavor_text": "Expansion design \u2014 Iron Gate.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps.",
+  "on_whiff_penalty": {
+    "primitive": "gold_loss",
+    "params": {
+      "target": "self",
+      "amount": 25
+    }
+  }
+}

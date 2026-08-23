@@ -1,0 +1,21 @@
+{
+  "id": "king_expand_mint_dues_001",
+  "name": "Mint Dues",
+  "owner_type": "king",
+  "category": "economy",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_gain",
+    "params": {
+      "target": "self",
+      "amount": 95
+    }
+  },
+  "tags": [
+    "economy"
+  ],
+  "flavor_text": "Expansion design \u2014 Mint Dues.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

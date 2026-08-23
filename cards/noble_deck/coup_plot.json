@@ -1,0 +1,33 @@
+{
+  "id": "noble_coup_plot_001",
+  "name": "Coup Plot",
+  "owner_type": "noble",
+  "category": "betrayal",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "gold_transfer",
+    "params": {
+      "from": "target",
+      "to": "self",
+      "amount": 125,
+      "as_theft": true
+    },
+    "secondary_effect": {
+      "primitive": "mark_status",
+      "params": {
+        "target": "self",
+        "status_name": "marked",
+        "duration_rounds": 2
+      }
+    }
+  },
+  "requires_state": {
+    "alliance_declared_with_target": true
+  },
+  "tags": [
+    "betrayal"
+  ],
+  "flavor_text": "The dagger was always in the handshake."
+}

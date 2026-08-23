@@ -1,0 +1,20 @@
+{
+  "id": "noble_double_agent_001",
+  "name": "Double Agent",
+  "owner_type": "noble",
+  "category": "tempo",
+  "rarity": "rare",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "draw_extra",
+    "params": {
+      "target": "self",
+      "count": 2
+    }
+  },
+  "tags": [
+    "tempo"
+  ],
+  "flavor_text": "Two masters, twice the options."
+}

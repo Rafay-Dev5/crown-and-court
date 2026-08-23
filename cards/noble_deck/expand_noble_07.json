@@ -1,0 +1,21 @@
+{
+  "id": "noble_expand_poisoned_chalice_007",
+  "name": "Poisoned Chalice",
+  "owner_type": "noble",
+  "category": "disruption",
+  "rarity": "common",
+  "copies_in_deck": 1,
+  "timing": "on_reveal",
+  "effect": {
+    "primitive": "force_discard",
+    "params": {
+      "target": "target",
+      "count": 2
+    }
+  },
+  "tags": [
+    "disruption"
+  ],
+  "flavor_text": "Expansion design \u2014 Poisoned Chalice.",
+  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+}

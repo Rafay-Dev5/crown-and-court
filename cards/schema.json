@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CrownAndCourtCard",
+  "type": "object",
+  "required": ["id", "name", "owner_type", "category", "rarity", "copies_in_deck", "timing", "effect"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "owner_type": { "type": "string", "enum": ["king", "noble"] },
+    "category": {
+      "type": "string",
+      "enum": ["economy", "alliance", "betrayal", "disruption", "protection", "tempo", "information", "supercard"]
+    },
+    "rarity": { "type": "string", "enum": ["common", "rare", "supercard"] },
+    "copies_in_deck": { "type": "integer", "minimum": 1 },
+    "timing": {
+      "type": "string",
+      "enum": ["on_reveal", "reactive", "end_of_round", "negotiation_only"],
+      "description": "reactive: resolves in normal sequence position; effect triggers conditionally on state at that moment, not a live response to something already revealed."
+    },
+    "effect": {
+      "type": "object",
+      "required": ["primitive"],
+      "properties": {
+        "primitive": { "type": "string" },
+        "params": { "type": "object" },
+        "secondary_effect": { "type": "object" }
+      }
+    },
+    "on_whiff_penalty": {
+      "type": "object",
+      "description": "fires when a protection card's trigger condition was not met at resolution",
+      "properties": {
+        "primitive": { "type": "string" },
+        "params": { "type": "object" }
+      }
+    },
+    "requires_state": {
+      "type": "object",
+      "properties": {
+        "alliance_declared_with_target": { "type": "boolean" },
+        "prior_choice": { "type": "string" },
+        "target_prior_choice": { "type": "string" },
+        "target_seat": { "type": "integer" },
+        "within_rounds": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "synergy_tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "combo-line tags for automated design loop synergy detection"
+    },
+    "flavor_text": { "type": "string" },
+    "designer_notes": { "type": "string" }
+  }
+}
