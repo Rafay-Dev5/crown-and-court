@@ -2,6 +2,8 @@
  * Converts card JSON effects into plain-language text for lay readers.
  */
 
+import { cardNoun, roundNoun, sentence } from "./copy";
+
 type EffectBlock = {
   primitive?: string;
   params?: Record<string, unknown>;
@@ -21,11 +23,15 @@ function targetLabel(raw: unknown): string {
   return TARGET_LABELS[raw] ?? raw;
 }
 
+function thirdPerson(who: string): boolean {
+  return who !== "you";
+}
+
 function goldPhrase(amount: unknown, target: unknown, verb: "gain" | "lose" | "steal"): string {
   const n = Number(amount) || 0;
   const who = targetLabel(target);
-  if (verb === "gain") return `${who} gain ${n} gold`;
-  if (verb === "lose") return `${who} lose ${n} gold`;
+  if (verb === "gain") return `${who} ${thirdPerson(who) ? "gains" : "gain"} ${n} gold`;
+  if (verb === "lose") return `${who} ${thirdPerson(who) ? "loses" : "lose"} ${n} gold`;
   return `${n} gold is taken from ${who === "you" ? "an opponent" : who}`;
 }
 
@@ -84,20 +90,28 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
         `${Number(p.amount) || 0} gold moves from ${targetLabel(p.from ?? "target")} to ${targetLabel(p.to ?? "self")}.`
       );
       break;
-    case "steal_card":
+    case "steal_card": {
+      const thief = targetLabel(p.to ?? "self");
       lines.push(
-        `${targetLabel(p.to ?? "self")} steal ${p.count ?? 1} card(s) from ${targetLabel(p.from ?? "target")}.`
+        `${thief} ${thirdPerson(thief) ? "steals" : "steal"} ${cardNoun(p.count ?? 1)} from ${targetLabel(p.from ?? "target")}.`
       );
       break;
-    case "force_discard":
-      lines.push(`${targetLabel(p.target ?? "target")} discard ${p.count ?? 1} card(s).`);
+    }
+    case "force_discard": {
+      const who = targetLabel(p.target ?? "target");
+      lines.push(`${who} ${thirdPerson(who) ? "discards" : "discard"} ${cardNoun(p.count ?? 1)}.`);
       break;
-    case "draw_extra":
-      lines.push(`${targetLabel(p.target ?? "self")} draw ${p.count ?? 1} extra card(s).`);
+    }
+    case "draw_extra": {
+      const who = targetLabel(p.target ?? "self");
+      lines.push(`${who} ${thirdPerson(who) ? "draws" : "draw"} ${cardNoun(p.count ?? 1)}.`);
       break;
-    case "peek_card":
-      lines.push(`${targetLabel(p.target ?? "self")} peek at a hidden card.`);
+    }
+    case "peek_card": {
+      const who = targetLabel(p.target ?? "self");
+      lines.push(`${who} ${thirdPerson(who) ? "peeks" : "peek"} at a hidden card.`);
       break;
+    }
     case "reveal_hand":
       lines.push(`${targetLabel(p.target ?? "target")}'s hand is revealed to everyone.`);
       break;
@@ -116,25 +130,31 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
           `If ${describeTrigger(p.trigger as Record<string, unknown>)} when this resolves, gold is protected (up to ${p.amount ?? "?"} gold).`
         );
       } else {
-        lines.push(`Protect up to ${p.amount ?? "?"} gold for ${p.duration_rounds ?? 1} round(s).`);
+        lines.push(`Protect up to ${p.amount ?? "?"} gold for ${roundNoun(p.duration_rounds ?? 1)}.`);
       }
       break;
-    case "mark_status":
+    case "mark_status": {
+      const who = targetLabel(p.target ?? "self");
       lines.push(
-        `${targetLabel(p.target ?? "self")} receive the “${p.status_name}” status for ${p.duration_rounds ?? 2} round(s).`
+        `${who} ${thirdPerson(who) ? "receives" : "receive"} the “${p.status_name}” status for ${roundNoun(p.duration_rounds ?? 2)}.`
       );
       break;
+    }
     case "alliance_bonus":
       lines.push(
         `If your alliance is still active, allied players each gain ${p.amount ?? 50} gold.`
       );
       break;
-    case "skip_next_play":
-      lines.push(`${targetLabel(p.target ?? "target")} play one fewer card next round.`);
+    case "skip_next_play": {
+      const who = targetLabel(p.target ?? "target");
+      lines.push(`${who} ${thirdPerson(who) ? "plays" : "play"} one fewer card next round.`);
       break;
-    case "extra_play":
-      lines.push(`${targetLabel(p.target ?? "self")} may play an extra card next round.`);
+    }
+    case "extra_play": {
+      const who = targetLabel(p.target ?? "self");
+      lines.push(`${who} may play an extra card next round.`);
       break;
+    }
     case "gain_legitimacy":
       lines.push(`${targetLabel(p.target ?? "self")} gain ${p.amount ?? 1} legitimacy.`);
       break;
@@ -165,7 +185,7 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
         if (branch.on_failure_status) {
           const st = branch.on_failure_status as Record<string, unknown>;
           lines.push(
-            `  On failure you also get “${st.status_name}” for ${st.duration_rounds ?? 2} round(s).`
+            `  On failure you also get “${st.status_name}” for ${roundNoun(st.duration_rounds ?? 2)}.`
           );
         }
       }
@@ -204,7 +224,10 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
     lines.push("Then: " + describeEffectBlock(block.secondary_effect, depth + 1).join(" "));
   }
 
-  return lines;
+  return lines.map((line) => {
+    if (line.startsWith("  ") || line.startsWith("Then:") || line.startsWith("If ")) return line;
+    return sentence(line);
+  });
 }
 
 export function describeRequiresState(req: Record<string, unknown> | undefined): string[] {
@@ -250,8 +273,8 @@ export function describeCardSummary(card: {
 }): string {
   const lines = describeEffectBlock(card.effect);
   if (lines.length === 0) return "See card details.";
-  const first = lines[0];
-  return first.length > 120 ? first.slice(0, 117) + "…" : first;
+  const first = sentence(lines[0]);
+  return first.length > 140 ? first.slice(0, 137) + "…" : first;
 }
 
 export function describeCardFull(card: {

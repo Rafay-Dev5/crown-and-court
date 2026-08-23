@@ -75,6 +75,7 @@ export default function GameEndPage() {
             localStorage.removeItem("cc_room_code");
             localStorage.removeItem("cc_player_id");
             reset();
+            window.location.href = "/";
           }}
         >
           Play Again

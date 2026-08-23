@@ -16,6 +16,7 @@ class ClientMessageType(str, Enum):
     ACTION = "action"
     ACCEPT_PROPOSAL = "accept_proposal"
     REJECT_PROPOSAL = "reject_proposal"
+    ADD_BOTS = "add_bots"
 
 
 class ServerMessageType(str, Enum):
@@ -41,6 +42,7 @@ class PlayerInfo(BaseModel):
     seat: int | None = None
     ready: bool = False
     connected: bool = True
+    is_bot: bool = False
 
 
 class MetaScores(BaseModel):
@@ -49,6 +51,11 @@ class MetaScores(BaseModel):
     noble_points_earned: dict[str, int] = Field(default_factory=dict)
     current_match: int = 0
     total_matches: int = 4
+
+
+class PublicStatus(BaseModel):
+    name: str
+    remaining_rounds: int
 
 
 class PublicSeatState(BaseModel):
@@ -60,9 +67,10 @@ class PublicSeatState(BaseModel):
     gold: int
     earned_gold: int
     gifted_gold: int
+    gift_sent: int = 0
     hand_size: int
     deck_size: int
-    statuses: list[str]
+    statuses: list[PublicStatus] = Field(default_factory=list)
 
 
 class PublicGameState(BaseModel):
@@ -77,6 +85,9 @@ class PublicGameState(BaseModel):
     pending_proposals: list[dict[str, Any]]
     negotiation_tick: int | None = None
     negotiation_ticks: int | None = None
+    locked_seats: list[int] = Field(default_factory=list)
+    max_negotiation_gift: int = 120
+    max_negotiation_gift_per_phase: int = 120
 
 
 class PrivateGameState(BaseModel):

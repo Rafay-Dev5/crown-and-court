@@ -193,6 +193,26 @@ class GameState:
     def has_status(self, seat: int, status_name: str) -> bool:
         return any(s.name == status_name for s in self.seats[seat].statuses)
 
+    def apply_status(self, seat: int, name: str, duration_rounds: int) -> StatusTag:
+        """Add a status, or refresh duration if the same tag is already active."""
+        expires = self.current_round + max(1, int(duration_rounds))
+        for tag in self.seats[seat].statuses:
+            if tag.name == name:
+                tag.expires_after_round = max(tag.expires_after_round, expires)
+                return tag
+        tag = StatusTag(name=name, expires_after_round=expires)
+        self.seats[seat].statuses.append(tag)
+        return tag
+
+    def unique_statuses(self, seat: int) -> list[StatusTag]:
+        """Deduplicate by name, keeping the latest expiry."""
+        best: dict[str, StatusTag] = {}
+        for tag in self.seats[seat].statuses:
+            prev = best.get(tag.name)
+            if prev is None or tag.expires_after_round > prev.expires_after_round:
+                best[tag.name] = tag
+        return list(best.values())
+
     def was_attacked_this_phase(self, seat: int, attack_type: str | None = None) -> bool:
         for atk in self.phase_attacks:
             if atk.target_seat == seat and not atk.blocked:

@@ -23,6 +23,14 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
     }
   }, [others, targetSeat]);
 
+  const target = others.find((s) => s.seat_id === targetSeat);
+  const targetIsOathbreaker = (target?.statuses ?? []).some((s) =>
+    (typeof s === "string" ? s : s.name) === "oathbreaker"
+  );
+  const maxGift = publicState?.max_negotiation_gift_per_phase ?? 120;
+  const you = publicState?.seats.find((s) => s.seat_id === yourSeat);
+  const giftLeft = Math.max(0, maxGift - (you?.gift_sent ?? 0));
+
   if (mode === "trade") {
     return (
       <div className="panel-parchment p-4">
@@ -67,8 +75,18 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
           <button className="btn-outline text-sm py-2" onClick={() => setMode("menu")}>Cancel</button>
         </div>
         <p className="text-xs text-amber-800 mt-2">
-          Gift limit: 120g per phase/trade. Gifted gold does not count for succession.
+          You can still give {giftLeft}g this phase (cap {maxGift}g). Gifted gold does not count for succession.
         </p>
+        {offerGold > 0 && requestGold === 0 && (
+          <p className="text-xs text-red-800 mt-1">
+            A one-way gift brands them Oathbreaker — they cannot receive more gifts for 2 rounds.
+          </p>
+        )}
+        {targetIsOathbreaker && offerGold > 0 && (
+          <p className="text-xs text-red-800 mt-1">
+            {target?.player_name} is Oathbreaker and cannot receive gifted gold. The gold will not go through.
+          </p>
+        )}
       </div>
     );
   }
@@ -107,6 +125,9 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
       <button className="btn-royal text-sm py-2" onClick={() => setMode("trade")}>Trade</button>
       <button className="btn-royal text-sm py-2" onClick={() => setMode("alliance")}>Alliance</button>
       <button className="btn-outline text-sm py-2" onClick={onPass}>Pass</button>
+      <p className="basis-full text-xs text-royal-dark/60 mt-1">
+        Gift budget left: {giftLeft}g. Only earned gold races for the crown.
+      </p>
     </div>
   );
 }

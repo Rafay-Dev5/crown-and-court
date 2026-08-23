@@ -1,15 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { RulesButton } from "../components/RulesModal";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useGameStore } from "../store";
 
+const BOT_BLURBS: Record<string, string> = {
+  "The Hoarder": "Banks gold · rarely gifts",
+  "The Aggressor": "Pushes trades · attacks",
+  "The Diplomat": "Seeks alliances",
+  "The Opportunist": "Takes whatever pays",
+};
+
 export default function LobbyPage() {
-  const { toggleReady, startGame } = useGameSocket();
+  const { setReady, startGame, addBots } = useGameSocket();
   const { roomCode, players, playerId, hostId, canStart } = useGameStore();
   const [copied, setCopied] = useState(false);
 
   const me = players.find((p) => p.id === playerId);
   const inviteLink = `${window.location.origin}?code=${roomCode}`;
+  const botCount = players.filter((p) => p.is_bot).length;
+
+  useEffect(() => {
+    if (botCount >= 3 && me?.id && !me.ready) {
+      setReady(true);
+    }
+  }, [botCount, me?.id, me?.ready, setReady]);
 
   // Seats are assigned only when the match starts; until then show join order.
   const slots: Array<(typeof players)[number] | null> = Array.from({ length: 4 }, (_, i) => {
@@ -81,8 +96,13 @@ export default function LobbyPage() {
                       {player.id === hostId ? " ★" : ""}
                     </p>
                     <p className={`text-xs mt-1 ${player.ready ? "text-green-700" : "text-amber-700"}`}>
-                      {player.ready ? "READY" : "Not ready"}
+                      {player.is_bot ? "BOT · READY" : player.ready ? "READY" : "Not ready"}
                     </p>
+                    {player.is_bot && BOT_BLURBS[player.name] && (
+                      <p className="text-[10px] text-royal-dark/55 mt-1 leading-snug">
+                        {BOT_BLURBS[player.name]}
+                      </p>
+                    )}
                     {!player.connected && (
                       <p className="text-xs text-red-600">Disconnected</p>
                     )}
@@ -104,9 +124,18 @@ export default function LobbyPage() {
           <button className="btn-outline" onClick={copyInvite}>
             {copied ? "Link Copied!" : "Copy Invite Link"}
           </button>
-          <button className="btn-royal" onClick={toggleReady}>
-            {me?.ready ? "Unready" : "Ready Up"}
-          </button>
+          {me?.ready ? (
+            <button className="btn-royal" onClick={() => setReady(false)}>
+              Unready
+            </button>
+          ) : (
+            <button className="btn-royal" onClick={() => setReady(true)}>
+              Ready Up
+            </button>
+          )}
+        </div>
+        <div className="flex justify-center mb-3">
+          <RulesButton />
         </div>
         <p className="text-center text-xs text-parchment/50 mb-4 break-all px-4">
           Share this link with friends: {inviteLink}
@@ -114,6 +143,11 @@ export default function LobbyPage() {
 
         {playerId === hostId && (
           <div className="text-center">
+            {players.length < 4 && (
+              <button className="btn-outline mb-3" onClick={addBots}>
+                Fill empty seats with bots
+              </button>
+            )}
             <button
               className="btn-royal px-12"
               onClick={startGame}

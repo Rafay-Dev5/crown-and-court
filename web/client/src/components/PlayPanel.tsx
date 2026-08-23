@@ -25,8 +25,12 @@ export default function PlayPanel({ hand, nPlay, onSubmit }: Props) {
 
   return (
     <div className="panel-parchment p-4">
-      <p className="font-display text-sm mb-3">
-        Select {nPlay} card{nPlay > 1 ? "s" : ""} to play ({selected.length}/{nPlay})
+      <p className="font-display text-sm mb-1">
+        Select {nPlay} card{nPlay > 1 ? "s" : ""} ({selected.length}/{nPlay})
+      </p>
+      <p className="text-xs text-royal-dark/60 mb-3">
+        Cards stay hidden until everyone has locked in. Then they reveal one by one — you will see
+        what each card does and click Continue.
       </p>
       <div className="flex gap-2 flex-wrap justify-center mb-4">
         {hand.map((card, i) => (

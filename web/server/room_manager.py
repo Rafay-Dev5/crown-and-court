@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import random
 import string
 import uuid
@@ -9,9 +10,12 @@ from typing import Any
 
 from fastapi import WebSocket
 
+from web.server.bots import bot_should_accept, decide_bot_action, unused_bot_profiles
 from web.server.game_session import GameSession, HumanAction
 from web.server.meta_game import MetaGameManager, TOTAL_MATCHES
 from web.server.protocol import PlayerInfo, ServerMessage, ServerMessageType
+
+_room_bot_locks: dict[str, asyncio.Lock] = {}
 
 
 class RoomPhase(str, Enum):
@@ -41,6 +45,8 @@ class ConnectedPlayer:
     ready: bool = False
     reconnect_token: str = field(default_factory=lambda: str(uuid.uuid4()))
     seat: int | None = None
+    is_bot: bool = False
+    bot_key: str | None = None
 
 
 @dataclass
@@ -52,6 +58,7 @@ class GameRoom:
     meta: MetaGameManager | None = None
     session: GameSession | None = None
     pending_match: int = 0
+    reveal_acks: set[str] = field(default_factory=set)
 
     def player_list(self) -> list[PlayerInfo]:
         ordered = sorted(self.players.values(), key=lambda p: p.seat if p.seat is not None else 99)
@@ -61,7 +68,8 @@ class GameRoom:
                 name=p.name,
                 seat=p.seat,
                 ready=p.ready,
-                connected=p.websocket is not None,
+                connected=p.websocket is not None or p.is_bot,
+                is_bot=p.is_bot,
             )
             for p in ordered
         ]
@@ -98,6 +106,7 @@ class GameRoom:
         self.meta.record_match_start(match_num, self.session.state)
         self.pending_match = match_num
         self.phase = RoomPhase.PLAYING
+        self.reveal_acks = set()
 
     def finish_match(self) -> dict[str, Any]:
         if self.session is None or self.meta is None:
@@ -165,6 +174,33 @@ class RoomManager:
         self.player_to_room[player_id] = code.upper()
         self.token_to_player[player.reconnect_token] = (code.upper(), player_id)
         return room
+
+    def fill_bots(self, room: GameRoom, count: int | None = None) -> list[ConnectedPlayer]:
+        if room.phase != RoomPhase.LOBBY:
+            raise ValueError("Bots can only be added in the lobby")
+        empty = MAX_PLAYERS - len(room.players)
+        if empty <= 0:
+            return []
+        n = empty if count is None else min(int(count), empty)
+        used = {p.bot_key for p in room.players.values() if p.bot_key}
+        added: list[ConnectedPlayer] = []
+        for key, name, _blurb in unused_bot_profiles(used):
+            if n <= 0:
+                break
+            pid = f"bot-{key}-{uuid.uuid4().hex[:6]}"
+            player = ConnectedPlayer(
+                id=pid,
+                name=name,
+                ready=True,
+                is_bot=True,
+                bot_key=key,
+            )
+            room.players[pid] = player
+            self.player_to_room[pid] = room.code
+            self.token_to_player[player.reconnect_token] = (room.code, pid)
+            added.append(player)
+            n -= 1
+        return added
 
     def reconnect(self, token: str, websocket: WebSocket) -> tuple[GameRoom, ConnectedPlayer]:
         entry = self.token_to_player.get(token)
@@ -237,6 +273,7 @@ class RoomManager:
                     "phase": room.phase.value,
                     "match_number": room.pending_match,
                     "meta": room.meta.to_dict() if room.meta else None,
+                    "reveal_acks": list(room.reveal_acks),
                 },
             )
             await self.send_to(player, msg)
@@ -260,6 +297,42 @@ class RoomManager:
                 ServerMessage(type=ServerMessageType.EVENT, payload={"event": event}),
             )
 
+    def _reveal_ready(self, room: GameRoom) -> bool:
+        needed: list[str] = []
+        for player in room.players.values():
+            if player.is_bot:
+                room.reveal_acks.add(player.id)
+                continue
+            if player.websocket is None:
+                continue
+            needed.append(player.id)
+        if not needed:
+            return True
+        return all(pid in room.reveal_acks for pid in needed)
+
+    async def _finish_if_done(self, room: GameRoom) -> bool:
+        session = room.session
+        if session is None or not session.done:
+            return False
+        match_end = room.finish_match()
+        await self.broadcast(
+            room,
+            ServerMessage(type=ServerMessageType.MATCH_END, payload=match_end),
+        )
+        if room.check_game_over():
+            room.phase = RoomPhase.GAME_END
+            await self.broadcast(
+                room,
+                ServerMessage(
+                    type=ServerMessageType.GAME_END,
+                    payload=room.get_game_end_payload(),
+                ),
+            )
+        else:
+            room.pending_match = match_end["match_number"] + 1
+            room.phase = RoomPhase.MATCH_INTRO
+        return True
+
     async def handle_action(
         self, room: GameRoom, player_id: str, payload: dict[str, Any]
     ) -> None:
@@ -269,37 +342,37 @@ class RoomManager:
         dec = session.current_decision()
         if dec is None:
             return
+        action_type = payload.get("action_type", "pass")
+        is_reveal = dec.dtype.value == "reveal" or action_type == "continue_reveal"
         player_seat = room.players[player_id].seat
+        if is_reveal:
+            room.reveal_acks.add(player_id)
+            if not self._reveal_ready(room):
+                await self.broadcast_game_state(room)
+                return
+            room.reveal_acks.clear()
+            session.apply_action(HumanAction(action_type="continue_reveal"))
+            if await self._finish_if_done(room):
+                return
+            await self.broadcast_game_state(room)
+            await self.drive_bots(room)
+            return
+
         if player_seat != dec.seat:
             raise ValueError("Not your turn")
 
         action = HumanAction(
-            action_type=payload.get("action_type", "pass"),
+            action_type=action_type,
             payload=payload.get("data", payload),
         )
         session.apply_action(action)
+        room.reveal_acks.clear()
 
-        if session.done:
-            match_end = room.finish_match()
-            await self.broadcast(
-                room,
-                ServerMessage(type=ServerMessageType.MATCH_END, payload=match_end),
-            )
-            if room.check_game_over():
-                room.phase = RoomPhase.GAME_END
-                await self.broadcast(
-                    room,
-                    ServerMessage(
-                        type=ServerMessageType.GAME_END,
-                        payload=room.get_game_end_payload(),
-                    ),
-                )
-            else:
-                room.pending_match = match_end["match_number"] + 1
-                room.phase = RoomPhase.MATCH_INTRO
+        if await self._finish_if_done(room):
             return
 
         await self.broadcast_game_state(room)
+        await self.drive_bots(room)
 
     async def handle_proposal_response(
         self, room: GameRoom, player_id: str, accept: bool, proposal_id: str
@@ -342,3 +415,77 @@ class RoomManager:
 
         # Do NOT step DecisionEngine — leave the current negotiator's turn intact.
         await self.broadcast_game_state(room)
+        await self.drive_bots(room)
+
+    async def drive_bots(self, room: GameRoom) -> None:
+        """Advance bot seats, auto-answer their proposals, and auto-continue reveals."""
+        lock = _room_bot_locks.setdefault(room.code, asyncio.Lock())
+        if lock.locked():
+            return
+        async with lock:
+            while room.session is not None and room.phase == RoomPhase.PLAYING:
+                if await self._bots_answer_proposals(room):
+                    await self.broadcast_game_state(room)
+                    continue
+
+                dec = room.session.current_decision()
+                if dec is None:
+                    break
+
+                if dec.dtype.value == "reveal":
+                    for player in room.players.values():
+                        if player.is_bot:
+                            room.reveal_acks.add(player.id)
+                    if self._reveal_ready(room):
+                        room.reveal_acks.clear()
+                        room.session.apply_action(HumanAction(action_type="continue_reveal"))
+                        if await self._finish_if_done(room):
+                            return
+                        await self.broadcast_game_state(room)
+                        continue
+                    await self.broadcast_game_state(room)
+                    break
+
+                pid = room.session.player_id_for_seat(dec.seat)
+                actor = room.players.get(pid)
+                if actor is None or not actor.is_bot:
+                    break
+
+                await asyncio.sleep(0.2)
+                action = decide_bot_action(actor.bot_key or "exploit", room.session, dec)
+                room.session.apply_action(action)
+                room.reveal_acks.clear()
+                if await self._finish_if_done(room):
+                    return
+                await self.broadcast_game_state(room)
+
+    async def _bots_answer_proposals(self, room: GameRoom) -> bool:
+        session = room.session
+        if session is None or session.state.phase.value != "negotiation":
+            return False
+        from engine.negotiation import accept_proposal, reject_proposal
+
+        for player in room.players.values():
+            if not player.is_bot or player.seat is None:
+                continue
+            pending = [
+                p
+                for p in session.state.pending_proposals
+                if p.get("status") == "pending"
+                and (
+                    p.get("target") == player.seat
+                    or player.seat in (p.get("targets") or [])
+                )
+            ]
+            if not pending:
+                continue
+            proposal = pending[0]
+            accept = bot_should_accept(
+                player.bot_key or "exploit", proposal, session.rng
+            )
+            if accept:
+                ok = accept_proposal(session.state, player.seat, proposal["id"])
+            else:
+                ok = reject_proposal(session.state, player.seat, proposal["id"])
+            return bool(ok)
+        return False

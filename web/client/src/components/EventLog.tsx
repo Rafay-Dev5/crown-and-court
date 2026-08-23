@@ -1,3 +1,4 @@
+import { describeEvent } from "../eventText";
 import { useGameStore } from "../store";
 
 type Props = {
@@ -12,54 +13,25 @@ function useSeatName() {
   };
 }
 
+const HIDDEN_TYPES = new Set(["shield_registered", "negotiation_complete"]);
+
 export default function EventLog({ events }: Props) {
   const seatName = useSeatName();
-  const recent = events.slice(-8).reverse();
-
-  const formatEvent = (e: Record<string, unknown>) => {
-    const type = e.type as string;
-    switch (type) {
-      case "negotiation_pass":
-        return `${seatName(e.seat)} passed`;
-      case "propose_trade": {
-        const offer = e.offer_gold ?? 0;
-        const request = e.request_gold ?? 0;
-        return `${seatName(e.proposer)} offers ${offer}g to ${seatName(e.target)} (asks ${request}g)`;
-      }
-      case "trade_executed":
-        return `Trade completed (${seatName(e.proposer)} ↔ ${seatName(e.target)})`;
-      case "gold_gifted":
-        return `${e.amount}g gifted (${seatName(e.from_seat)} → ${seatName(e.to_seat)})`;
-      case "alliance_formed":
-        return "Alliance formed";
-      case "propose_alliance":
-        return `${seatName(e.proposer)} proposed an alliance`;
-      case "proposal_accepted":
-        return `Proposal accepted by ${seatName(e.accepter)}`;
-      case "proposal_rejected":
-        return `Proposal rejected by ${seatName(e.rejecter)}`;
-      case "card_revealed":
-        return `${e.name} played`;
-      case "succession":
-      case "seat_swap":
-        return `👑 Succession! ${seatName(e.new_king_seat ?? e.ascending_seat)} ascends`;
-      case "game_end":
-        return `Match over — ${seatName(e.winner_seat)} wins`;
-      case "round_start":
-        return `— Round ${e.round} begins —`;
-      default:
-        return type.replace(/_/g, " ");
-    }
-  };
+  const recent = events.filter((e) => !HIDDEN_TYPES.has(String(e.type))).slice(-8).reverse();
 
   return (
-    <div className="bg-royal-dark/60 rounded-lg p-3 max-h-32 overflow-y-auto scrollbar-thin text-xs">
+    <div className="w-full max-h-36 overflow-y-auto scrollbar-thin text-left">
       {recent.length === 0 ? (
-        <p className="text-parchment/40 italic">Event log...</p>
+        <p className="text-parchment/40 italic text-center text-sm">The table is quiet…</p>
       ) : (
         recent.map((e, i) => (
-          <p key={i} className="text-parchment/80 py-0.5 border-b border-parchment/10 last:border-0">
-            {formatEvent(e)}
+          <p
+            key={`${String(e.type)}-${i}-${String(e.seat ?? e.name ?? "")}`}
+            className={`py-1 border-b border-parchment/10 last:border-0 ${
+              i === 0 ? "text-parchment text-sm" : "text-parchment/65 text-xs"
+            }`}
+          >
+            {describeEvent(e, seatName)}
           </p>
         ))
       )}

@@ -173,6 +173,15 @@ export function useGameSocket() {
     sendShared({ type: "join", payload: { action: "create", name } });
   }, []);
 
+  const practiceVsBots = useCallback((name: string) => {
+    localStorage.removeItem("cc_reconnect_token");
+    sendShared({ type: "join", payload: { action: "practice", name } });
+  }, []);
+
+  const addBots = useCallback(() => {
+    sendShared({ type: "add_bots", payload: {} });
+  }, []);
+
   const joinLobby = useCallback((code: string, name: string) => {
     localStorage.removeItem("cc_reconnect_token");
     sendShared({ type: "join", payload: { action: "join", code, name } });
@@ -184,6 +193,10 @@ export function useGameSocket() {
     );
     const next = !(me?.ready ?? false);
     sendShared({ type: "ready", payload: { ready: next } });
+  }, []);
+
+  const setReady = useCallback((ready: boolean) => {
+    sendShared({ type: "ready", payload: { ready } });
   }, []);
 
   const startGame = useCallback(() => {
@@ -213,8 +226,11 @@ export function useGameSocket() {
   return {
     send: sendShared,
     createLobby,
+    practiceVsBots,
+    addBots,
     joinLobby,
     toggleReady,
+    setReady,
     startGame,
     beginMatch,
     nextMatch,

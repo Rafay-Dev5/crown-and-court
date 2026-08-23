@@ -147,6 +147,7 @@ async def handle_message(
             await _send_error(websocket, f"Failed to start match: {exc}")
             return player_id, room_code
         await rooms.broadcast_game_state(room)
+        await rooms.drive_bots(room)
 
     elif msg.type == ClientMessageType.NEXT_MATCH:
         # After MATCH_END the room is already MATCH_INTRO; broadcast intro so all clients sync.
@@ -198,6 +199,17 @@ async def handle_message(
         except ValueError as e:
             await _send_error(websocket, str(e))
 
+    elif msg.type == ClientMessageType.ADD_BOTS:
+        if player_id != room.host_id:
+            await _send_error(websocket, "Only the host can add bots")
+            return player_id, room_code
+        try:
+            rooms.fill_bots(room)
+        except ValueError as exc:
+            await _send_error(websocket, str(exc))
+            return player_id, room_code
+        await rooms.broadcast_lobby(room)
+
     return player_id, room_code
 
 
@@ -208,16 +220,12 @@ async def _handle_join(
     name = msg.payload.get("name", "Player").strip()[:24] or "Player"
     player_id = msg.payload.get("player_id") or str(uuid.uuid4())
 
-    if action == "create":
+    if action in ("create", "practice"):
         room = rooms.create_room(player_id, name)
         room.players[player_id].websocket = websocket
-        await rooms.send_to(
-            room.players[player_id],
-            ServerMessage(
-                type=ServerMessageType.LOBBY_STATE,
-                payload=_lobby_payload(room, player_id),
-            ),
-        )
+        if action == "practice":
+            rooms.fill_bots(room)
+        await rooms.broadcast_lobby(room)
         return player_id, room.code
 
     code = (msg.payload.get("code") or "").upper().strip().replace(" ", "")

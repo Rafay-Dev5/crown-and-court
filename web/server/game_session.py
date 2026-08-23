@@ -24,6 +24,7 @@ from web.server.protocol import (
     PrivateGameState,
     PublicGameState,
     PublicSeatState,
+    PublicStatus,
 )
 
 
@@ -47,6 +48,7 @@ def default_web_config() -> dict[str, Any]:
             "max_negotiation_trades_per_phase": 2,
             "alternate_turn_direction": True,
             "random_starting_king_seat": False,
+            "pause_between_reveals": True,
         }
     )
     return cfg
@@ -111,6 +113,8 @@ class GameSession:
         elif dec.dtype == DecisionType.CHOICE:
             choice_idx = int(action.payload.get("choice_index", 0))
             self.engine.step(choice_idx)
+        elif dec.dtype == DecisionType.REVEAL:
+            self.engine.step(0)
         else:
             self.engine.step(0)
 
@@ -216,17 +220,29 @@ class GameSession:
                     gifted_gold=p.gifted_gold,
                     hand_size=len(s.hand),
                     deck_size=len(s.deck),
-                    statuses=[st.name for st in s.statuses],
+                    gift_sent=int(self.state.negotiation_gift_sent.get(seat, 0)),
+                    statuses=[
+                        PublicStatus(
+                            name=st.name,
+                            remaining_rounds=max(1, st.expires_after_round - self.state.current_round),
+                        )
+                        for st in self.state.unique_statuses(seat)
+                    ],
                 )
             )
 
-        neg_tick = getattr(self.engine, "_neg_tick", None)
+        phase = self.state.phase.value
+        neg_tick = getattr(self.engine, "_neg_tick", None) if phase == "negotiation" else None
         neg_ticks = int(self.state.config.get("negotiation_ticks", 4))
+        max_gift = int(self.state.config.get("max_negotiation_gift", 120))
+        max_gift_phase = int(self.state.config.get("max_negotiation_gift_per_phase", 120))
+        played = getattr(self.engine, "_played_buffer", []) or []
+        locked_seats = sorted({int(seat) for seat, _card in played})
 
         return PublicGameState(
             current_round=self.state.current_round,
             n_rounds=self.state.n_rounds,
-            phase=self.state.phase.value,
+            phase=phase,
             king_seat=self.state.king_seat,
             turn_direction=self.state.turn_direction,
             seats=seats,
@@ -237,6 +253,9 @@ class GameSession:
             ],
             negotiation_tick=neg_tick,
             negotiation_ticks=neg_ticks,
+            locked_seats=locked_seats,
+            max_negotiation_gift=max_gift,
+            max_negotiation_gift_per_phase=max_gift_phase,
         )
 
     def build_private_state(self, player_id: str) -> PrivateGameState:

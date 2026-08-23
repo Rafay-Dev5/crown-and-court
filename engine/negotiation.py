@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable
 
 from engine.rng import GameRNG
-from engine.state import Alliance, ConditionalPromise, GameState, Phase, StatusTag
+from engine.state import Alliance, ConditionalPromise, GameState, Phase
 
 
 def _next_proposal_id(state: GameState) -> str:
@@ -195,8 +195,28 @@ def _execute_trade(
         trade_remaining[proposer] = trade_cap
         trade_remaining[target] = trade_cap
 
-    _apply_trade_payload(state, proposer, offer, target, trade_remaining)
-    _apply_trade_payload(state, target, request, proposer, trade_remaining)
+    offered = _apply_trade_payload(state, proposer, offer, target, trade_remaining)
+    requested = _apply_trade_payload(state, target, request, proposer, trade_remaining)
+    # One-way gifts brand the recipient so they cannot vacuum more bribes.
+    # Even trades (gold both ways) do not — that was reading as a random Oathbreaker.
+    if offered > 0 and requested == 0:
+        state.apply_status(target, "oathbreaker", 2)
+        state.log_event(
+            "mark_status",
+            seat=target,
+            status="oathbreaker",
+            duration=2,
+            reason="negotiation_gift_received",
+        )
+    elif requested > 0 and offered == 0:
+        state.apply_status(proposer, "oathbreaker", 2)
+        state.log_event(
+            "mark_status",
+            seat=proposer,
+            status="oathbreaker",
+            duration=2,
+            reason="negotiation_gift_received",
+        )
     for seat in (proposer, target):
         state.negotiation_trades_executed[seat] = state.negotiation_trades_executed.get(seat, 0) + 1
     state.log_event("trade_executed", proposer=proposer, target=target)
@@ -209,9 +229,10 @@ def _apply_trade_payload(
     payload: dict[str, Any],
     counterparty: int,
     trade_remaining: dict[int, int] | None = None,
-) -> None:
+) -> int:
     person = state.person_at_seat(seat)
     other = state.person_at_seat(counterparty)
+    transferred = 0
 
     gold = int(payload.get("gold", 0))
     max_gift = int(state.config.get("max_negotiation_gift", 0))
@@ -251,16 +272,7 @@ def _apply_trade_payload(
             to_person=other.person_id,
             amount=transfer,
         )
-        state.seats[counterparty].statuses.append(
-            StatusTag(name="oathbreaker", expires_after_round=state.current_round + 2)
-        )
-        state.log_event(
-            "mark_status",
-            seat=counterparty,
-            status="oathbreaker",
-            duration=2,
-            reason="negotiation_gift_received",
-        )
+        transferred = transfer
 
     cards = payload.get("cards", [])
     for card_id in cards:
@@ -269,6 +281,7 @@ def _apply_trade_payload(
                 state.seats[seat].hand.pop(idx)
                 state.seats[counterparty].hand.append(card)
                 break
+    return transferred
 
 
 def run_negotiation_phase(

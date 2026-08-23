@@ -41,6 +41,8 @@ def test_meta_game_king_defends():
             session.apply_action(
                 HumanAction(action_type="choice", payload={"choice_index": 0})
             )
+        elif dec.dtype.value == "reveal":
+            session.apply_action(HumanAction(action_type="continue_reveal"))
 
     result = meta.compute_match_scores(session.state)
     assert result.winner_player_id in ids
@@ -85,6 +87,55 @@ def test_websocket_create_and_join():
             msg2 = json.loads(ws2.receive_text())
             assert msg2["type"] == "lobby_state"
             assert len(msg2["payload"]["players"]) == 2
+
+
+def test_practice_lobby_fills_three_named_bots():
+    client = TestClient(app)
+    with client.websocket_connect("/ws") as ws:
+        ws.send_json({"type": "join", "payload": {"action": "practice", "name": "Host"}})
+        msg = json.loads(ws.receive_text())
+        assert msg["type"] == "lobby_state"
+        names = {p["name"] for p in msg["payload"]["players"]}
+        assert "Host" in names
+        assert "The Hoarder" in names
+        assert "The Aggressor" in names
+        assert "The Diplomat" in names
+        assert sum(1 for p in msg["payload"]["players"] if p.get("is_bot")) == 3
+
+
+def test_four_bots_play_full_meta_game():
+    from web.server.bots import decide_bot_action
+
+    ids = ["hoard", "aggressive", "ally_neighbor", "exploit"]
+    names = ["The Hoarder", "The Aggressor", "The Diplomat", "The Opportunist"]
+    meta = MetaGameManager(ids, names)
+    finished = 0
+    for match in range(1, 5):
+        if meta.is_game_over():
+            break
+        king = meta.starting_king_seat_for_match(match)
+        session = GameSession(ids, names, starting_king_seat=king, seed=200 + match)
+        meta.record_match_start(match, session.state)
+        steps = 0
+        while not session.done and steps < 8000:
+            dec = session.current_decision()
+            if dec is None:
+                break
+            if dec.dtype.value == "reveal":
+                session.apply_action(HumanAction(action_type="continue_reveal"))
+            else:
+                key = ids[dec.seat]
+                session.apply_action(decide_bot_action(key, session, dec))
+            steps += 1
+        assert session.done, f"match {match} did not finish after {steps} steps"
+        meta.compute_match_scores(session.state)
+        finished += 1
+        public = session.build_public_state()
+        assert all(hasattr(st, "name") for seat in public.seats for st in seat.statuses)
+    assert finished >= 1
+    winners = meta.determine_winners()
+    assert winners
+    assert all(w in ids for w in winners)
 
 
 def test_websocket_ready_and_reconnect_token():

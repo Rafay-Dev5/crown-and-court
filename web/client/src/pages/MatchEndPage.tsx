@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { RulesButton } from "../components/RulesModal";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useGameStore } from "../store";
 
@@ -24,14 +25,18 @@ export default function MatchEndPage() {
         animate={{ opacity: 1, y: 0 }}
         className="panel-parchment p-8 w-full max-w-xl"
       >
-        <h2 className="text-2xl font-display text-center text-royal-dark mb-2">
-          Match {matchEnd.match_number} Complete
+        <p className="font-display text-xs tracking-[0.25em] text-center text-royal-dark/50 uppercase">
+          Match {matchEnd.match_number} of 4
+        </p>
+        <h2 className="text-3xl font-display text-center text-royal-dark mb-2 mt-1">
+          The crown is decided
         </h2>
-        <p className="text-center text-royal-dark/80 mb-6">
+        <p className="text-center text-royal-dark/80 mb-2">
           Winner: <strong>{winnerName}</strong>
           {matchEnd.winner_started_as_king ? " (defended as King)" : " (rose from Noble)"}
-          {" → "}
-          <span className="text-royal-gold font-bold">
+        </p>
+        <p className="text-center mb-6">
+          <span className="text-royal-gold font-bold text-xl">
             +{matchEnd.points_awarded[matchEnd.winner_player_id]} pts
           </span>
         </p>
@@ -68,8 +73,11 @@ export default function MatchEndPage() {
               Next Match ({upcoming} of 4)
             </button>
             <p className="text-xs text-royal-dark/50 mt-2">
-              Any player can continue — everyone advances together.
+              Any player can continue — everyone advances together. The next starting King rotates.
             </p>
+            <div className="mt-3">
+              <RulesButton />
+            </div>
           </div>
         )}
 

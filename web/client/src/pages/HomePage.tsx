@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { RulesButton } from "../components/RulesModal";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useGameStore } from "../store";
 
 export default function HomePage() {
   const [mode, setMode] = useState<"menu" | "create" | "join">("menu");
   const [joinCode, setJoinCode] = useState("");
-  const { createLobby, joinLobby, connected } = useGameSocket();
+  const { createLobby, practiceVsBots, joinLobby, connected } = useGameSocket();
   const { playerName, setPlayerName, error, setError } = useGameStore();
+
+  useEffect(() => {
+    const saved = localStorage.getItem("cc_player_name");
+    if (saved && !playerName) setPlayerName(saved);
+  }, [playerName, setPlayerName]);
 
   // Prefill join from invite link ?code=ABCD
   useEffect(() => {
@@ -23,6 +29,12 @@ export default function HomePage() {
     if (!playerName.trim()) return;
     setError(null);
     createLobby(playerName.trim());
+  };
+
+  const handlePractice = () => {
+    if (!playerName.trim()) return;
+    setError(null);
+    practiceVsBots(playerName.trim());
   };
 
   const handleJoin = () => {
@@ -76,9 +88,19 @@ export default function HomePage() {
             <button className="btn-royal w-full" onClick={() => setMode("create")} disabled={!connected}>
               Create Lobby
             </button>
+            <button
+              className="btn-royal w-full"
+              onClick={handlePractice}
+              disabled={!playerName.trim() || !connected}
+            >
+              Practice vs Bots
+            </button>
             <button className="btn-outline w-full" onClick={() => setMode("join")} disabled={!connected}>
               Join with Code
             </button>
+            <div className="text-center mt-1">
+              <RulesButton />
+            </div>
           </div>
         )}
 
@@ -119,6 +141,10 @@ export default function HomePage() {
       <div className="mt-8 text-center text-parchment/60 text-sm max-w-md">
         <p>4 players · 4 matches · 4 rounds each</p>
         <p className="mt-2">First to 10 points wins the game. Everyone gets to be King once.</p>
+        <p className="mt-2 text-parchment/45">
+          Practice seats you against The Hoarder, The Aggressor, and The Diplomat — a full
+          four-match table so you can see negotiation, reveals, and succession.
+        </p>
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable
 
+from engine.card_text import describe_card_full_lines
 from engine.effects.interpreter import resolve_card
 from engine.negotiation import pass_action, random_negotiation_policy
 from engine.phases import (
@@ -21,6 +23,7 @@ class DecisionType(str, Enum):
     NEGOTIATION = "negotiation"
     PLAY = "play"
     CHOICE = "choice"
+    REVEAL = "reveal"
     DONE = "done"
 
 
@@ -124,6 +127,7 @@ class DecisionEngine:
             options = dec.context.get("options", [])
             choice = options[action % len(options)]["id"] if options else None
             target = dec.context.get("target_seat", card_seat)
+            event_start = len(self.state.event_log)
             resolve_card(
                 self.state,
                 card,
@@ -133,13 +137,50 @@ class DecisionEngine:
                 selected_choice=choice,
             )
             self.state.seats[card_seat].discard.append(card)
+            effects = self.state.event_log[event_start:]
             self.queue.pop(0)
             self._play_reveal_idx += 1
+            if self._pause_reveals():
+                self.queue = [
+                    self._reveal_decision(
+                        card, card_seat, target, effects, selected_choice=choice
+                    )
+                ]
+            else:
+                self._resolve_next_reveal()
+        elif dec.dtype == DecisionType.REVEAL:
+            self.queue.pop(0)
             self._resolve_next_reveal()
 
         if not self.queue and not self.done:
             self._advance_phase()
         return self.state
+
+    def _pause_reveals(self) -> bool:
+        return bool(self.config.get("pause_between_reveals"))
+
+    def _reveal_decision(
+        self,
+        card: dict[str, Any],
+        card_seat: int,
+        target_seat: int | None,
+        effects: list[dict[str, Any]],
+        selected_choice: str | None = None,
+    ) -> PendingDecision:
+        return PendingDecision(
+            seat=card_seat,
+            dtype=DecisionType.REVEAL,
+            context={
+                "card": copy.deepcopy(card),
+                "card_seat": card_seat,
+                "target_seat": target_seat,
+                "index": self._play_reveal_idx,
+                "total": len(self._played_buffer),
+                "effects": copy.deepcopy(effects),
+                "effect_lines": describe_card_full_lines(card),
+                "selected_choice": selected_choice,
+            },
+        )
 
     def _build_negotiation_queue(self) -> None:
         assert self.state
@@ -210,18 +251,26 @@ class DecisionEngine:
                         seat=choice_seat,
                         dtype=DecisionType.CHOICE,
                         context={
-                            "card": card,
+                            "card": copy.deepcopy(card),
                             "options": choices,
                             "target_seat": target,
                             "card_seat": seat,
+                            "index": self._play_reveal_idx + 1,
+                            "total": len(self._played_buffer),
+                            "effect_lines": describe_card_full_lines(card),
                         },
                     )
                 ]
                 return
 
+        event_start = len(self.state.event_log)
         resolve_card(self.state, card, seat, self.rng, target_seat=target)
         self.state.seats[seat].discard.append(card)
+        effects = self.state.event_log[event_start:]
         self._play_reveal_idx += 1
+        if self._pause_reveals():
+            self.queue = [self._reveal_decision(card, seat, target, effects)]
+            return
         self._resolve_next_reveal()
 
     def _advance_phase(self) -> None:

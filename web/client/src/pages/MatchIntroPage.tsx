@@ -1,12 +1,15 @@
 import { motion } from "framer-motion";
+import { RulesButton } from "../components/RulesModal";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useGameStore } from "../store";
 
 export default function MatchIntroPage() {
   const { beginMatch } = useGameSocket();
-  const { matchNumber, matchIntro, meta } = useGameStore();
+  const { matchNumber, matchIntro, meta, playerId, hostId, players } = useGameStore();
 
   const kingName = matchIntro?.kingName ?? "Unknown";
+  const nameFor = (id: string) =>
+    meta?.player_names?.[id] || players.find((p) => p.id === id)?.name || "Player";
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
@@ -38,14 +41,40 @@ export default function MatchIntroPage() {
           <p className="text-royal-dark/70 mt-2 italic">
             Round 1 · Turn direction: clockwise
           </p>
+          {meta && Object.keys(meta.total_points).length > 0 && (
+            <div className="mt-5 text-left text-sm space-y-1.5">
+              <p className="font-display text-[11px] uppercase tracking-wider text-royal-dark/50">
+                Session score
+              </p>
+              {Object.entries(meta.total_points)
+                .sort((a, b) => b[1] - a[1])
+                .map(([id, pts]) => (
+                  <div key={id} className="flex justify-between">
+                    <span>{nameFor(id)}</span>
+                    <span className="font-semibold">{pts} pts</span>
+                  </div>
+                ))}
+            </div>
+          )}
+          <p className="text-sm text-royal-dark/70 mt-4 leading-relaxed">
+            4 rounds. Only earned gold takes the crown. Cards reveal one by one so the whole table
+            can read what happened.
+          </p>
         </motion.div>
 
-        <button
-          className="btn-royal px-12"
-          onClick={() => beginMatch(matchNumber)}
-        >
-          Begin Match
-        </button>
+        {playerId === hostId || !hostId ? (
+          <button
+            className="btn-royal px-12"
+            onClick={() => beginMatch(matchNumber)}
+          >
+            Begin Match
+          </button>
+        ) : (
+          <p className="text-parchment/70 italic">Waiting for the host to begin…</p>
+        )}
+        <div className="mt-4">
+          <RulesButton />
+        </div>
       </motion.div>
     </div>
   );

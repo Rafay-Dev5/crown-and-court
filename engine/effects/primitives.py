@@ -4,7 +4,7 @@ from typing import Any, Callable
 
 from engine.rng import GameRNG
 from engine.shields import check_and_consume_shield, log_attack, register_shield
-from engine.state import ActiveShield, ChoiceRecord, DiceRecord, GameState, PendingChoice, StatusTag
+from engine.state import ActiveShield, ChoiceRecord, DiceRecord, GameState, PendingChoice
 
 EffectContext = dict[str, Any]
 EffectFn = Callable[[GameState, EffectContext, GameRNG], None]
@@ -210,9 +210,7 @@ def swap_hands(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
 def block_succession(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = ctx["seat"]
     duration = int(ctx["params"].get("duration_rounds", 1))
-    state.seats[seat].statuses.append(
-        StatusTag(name="block_succession", expires_after_round=state.current_round + duration)
-    )
+    state.apply_status(seat, "block_succession", duration)
     state.log_event("block_succession", seat=seat, duration=duration)
 
 
@@ -243,9 +241,7 @@ def mark_status(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = _resolve_target(state, ctx["params"].get("target", "self"), ctx)
     name = ctx["params"]["status_name"]
     duration = int(ctx["params"].get("duration_rounds", 2))
-    state.seats[seat].statuses.append(
-        StatusTag(name=name, expires_after_round=state.current_round + duration)
-    )
+    state.apply_status(seat, name, duration)
     state.log_event("mark_status", seat=seat, status=name, duration=duration)
 
 
@@ -266,9 +262,7 @@ def alliance_bonus(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
 
 def skip_next_play(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = _resolve_target(state, ctx["params"].get("target", "target"), ctx)
-    state.seats[seat].statuses.append(
-        StatusTag(name="skip_next_play", expires_after_round=state.current_round + 1)
-    )
+    state.apply_status(seat, "skip_next_play", 1)
     state.log_event("skip_next_play", seat=seat)
 
 
@@ -281,9 +275,7 @@ def gain_legitimacy(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
 
 def extra_play(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = _resolve_target(state, ctx["params"].get("target", "self"), ctx)
-    state.seats[seat].statuses.append(
-        StatusTag(name="extra_play", expires_after_round=state.current_round + 1)
-    )
+    state.apply_status(seat, "extra_play", 1)
     state.log_event("extra_play", seat=seat, count=ctx["params"].get("count", 1))
 
 

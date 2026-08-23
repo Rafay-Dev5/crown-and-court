@@ -9,6 +9,7 @@ type Props = {
   onClick?: () => void;
   faceDown?: boolean;
   small?: boolean;
+  large?: boolean;
   /** When false, no hover/tap preview (e.g. decorative backs). Default true for face-up. */
   previewable?: boolean;
 };
@@ -33,6 +34,7 @@ export default function CardComponent({
   onClick,
   faceDown,
   small,
+  large,
   previewable = true,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -101,7 +103,7 @@ export default function CardComponent({
   if (faceDown) {
     return (
       <div
-        className={`card-back flex-shrink-0 ${small ? "w-14 h-20" : "w-24 h-36"} flex items-center justify-center`}
+        className={`card-back flex-shrink-0 ${large ? "w-36 h-52" : small ? "w-16 h-[5.75rem]" : "w-28 h-40"} flex items-center justify-center`}
       >
         <img src="/assets/card-back.svg" alt="" className="w-8 h-8 opacity-60" />
       </div>
@@ -165,19 +167,21 @@ export default function CardComponent({
       <button
         type="button"
         onClick={handleClick}
-        className={`card-face flex-shrink-0 text-left transition-all duration-200 ${small ? "w-14 h-20 p-1" : "w-24 h-36 p-2"} ${borderClass} border-l-4 ${selected ? "ring-2 ring-royal-gold scale-105 -translate-y-2" : "hover:-translate-y-1"} ${onClick || previewable ? "cursor-pointer" : "cursor-default"}`}
+        aria-label={`${card.category ?? "Card"}: ${card.name}`}
+        className={`card-face flex-shrink-0 text-left transition-all duration-200 ${
+          large ? "w-40 h-56 p-3" : small ? "w-16 h-[5.75rem] p-1.5" : "w-32 h-44 p-2.5"
+        } ${borderClass} border-l-4 ${selected ? "ring-2 ring-royal-gold scale-105 -translate-y-2" : "hover:-translate-y-1"} ${onClick || previewable ? "cursor-pointer" : "cursor-default"}`}
       >
+        <p className={`uppercase tracking-wide opacity-60 ${large ? "text-[11px]" : small ? "text-[8px]" : "text-[10px]"}`}>
+          {card.category}
+        </p>
+        <p className={`font-display font-bold leading-tight mt-1 ${large ? "text-base" : small ? "text-[10px] line-clamp-2" : "text-sm"}`}>
+          {card.name}
+        </p>
         {!small && (
-          <>
-            <p className="text-[10px] uppercase tracking-wide opacity-60">{card.category}</p>
-            <p className="font-display text-xs font-bold leading-tight mt-1">{card.name}</p>
-            <p className="text-[9px] mt-1 line-clamp-3 opacity-80">
-              {describeCardSummary(card)}
-            </p>
-          </>
-        )}
-        {small && (
-          <p className="text-[8px] font-bold truncate">{card.name}</p>
+          <p className={`mt-1.5 opacity-80 leading-snug ${large ? "text-xs line-clamp-7" : "text-[11px] line-clamp-5"}`}>
+            {describeCardSummary(card)}
+          </p>
         )}
       </button>
       {showPreview && anchor && (

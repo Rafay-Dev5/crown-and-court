@@ -65,6 +65,17 @@ def test_negotiation_gift_applies_oathbreaker_to_recipient():
     assert state.person_at_seat(receiver).gifted_gold == 50
 
 
+def test_even_trade_does_not_apply_oathbreaker():
+    state = setup_game(load_config(), GameRNG(seed=13))
+    giver = state.king_seat
+    receiver = state.noble_seats()[0]
+    proposal_id = propose_trade(state, giver, receiver, {"gold": 40}, {"gold": 40})
+    accept_proposal(state, receiver, proposal_id)
+
+    assert not state.has_status(receiver, "oathbreaker")
+    assert not state.has_status(giver, "oathbreaker")
+
+
 def test_royal_census_forces_discredited_target_to_discard():
     cards = _cards_by_id()
     card = cards["king_royal_edict_28_028"]

@@ -6,6 +6,12 @@ export type PlayerInfo = {
   seat: number | null;
   ready: boolean;
   connected: boolean;
+  is_bot?: boolean;
+};
+
+export type StatusInfo = {
+  name: string;
+  remaining_rounds: number;
 };
 
 export type PublicSeat = {
@@ -17,9 +23,10 @@ export type PublicSeat = {
   gold: number;
   earned_gold: number;
   gifted_gold: number;
+  gift_sent?: number;
   hand_size: number;
   deck_size: number;
-  statuses: string[];
+  statuses: Array<StatusInfo | string>;
 };
 
 export type PublicGameState = {
@@ -34,6 +41,9 @@ export type PublicGameState = {
   pending_proposals: Record<string, unknown>[];
   negotiation_tick: number | null;
   negotiation_ticks: number | null;
+  locked_seats?: number[];
+  max_negotiation_gift?: number;
+  max_negotiation_gift_per_phase?: number;
 };
 
 export type PrivateGameState = {
@@ -113,6 +123,7 @@ export type GameStore = {
   matchEnd: MatchEndPayload | null;
   gameEnd: GameEndPayload | null;
   lastSuccession: Record<string, unknown> | null;
+  revealAcks: string[];
 
   setScreen: (s: Screen) => void;
   setPlayerName: (name: string) => void;
@@ -151,7 +162,24 @@ const initialState = {
   matchEnd: null as MatchEndPayload | null,
   gameEnd: null as GameEndPayload | null,
   lastSuccession: null as Record<string, unknown> | null,
+  revealAcks: [] as string[],
 };
+
+function eventKey(e: Record<string, unknown>): string {
+  return JSON.stringify(e);
+}
+
+function mergeEvents(existing: Record<string, unknown>[], incoming: Record<string, unknown>[]): Record<string, unknown>[] {
+  const keys = new Set(existing.map(eventKey));
+  const next = [...existing];
+  for (const ev of incoming) {
+    const k = eventKey(ev);
+    if (keys.has(k)) continue;
+    keys.add(k);
+    next.push(ev);
+  }
+  return next.slice(-50);
+}
 
 export function createGameStore(set: (partial: Partial<GameStore> | ((s: GameStore) => Partial<GameStore>)) => void, get: () => GameStore): GameStore {
   return {
@@ -197,16 +225,23 @@ export function createGameStore(set: (partial: Partial<GameStore> | ((s: GameSto
     },
 
     handleGameState: (payload) => {
+      const incoming = payload.public as PublicGameState;
+      const matchNumber = payload.match_number as number;
+      const prev = get();
+      let events = prev.matchNumber !== matchNumber ? [] : prev.events;
+      if (incoming?.event_log_tail?.length) {
+        events = mergeEvents(events, incoming.event_log_tail);
+      }
       set({
         screen: "game",
-        publicState: payload.public as PublicGameState,
+        publicState: incoming,
         privateState: payload.private as PrivateGameState,
         decision: (payload.decision as DecisionInfo) ?? null,
-        yourSeat: (payload.your_seat as number) ?? get().yourSeat,
-        matchNumber: payload.match_number as number,
-        meta: (payload.meta as MetaState) ?? get().meta,
-        // Fresh match — drop prior match chatter from the log.
-        events: get().matchNumber !== (payload.match_number as number) ? [] : get().events,
+        yourSeat: (payload.your_seat as number) ?? prev.yourSeat,
+        matchNumber,
+        meta: (payload.meta as MetaState) ?? prev.meta,
+        events,
+        revealAcks: (payload.reveal_acks as string[]) ?? [],
       });
     },
 
@@ -220,7 +255,11 @@ export function createGameStore(set: (partial: Partial<GameStore> | ((s: GameSto
 
     handleEvent: (payload) => {
       const event = payload.event as Record<string, unknown>;
-      const events = [...get().events, event].slice(-50);
+      const prev = get().events;
+      if (prev.some((e) => eventKey(e) === eventKey(event))) {
+        return;
+      }
+      const events = [...prev, event].slice(-50);
       const updates: Partial<GameStore> = { events };
       if (event.type === "succession" || event.type === "seat_swap") {
         updates.lastSuccession = event;
