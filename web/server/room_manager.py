@@ -304,39 +304,41 @@ class RoomManager:
     async def handle_proposal_response(
         self, room: GameRoom, player_id: str, accept: bool, proposal_id: str
     ) -> None:
-        if room.session is None:
+        """Accept/reject a pending proposal without consuming the player's negotiation turn.
+
+        Responding mid-phase must not skip the last seats' chance to propose trades.
+        """
+        if room.session is None or room.phase != RoomPhase.PLAYING:
             return
         session = room.session
-        dec = session.current_decision()
-        if dec is None or dec.dtype.value != "negotiation":
-            return
+        state = session.state
+        if state is None or state.phase.value != "negotiation":
+            raise ValueError("Proposals can only be answered during negotiation")
+
         player_seat = room.players[player_id].seat
-        if player_seat != dec.seat:
-            raise ValueError("Not your turn")
+        if player_seat is None:
+            raise ValueError("Player has no seat")
 
-        action_type = "accept_proposal" if accept else "reject_proposal"
-        session.apply_action(
-            HumanAction(action_type=action_type, payload={"proposal_id": proposal_id})
+        proposal = next(
+            (p for p in state.pending_proposals if p.get("id") == proposal_id),
+            None,
         )
+        if proposal is None or proposal.get("status") != "pending":
+            raise ValueError("Proposal not found")
 
-        if session.done:
-            match_end = room.finish_match()
-            await self.broadcast(
-                room,
-                ServerMessage(type=ServerMessageType.MATCH_END, payload=match_end),
-            )
-            if room.check_game_over():
-                room.phase = RoomPhase.GAME_END
-                await self.broadcast(
-                    room,
-                    ServerMessage(
-                        type=ServerMessageType.GAME_END,
-                        payload=room.get_game_end_payload(),
-                    ),
-                )
-            else:
-                room.pending_match = match_end["match_number"] + 1
-                room.phase = RoomPhase.MATCH_INTRO
-            return
+        is_target = proposal.get("target") == player_seat
+        is_alliance_target = player_seat in (proposal.get("targets") or [])
+        if not is_target and not is_alliance_target:
+            raise ValueError("This proposal is not addressed to you")
 
+        from engine.negotiation import accept_proposal, reject_proposal
+
+        if accept:
+            ok = accept_proposal(state, player_seat, proposal_id)
+        else:
+            ok = reject_proposal(state, player_seat, proposal_id)
+        if not ok:
+            raise ValueError("Could not update proposal")
+
+        # Do NOT step DecisionEngine — leave the current negotiator's turn intact.
         await self.broadcast_game_state(room)

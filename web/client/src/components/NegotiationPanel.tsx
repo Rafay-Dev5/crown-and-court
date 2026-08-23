@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGameStore } from "../store";
 
 type Props = {
@@ -10,11 +10,18 @@ type Props = {
 export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props) {
   const { publicState, yourSeat } = useGameStore();
   const [mode, setMode] = useState<"menu" | "trade" | "alliance">("menu");
-  const [targetSeat, setTargetSeat] = useState(0);
+  const others = publicState?.seats.filter((s) => s.seat_id !== yourSeat) ?? [];
+  const [targetSeat, setTargetSeat] = useState<number>(-1);
   const [offerGold, setOfferGold] = useState(0);
   const [requestGold, setRequestGold] = useState(0);
 
-  const others = publicState?.seats.filter((s) => s.seat_id !== yourSeat) ?? [];
+  // Never default to seat 0 — that is often yourself (King) and silently self-trades.
+  useEffect(() => {
+    if (others.length === 0) return;
+    if (!others.some((s) => s.seat_id === targetSeat)) {
+      setTargetSeat(others[0].seat_id);
+    }
+  }, [others, targetSeat]);
 
   if (mode === "trade") {
     return (
@@ -45,13 +52,23 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
               onChange={(e) => setRequestGold(Number(e.target.value))}
               className="block mt-1 px-2 py-1 rounded border w-20" />
           </label>
-          <button className="btn-royal text-sm py-2" onClick={() => {
-            onTrade(targetSeat, offerGold, requestGold);
-            setMode("menu");
-          }}>Send</button>
+          <button
+            className="btn-royal text-sm py-2"
+            disabled={targetSeat < 0 || targetSeat === yourSeat}
+            onClick={() => {
+              onTrade(targetSeat, offerGold, requestGold);
+              setMode("menu");
+              setOfferGold(0);
+              setRequestGold(0);
+            }}
+          >
+            Send
+          </button>
           <button className="btn-outline text-sm py-2" onClick={() => setMode("menu")}>Cancel</button>
         </div>
-        <p className="text-xs text-amber-800 mt-2">Gift limit: 120g per phase/trade. Gifted gold does not count for succession.</p>
+        <p className="text-xs text-amber-800 mt-2">
+          Gift limit: 120g per phase/trade. Gifted gold does not count for succession.
+        </p>
       </div>
     );
   }
@@ -69,10 +86,16 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
             <option key={s.seat_id} value={s.seat_id}>{s.player_name}</option>
           ))}
         </select>
-        <button className="btn-royal text-sm py-2 mr-2" onClick={() => {
-          onAlliance([targetSeat]);
-          setMode("menu");
-        }}>Propose</button>
+        <button
+          className="btn-royal text-sm py-2 mr-2"
+          disabled={targetSeat < 0 || targetSeat === yourSeat}
+          onClick={() => {
+            onAlliance([targetSeat]);
+            setMode("menu");
+          }}
+        >
+          Propose
+        </button>
         <button className="btn-outline text-sm py-2" onClick={() => setMode("menu")}>Cancel</button>
       </div>
     );

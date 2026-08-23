@@ -30,7 +30,14 @@ def propose_trade(
     }
     state.pending_proposals.append(proposal)
     state.negotiation_history.append(proposal)
-    state.log_event("propose_trade", proposal_id=pid, proposer=proposer, target=target)
+    state.log_event(
+        "propose_trade",
+        proposal_id=pid,
+        proposer=proposer,
+        target=target,
+        offer_gold=int(offer.get("gold", 0) or 0),
+        request_gold=int(request.get("gold", 0) or 0),
+    )
     return pid
 
 

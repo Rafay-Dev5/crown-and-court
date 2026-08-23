@@ -47,9 +47,50 @@ export default function GamePage() {
     ? `Pass ${(publicState.negotiation_tick ?? 0) + 1} of ${publicState.negotiation_ticks ?? 4}`
     : "";
 
-  const pendingForMe = publicState.pending_proposals.filter(
-    (p) => p.target === yourSeat && p.status === "pending"
-  );
+  const seatName = (seatId: unknown) => {
+    if (typeof seatId !== "number") return "?";
+    return publicState.seats.find((s) => s.seat_id === seatId)?.player_name ?? `Seat ${seatId}`;
+  };
+
+  const pendingForMe = publicState.pending_proposals.filter((p) => {
+    if (p.status && p.status !== "pending") return false;
+    if (p.target === yourSeat) return true;
+    const targets = p.targets;
+    return Array.isArray(targets) && targets.includes(yourSeat);
+  });
+
+  const describeProposal = (p: Record<string, unknown>) => {
+    const from = seatName(p.proposer);
+    if (p.type === "trade") {
+      const offer = (p.offer as { gold?: number } | undefined)?.gold ?? 0;
+      const request = (p.request as { gold?: number } | undefined)?.gold ?? 0;
+      return (
+        <span className="text-sm">
+          <strong>{from}</strong> offers you a trade: they give{" "}
+          <strong className="text-royal-gold">{offer}g</strong>, ask for{" "}
+          <strong className="text-royal-gold">{request}g</strong>
+          {offer > 0 && (
+            <span className="block text-xs text-amber-800 mt-0.5">
+              Received gold counts as gifted (does not help succession).
+            </span>
+          )}
+        </span>
+      );
+    }
+    if (p.type === "alliance") {
+      return (
+        <span className="text-sm">
+          <strong>{from}</strong> proposes an alliance
+          {p.terms ? `: “${String(p.terms)}”` : ""}
+        </span>
+      );
+    }
+    return (
+      <span className="text-sm">
+        <strong>{from}</strong> sent a {String(p.type)} proposal
+      </span>
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col p-4">
@@ -92,15 +133,33 @@ export default function GamePage() {
         ))}
       </div>
 
-      {/* Pending proposals */}
-      {pendingForMe.length > 0 && isMyTurn && (
+      {/* Pending proposals — respond anytime in negotiation; does not spend your turn */}
+      {pendingForMe.length > 0 && publicState.phase === "negotiation" && (
         <div className="panel-parchment p-4 max-w-2xl mx-auto mt-4">
-          <p className="font-display text-sm mb-2">Incoming proposals:</p>
+          <p className="font-display text-sm mb-2">Incoming proposals</p>
+          <p className="text-xs text-royal-dark/60 mb-3">
+            Accept or reject without ending your negotiation turn — you can still trade afterward.
+          </p>
           {pendingForMe.map((p) => (
-            <div key={p.id as string} className="flex items-center gap-2 mb-2">
-              <span className="text-sm">{p.type as string} from seat {p.proposer as number}</span>
-              <button className="btn-royal text-xs py-1 px-3" onClick={() => acceptProposal(p.id as string)}>Accept</button>
-              <button className="btn-outline text-xs py-1 px-3" onClick={() => rejectProposal(p.id as string)}>Reject</button>
+            <div
+              key={p.id as string}
+              className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3 pb-3 border-b border-royal-gold/20 last:border-0 last:mb-0 last:pb-0"
+            >
+              {describeProposal(p)}
+              <div className="flex gap-2 sm:ml-auto shrink-0">
+                <button
+                  className="btn-royal text-xs py-1 px-3"
+                  onClick={() => acceptProposal(p.id as string)}
+                >
+                  Accept
+                </button>
+                <button
+                  className="btn-outline text-xs py-1 px-3"
+                  onClick={() => rejectProposal(p.id as string)}
+                >
+                  Reject
+                </button>
+              </div>
             </div>
           ))}
         </div>
