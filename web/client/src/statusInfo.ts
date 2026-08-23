@@ -7,7 +7,7 @@ export const STATUS_HELP: Record<string, { label: string; description: string }>
   oathbreaker: {
     label: "Oathbreaker",
     description:
-      "Cannot receive gifted gold in trades. You get this when you accept a one-way gift (they pay you, you pay nothing), or from some cards. Lasts the shown number of rounds. Gifted gold still never counts toward becoming King.",
+      "Cannot receive gold or cards in trades. Applied when a trade is too one-sided (see Rules), or by some cards. Lasts the shown number of rounds.",
   },
   marked: {
     label: "Marked",
@@ -15,7 +15,8 @@ export const STATUS_HELP: Record<string, { label: string; description: string }>
   },
   corrupt: {
     label: "Corrupt",
-    description: "You lose gold at the end of each round while this lasts.",
+    description:
+      "At the end of each round, you lose 100 gold to the King (or as much as you have left). Lasts the shown number of rounds.",
   },
   discredited: {
     label: "Discredited",

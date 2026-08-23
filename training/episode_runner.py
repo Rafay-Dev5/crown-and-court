@@ -28,14 +28,34 @@ def apply_negotiation_action(state, seat: int, action: int, rng: GameRNG) -> Non
     elif act == 1:
         target = others[action % len(others)]
         cap = int(state.config.get("max_negotiation_gift", 100))
-        propose_trade(state, seat, target, {"gold": 0}, {"gold": min(cap, 50)})
+        try:
+            propose_trade(
+                state,
+                seat,
+                target,
+                {"gold": min(cap, 50), "cards": []},
+                {"gold": 0, "card_count": 1},
+            )
+        except ValueError:
+            pass_action(state, seat)
     elif act == 2:
         target = others[action % len(others)]
         propose_alliance(state, seat, [target], terms="policy pact")
     elif act == 3:
         pending = [p for p in state.pending_proposals if p.get("status") == "pending" and p.get("target") == seat]
         if pending:
-            accept_proposal(state, seat, pending[0]["id"])
+            from engine.negotiation import _card_count_request
+
+            prop = pending[0]
+            needed = _card_count_request(prop.get("request"))
+            fulfillment = None
+            if needed > 0:
+                hand = state.seats[seat].hand
+                if len(hand) < needed:
+                    pass_action(state, seat)
+                    return
+                fulfillment = [c["id"] for c in hand[:needed]]
+            accept_proposal(state, seat, prop["id"], fulfillment_cards=fulfillment)
         else:
             pass_action(state, seat)
     elif act == 4:

@@ -50,7 +50,7 @@ seat_bots:
 - exploit
 - hoard
 - aggressive
-succession_checker: earned_gold
+succession_checker: gold_only
 train_all_seats: true
 train_seat: 0
 use_ctde: true

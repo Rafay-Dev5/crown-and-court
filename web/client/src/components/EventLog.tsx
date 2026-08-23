@@ -20,7 +20,7 @@ export default function EventLog({ events }: Props) {
   const recent = events.filter((e) => !HIDDEN_TYPES.has(String(e.type))).slice(-8).reverse();
 
   return (
-    <div className="w-full max-h-36 overflow-y-auto scrollbar-thin text-left">
+    <div className="w-full max-h-28 sm:max-h-36 overflow-y-auto scrollbar-thin text-left">
       {recent.length === 0 ? (
         <p className="text-parchment/40 italic text-center text-sm">The table is quiet…</p>
       ) : (

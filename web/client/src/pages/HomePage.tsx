@@ -44,17 +44,17 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen min-h-[100dvh] flex flex-col items-center justify-center p-4 sm:p-6">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8"
+        className="text-center mb-6 sm:mb-8"
       >
-        <img src="/assets/crown.svg" alt="" className="w-16 h-16 mx-auto mb-4" />
-        <h1 className="text-5xl font-display text-royal-gold tracking-wider mb-2">
+        <img src="/assets/crown.svg" alt="" className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4" />
+        <h1 className="text-3xl sm:text-5xl font-display text-royal-gold tracking-wider mb-2 px-2">
           Crown & Court
         </h1>
-        <p className="text-parchment/80 text-lg italic">
+        <p className="text-parchment/80 text-base sm:text-lg italic px-4">
           Gold, bluffing, alliances, and succession
         </p>
       </motion.div>
@@ -62,7 +62,7 @@ export default function HomePage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="panel-parchment p-8 w-full max-w-md shadow-2xl"
+        className="panel-parchment p-5 sm:p-8 w-full max-w-md shadow-2xl"
       >
         {!connected && (
           <p className="text-center text-sm mb-4 text-amber-800">Connecting to server...</p>

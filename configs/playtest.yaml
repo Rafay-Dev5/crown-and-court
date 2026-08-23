@@ -4,7 +4,7 @@ hand_size: 8
 king_start_gold: 1000
 noble_start_gold: 600
 negotiation_ticks: 4
-succession_checker: earned_gold
+succession_checker: gold_only
 alternate_turn_direction: true
 playtest_mode: true
 llm_negotiator_seat: null

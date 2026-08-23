@@ -24,6 +24,7 @@ export type PublicSeat = {
   earned_gold: number;
   gifted_gold: number;
   gift_sent?: number;
+  cards_sent?: number;
   hand_size: number;
   deck_size: number;
   statuses: Array<StatusInfo | string>;
@@ -50,6 +51,17 @@ export type PrivateGameState = {
   hand: CardData[];
   seat: number;
   person_id: number;
+  peek?: {
+    from_seat: number;
+    card: CardData;
+    card_index?: number;
+  } | null;
+  discard_choice?: {
+    count: number;
+    hand: CardData[];
+    card?: CardData;
+    card_seat?: number;
+  } | null;
 };
 
 export type CardData = {

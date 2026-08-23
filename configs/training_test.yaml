@@ -9,7 +9,7 @@ noble_plays_per_round: 2
 king_redraw: 3
 noble_redraw: 2
 negotiation_ticks: 4
-succession_checker: earned_gold
+succession_checker: gold_only
 alternate_turn_direction: true
 max_negotiation_gift: 120
 max_negotiation_gift_per_phase: 120

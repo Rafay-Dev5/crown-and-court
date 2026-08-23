@@ -6,9 +6,19 @@ type Props = {
   hand: CardData[];
   nPlay: number;
   onSubmit: (indices: number[]) => void;
+  title?: string;
+  hint?: string;
+  submitLabel?: string;
 };
 
-export default function PlayPanel({ hand, nPlay, onSubmit }: Props) {
+export default function PlayPanel({
+  hand,
+  nPlay,
+  onSubmit,
+  title,
+  hint = "Cards stay hidden until everyone has locked in. Then they reveal one by one — you will see what each card does and click Continue.",
+  submitLabel = "Lock In",
+}: Props) {
   const [selected, setSelected] = useState<number[]>([]);
 
   useEffect(() => {
@@ -24,15 +34,14 @@ export default function PlayPanel({ hand, nPlay, onSubmit }: Props) {
   };
 
   return (
-    <div className="panel-parchment p-4">
+    <div className="panel-parchment p-3 sm:p-4">
       <p className="font-display text-sm mb-1">
-        Select {nPlay} card{nPlay > 1 ? "s" : ""} ({selected.length}/{nPlay})
+        {title
+          ? `${title} (${selected.length}/${nPlay})`
+          : `Select ${nPlay} card${nPlay > 1 ? "s" : ""} (${selected.length}/${nPlay})`}
       </p>
-      <p className="text-xs text-royal-dark/60 mb-3">
-        Cards stay hidden until everyone has locked in. Then they reveal one by one — you will see
-        what each card does and click Continue.
-      </p>
-      <div className="flex gap-2 flex-wrap justify-center mb-4">
+      <p className="text-xs text-royal-dark/60 mb-3">{hint}</p>
+      <div className="card-row mb-4">
         {hand.map((card, i) => (
           <CardComponent
             key={`${card.id}-${i}`}
@@ -47,7 +56,7 @@ export default function PlayPanel({ hand, nPlay, onSubmit }: Props) {
         disabled={selected.length !== nPlay}
         onClick={() => onSubmit(selected)}
       >
-        Lock In
+        {submitLabel}
       </button>
     </div>
   );

@@ -9,7 +9,7 @@ import uuid
 import websockets
 
 
-async def bot(name: str, code: str, uri: str = "ws://127.0.0.1:8000/ws") -> None:
+async def bot(name: str, code: str, uri: str = "wss://kingmaker.up.railway.app/ws") -> None:
     async with websockets.connect(uri) as ws:
         await ws.send(
             json.dumps(

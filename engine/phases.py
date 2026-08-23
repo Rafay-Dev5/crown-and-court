@@ -104,7 +104,7 @@ def setup_game(config: dict[str, Any], rng: GameRNG) -> GameState:
 
 def run_succession_check(state: GameState, checker_name: str | None = None) -> None:
     state.phase = Phase.SUCCESSION
-    checker = checker_name or state.config.get("succession_checker", "earned_gold")
+    checker = checker_name or state.config.get("succession_checker", "gold_only")
     ascending = resolve_succession(state, checker)
     if ascending is not None:
         perform_seat_swap(state, ascending)
@@ -186,17 +186,64 @@ def run_playing_phase(
     state.tick_statuses()
 
 
+_TARGET_PARAM_KEYS = ("target", "from", "to", "choice_seat", "new_target")
+
+
+def _effect_references_chosen_target(effect: dict | None) -> bool:
+    """True if an effect block (recursively) refers to the chosen-opponent role."""
+    if not effect:
+        return False
+    params = effect.get("params") or {}
+    for key in _TARGET_PARAM_KEYS:
+        if params.get(key) == "target":
+            return True
+    for branch in (params.get("branches") or {}).values():
+        if not isinstance(branch, dict):
+            continue
+        if _effect_references_chosen_target(branch.get("on_success")):
+            return True
+        if _effect_references_chosen_target(branch.get("on_failure")):
+            return True
+        ofs = branch.get("on_failure_status") or {}
+        if isinstance(ofs, dict) and ofs.get("target") == "target":
+            return True
+    if _effect_references_chosen_target(params.get("effect_if_true")):
+        return True
+    if _effect_references_chosen_target(params.get("effect_if_false")):
+        return True
+    if _effect_references_chosen_target(effect.get("secondary_effect")):
+        return True
+    return False
+
+
+def card_requires_chosen_target(card: dict) -> bool:
+    """Whether the card player must pick an opposing seat before resolve."""
+    requires = card.get("requires_state") or {}
+    if "target_seat" in requires:
+        return False
+    if requires.get("alliance_declared_with_target") or "target_prior_choice" in requires:
+        return True
+    return _effect_references_chosen_target(card.get("effect"))
+
+
+def legal_card_targets(state: GameState, seat: int) -> list[int]:
+    return [s for s in range(state.num_players) if s != seat]
+
+
 def _default_target(state: GameState, seat: int, card: dict) -> int:
     requires = card.get("requires_state") or {}
     if "target_seat" in requires:
         return int(requires["target_seat"])
+    legal = legal_card_targets(state, seat)
+    if not legal:
+        return seat
     nobles = state.noble_seats()
     if nobles and seat == state.king_seat:
         play_nobles = state.noble_play_order()
         if play_nobles:
             return play_nobles[0]
         return nobles[0]
-    return state.king_seat if seat != state.king_seat else seat
+    return state.king_seat if seat != state.king_seat else legal[0]
 
 
 def run_round(

@@ -61,7 +61,17 @@ def llm_negotiation_policy(state: GameState, seat: int, rng: GameRNG) -> None:
                 )
                 return
             if action == "trade":
-                propose_trade(state, seat, target, action_data.get("offer", {}), {"gold": 0})
+                hand = state.seats[seat].hand
+                if hand:
+                    propose_trade(
+                        state,
+                        seat,
+                        target,
+                        {"gold": 0, "cards": [hand[0]["id"]]},
+                        {"gold": 30, "card_count": 0},
+                    )
+                else:
+                    pass_action(state, seat)
                 return
             if action == "alliance":
                 propose_alliance(state, seat, [target], terms="LLM proposed pact")

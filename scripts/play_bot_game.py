@@ -107,8 +107,8 @@ async def run_bot(name: str, key: str, uri: str, code_holder: dict, host: bool) 
                             "action_type": "propose_trade",
                             "data": {
                                 "target": ((your_seat or 0) + 1) % 4,
-                                "offer": {"gold": 0},
-                                "request": {"gold": 25},
+                                "offer": {"gold": 40, "cards": []},
+                                "request": {"gold": 0, "card_count": 1},
                             },
                         })
                     else:
@@ -119,10 +119,22 @@ async def run_bot(name: str, key: str, uri: str, code_holder: dict, host: bool) 
                         "action_type": "play",
                         "data": {"card_indices": list(range(n))},
                     })
+                elif dtype == "target":
+                    legal = (decision.get("context") or {}).get("legal_targets") or [0]
+                    await _send(ws, "action", {
+                        "action_type": "choose_target",
+                        "data": {"target_seat": legal[0]},
+                    })
                 elif dtype == "choice":
                     await _send(ws, "action", {
                         "action_type": "choice",
                         "data": {"choice_index": 0},
+                    })
+                elif dtype == "discard":
+                    count = int((decision.get("context") or {}).get("count") or 1)
+                    await _send(ws, "action", {
+                        "action_type": "discard",
+                        "data": {"card_indices": list(range(count))},
                     })
 
             elif typ == "match_end":

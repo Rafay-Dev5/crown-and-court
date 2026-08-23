@@ -52,7 +52,7 @@ CHECKERS: dict[str, Callable[[GameState, int], bool]] = {
 
 
 def get_checker(name: str) -> SuccessionChecker:
-    return CHECKERS.get(name, earned_gold_eligible)
+    return CHECKERS.get(name, gold_only_eligible)
 
 
 def find_succession_block(state: GameState) -> bool:
@@ -63,7 +63,7 @@ def find_succession_block(state: GameState) -> bool:
     return False
 
 
-def resolve_succession(state: GameState, checker_name: str = "earned_gold") -> int | None:
+def resolve_succession(state: GameState, checker_name: str = "gold_only") -> int | None:
     """Return ascending seat id or None. Respects block_succession status."""
     if find_succession_block(state):
         state.log_event("succession_blocked")
@@ -78,7 +78,7 @@ def resolve_succession(state: GameState, checker_name: str = "earned_gold") -> i
         noble = state.person_at_seat(seat)
         order = state.noble_play_order()
         turn_idx = order.index(seat) if seat in order else 999
-        return (-noble.earned_gold, turn_idx)
+        return (-noble.gold, turn_idx)
 
     ascending = min(qualifiers, key=sort_key)
     return ascending

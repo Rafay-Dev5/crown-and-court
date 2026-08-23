@@ -148,7 +148,11 @@ class GameState:
     system_gold: int = 0
     pending_protection_bets: list[PendingProtectionBet] = field(default_factory=list)
     negotiation_gift_sent: dict[int, int] = field(default_factory=dict)
+    negotiation_cards_sent: dict[int, int] = field(default_factory=dict)
     negotiation_trades_executed: dict[int, int] = field(default_factory=dict)
+    # Interactive table: victim picks discards; peeker-only card views.
+    pending_discards: list[dict[str, Any]] = field(default_factory=list)
+    private_peeks: dict[int, dict[str, Any]] = field(default_factory=dict)
 
     def log_event(self, event_type: str, **payload: Any) -> None:
         self.event_log.append(

@@ -19,16 +19,16 @@ export default function MatchEndPage() {
     "Unknown";
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
+    <div className="min-h-screen min-h-[100dvh] flex items-center justify-center p-4 sm:p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="panel-parchment p-8 w-full max-w-xl"
+        className="panel-parchment p-5 sm:p-8 w-full max-w-xl"
       >
         <p className="font-display text-xs tracking-[0.25em] text-center text-royal-dark/50 uppercase">
           Match {matchEnd.match_number} of 4
         </p>
-        <h2 className="text-3xl font-display text-center text-royal-dark mb-2 mt-1">
+        <h2 className="text-2xl sm:text-3xl font-display text-center text-royal-dark mb-2 mt-1">
           The crown is decided
         </h2>
         <p className="text-center text-royal-dark/80 mb-2">

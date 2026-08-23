@@ -62,7 +62,7 @@ def _evaluate_trigger(state: GameState, trigger: dict, ctx: EffectContext) -> bo
     if ttype == "succession_imminent":
         from engine.succession import get_checker
 
-        checker = get_checker(state.config.get("succession_checker", "earned_gold"))
+        checker = get_checker(state.config.get("succession_checker", "gold_only"))
         return any(checker(state, s) for s in state.noble_seats())
     if ttype == "always":
         return True
@@ -99,14 +99,11 @@ def gold_transfer(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     from_person = state.person_at_seat(from_seat)
     to_person = state.person_at_seat(to_seat)
     transfer = min(amount, from_person.gold)
-    earned_from = min(transfer, from_person.earned_gold)
-    gift_from = transfer - earned_from
     from_person.gold -= transfer
-    from_person.earned_gold -= earned_from
-    from_person.gifted_gold = max(0, from_person.gifted_gold - gift_from)
+    from_person.earned_gold = max(0, from_person.earned_gold - transfer)
     to_person.gold += transfer
-    to_person.earned_gold += earned_from
-    to_person.gifted_gold += gift_from
+    to_person.earned_gold += transfer
+    # Gifted/earned split retired — total gold is what matters.
     state.log_event(
         "gold_transfer",
         from_seat=from_seat,
@@ -150,6 +147,17 @@ def steal_card(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     state.log_event("steal_card", from_seat=from_seat, to_seat=to_seat, count=count)
 
 
+def _card_public_summary(card: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": card.get("id"),
+        "name": card.get("name"),
+        "category": card.get("category"),
+        "rarity": card.get("rarity"),
+        "effect": card.get("effect"),
+        "flavor_text": card.get("flavor_text"),
+    }
+
+
 def force_discard(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = _resolve_target(state, ctx["params"].get("target", "target"), ctx)
     count = int(ctx["params"].get("count", 1))
@@ -159,11 +167,33 @@ def force_discard(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
             log_attack(state, attacker, seat, "force_discard", count, blocked=True)
             return
         log_attack(state, attacker, seat, "force_discard", count, blocked=False)
-    for _ in range(min(count, len(state.seats[seat].hand))):
+
+    hand = state.seats[seat].hand
+    count = min(count, len(hand))
+    if count <= 0:
+        state.log_event("force_discard", seat=seat, count=0)
+        return
+
+    # Interactive tables: victim chooses which cards. Training keeps random.
+    if state.config.get("pause_between_reveals"):
+        state.pending_discards.append(
+            {
+                "seat": seat,
+                "count": count,
+                "attacker": attacker,
+                "card_id": ctx.get("card_id"),
+            }
+        )
+        state.log_event("discard_required", seat=seat, count=count)
+        return
+
+    discarded = []
+    for _ in range(count):
         idx = rng.randint(0, len(state.seats[seat].hand) - 1)
         card = state.seats[seat].hand.pop(idx)
         state.seats[seat].discard.append(card)
-    state.log_event("force_discard", seat=seat, count=count)
+        discarded.append(_card_public_summary(card))
+    state.log_event("force_discard", seat=seat, count=count, discarded=discarded)
 
 
 def draw_extra(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
@@ -176,13 +206,38 @@ def draw_extra(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
 
 
 def peek_card(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
-    state.log_event("peek_card", seat=ctx["seat"], params=ctx["params"])
+    peeker = ctx["seat"]
+    target = _resolve_target(state, ctx["params"].get("target", "target"), ctx)
+    hand = state.seats[target].hand
+    if not hand:
+        state.log_event("peek_card", seat=peeker, target_seat=target, empty=True)
+        return
+
+    raw_idx = ctx["params"].get("card_index")
+    if raw_idx is None or not (0 <= int(raw_idx) < len(hand)):
+        idx = rng.randint(0, len(hand) - 1)
+    else:
+        idx = int(raw_idx)
+    seen = _card_public_summary(hand[idx])
+    # Only the peeker learns the card identity (via private_peeks / private state).
+    state.private_peeks[peeker] = {
+        "from_seat": target,
+        "card": seen,
+        "card_index": idx,
+    }
+    state.log_event("peek_card", seat=peeker, target_seat=target)
 
 
 def reveal_hand(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = _resolve_target(state, ctx["params"].get("target", "target"), ctx)
-    hand_ids = [c.get("id") for c in state.seats[seat].hand]
-    state.log_event("reveal_hand", seat=seat, cards=hand_ids)
+    # Full public summaries so every client can show the revealed hand visually.
+    hand_cards = [_card_public_summary(c) for c in state.seats[seat].hand]
+    state.log_event(
+        "reveal_hand",
+        seat=seat,
+        cards=hand_cards,
+        card_ids=[c.get("id") for c in hand_cards],
+    )
 
 
 def negate_effect(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
@@ -470,7 +525,7 @@ def _evaluate_condition(state: GameState, condition: dict, ctx: EffectContext) -
         return state.failed_dice_for_card(seat, card_id, within)
     if "gold_gt_king" in condition:
         seat = ctx["seat"]
-        return state.person_at_seat(seat).earned_gold > state.king_earned_gold()
+        return state.person_at_seat(seat).gold > state.king_gold()
     return False
 
 

@@ -185,8 +185,14 @@ async def handle_message(
 
     elif msg.type == ClientMessageType.ACCEPT_PROPOSAL:
         try:
+            raw_cards = msg.payload.get("fulfillment_cards") or msg.payload.get("cards") or []
+            fulfillment = [str(c) for c in raw_cards] if isinstance(raw_cards, list) else []
             await rooms.handle_proposal_response(
-                room, player_id, True, msg.payload.get("proposal_id", "")
+                room,
+                player_id,
+                True,
+                msg.payload.get("proposal_id", ""),
+                fulfillment_cards=fulfillment or None,
             )
         except ValueError as e:
             await _send_error(websocket, str(e))

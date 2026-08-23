@@ -23,7 +23,7 @@ function seatPosition(mySeat: number, targetSeat: number): "top" | "left" | "rig
 
 function phaseHelp(phase: string): string {
   if (phase === "negotiation") {
-    return "Deal or pass. Only earned gold races for the crown.";
+    return "Trade gold for cards, cards for gold, or cards for cards — then pass.";
   }
   if (phase === "playing") {
     return "Lock cards face-down. They reveal one at a time.";
@@ -40,19 +40,19 @@ function GoldRace({
   kingSeat: number;
   activeSeat?: number | null;
 }) {
-  const max = Math.max(1, ...seats.map((s) => s.earned_gold));
-  const leader = [...seats].sort((a, b) => b.earned_gold - a.earned_gold)[0];
+  const max = Math.max(1, ...seats.map((s) => s.gold));
+  const leader = [...seats].sort((a, b) => b.gold - a.gold)[0];
   return (
     <div>
       <p className="text-[10px] uppercase tracking-[0.2em] text-parchment/45 text-center mb-1.5">
-        Crown race · earned gold only
+        Crown race · total gold
       </p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 px-1">
         {seats.map((s) => {
-          const pct = Math.round((s.earned_gold / max) * 100);
+          const pct = Math.round((s.gold / max) * 100);
           const isKing = s.seat_id === kingSeat;
           const isTurn = s.seat_id === activeSeat;
-          const isLead = leader && s.seat_id === leader.seat_id && s.earned_gold > 0;
+          const isLead = leader && s.seat_id === leader.seat_id && s.gold > 0;
           return (
             <div
               key={s.seat_id}
@@ -65,7 +65,7 @@ function GoldRace({
                   {isKing ? "👑 " : ""}
                   {s.player_name}
                 </span>
-                <span className="gold-chip shrink-0">{s.earned_gold}</span>
+                <span className="gold-chip shrink-0">{s.gold}</span>
               </div>
               <div className="h-1.5 rounded-full bg-parchment/15 overflow-hidden">
                 <div
@@ -92,8 +92,10 @@ export default function GamePage() {
   } = useGameStore();
 
   const vsBots = players.filter((p) => p.is_bot).length >= 2;
-  const [autoPlay, setAutoPlay] = useState(vsBots);
+  const [autoPlay, setAutoPlay] = useState(false);
   const [showSuccession, setShowSuccession] = useState(false);
+  const [acceptingProposalId, setAcceptingProposalId] = useState<string | null>(null);
+  const [fulfillmentTokens, setFulfillmentTokens] = useState<string[]>([]);
   const sentRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -106,7 +108,13 @@ export default function GamePage() {
 
   const isReveal = decision?.dtype === "reveal";
   const isChoice = decision?.dtype === "choice";
+  const isTarget = decision?.dtype === "target";
+  const isDiscard = decision?.dtype === "discard";
   const isMyTurn = !isReveal && decision?.seat === yourSeat;
+  const discardCount =
+    typeof decision?.context?.count === "number" ? (decision.context.count as number) : 1;
+  const discardHand =
+    privateState?.discard_choice?.hand ?? privateState?.hand ?? [];
   const mySeat = publicState?.seats.find((s) => s.seat_id === yourSeat);
   const myRole = mySeat?.role ?? "noble";
   const nPlay =
@@ -115,6 +123,9 @@ export default function GamePage() {
       : myRole === "king"
         ? 3
         : 2;
+  const legalTargets = Array.isArray(decision?.context?.legal_targets)
+    ? (decision.context.legal_targets as number[])
+    : [];
 
   useEffect(() => {
     if (!autoPlay || !decision || !isMyTurn) return;
@@ -126,8 +137,18 @@ export default function GamePage() {
       if (decision.dtype === "negotiation") sendAction("pass");
       else if (decision.dtype === "play") {
         sendAction("play", { card_indices: Array.from({ length: nPlay }, (_, i) => i) });
+      } else if (decision.dtype === "target") {
+        const targets = Array.isArray(decision.context.legal_targets)
+          ? (decision.context.legal_targets as number[])
+          : [];
+        if (targets.length) sendAction("choose_target", { target_seat: targets[0] });
       } else if (decision.dtype === "choice") {
         sendAction("choice", { choice_index: 0 });
+      } else if (decision.dtype === "discard") {
+        const count = typeof decision.context.count === "number" ? decision.context.count : 1;
+        sendAction("discard", {
+          card_indices: Array.from({ length: count }, (_, i) => i),
+        });
       }
     }, 500);
     return () => clearTimeout(t);
@@ -183,7 +204,9 @@ export default function GamePage() {
   ];
 
   const pendingForMe = publicState.pending_proposals.filter((p) => {
-    if (p.status && p.status !== "pending") return false;
+    const status = String(p.status ?? "pending");
+    if (status === "pending_confirm" && p.proposer === yourSeat) return true;
+    if (status !== "pending") return false;
     if (p.target === yourSeat) return true;
     const targets = p.targets;
     return Array.isArray(targets) && targets.includes(yourSeat);
@@ -193,22 +216,95 @@ export default function GamePage() {
     (s) => normalizeStatus(s).name === "oathbreaker"
   );
 
+  const asTradeCards = (raw: unknown): CardData[] => {
+    if (!Array.isArray(raw)) return [];
+    const out: CardData[] = [];
+    for (const c of raw) {
+      if (!c || typeof c !== "object") continue;
+      const card = c as Record<string, unknown>;
+      if (typeof card.name !== "string" && typeof card.id !== "string") continue;
+      out.push({
+        id: String(card.id ?? card.name ?? "unknown"),
+        name: String(card.name ?? card.id ?? "Unknown"),
+        category: typeof card.category === "string" ? card.category : undefined,
+        rarity: typeof card.rarity === "string" ? card.rarity : undefined,
+        effect: (card.effect as CardData["effect"]) ?? undefined,
+        flavor_text: typeof card.flavor_text === "string" ? card.flavor_text : undefined,
+      });
+    }
+    return out;
+  };
+
   const describeProposal = (p: Record<string, unknown>) => {
     const from = seatName(p.proposer);
+    const to = seatName(p.target);
+    const awaitingConfirm = p.status === "pending_confirm";
     if (p.type === "trade") {
-      const offer = (p.offer as { gold?: number } | undefined)?.gold ?? 0;
-      const request = (p.request as { gold?: number } | undefined)?.gold ?? 0;
+      const offer =
+        (p.offer as {
+          gold?: number;
+          cards?: string[];
+          card_details?: unknown;
+        } | undefined) ?? {};
+      const request =
+        (p.request as {
+          gold?: number;
+          card_count?: number;
+          cards?: string[];
+          card_details?: unknown;
+        } | undefined) ?? {};
+      const offerG = offer.gold ?? 0;
+      const requestG = request.gold ?? 0;
+      const offerCards = asTradeCards(offer.card_details);
+      const requestCards = asTradeCards(request.card_details);
+      const offerC = offerCards.length || (Array.isArray(offer.cards) ? offer.cards.length : 0);
+      const requestC =
+        requestCards.length ||
+        (Array.isArray(request.cards) ? request.cards.length : 0) ||
+        (request.card_count ?? 0);
+      const kind = String(p.kind ?? "");
+      let summary = "";
+      if (awaitingConfirm && p.proposer === yourSeat) {
+        summary = `${to} selected cards for your trade — confirm to finish`;
+      } else if (kind === "gold_for_cards" || (offerG > 0 && requestC > 0)) {
+        summary = `gives you ${offerG}g for ${requestC} of your card${requestC === 1 ? "" : "s"}`;
+      } else if (kind === "cards_for_gold" || (offerC > 0 && requestG > 0)) {
+        summary = `gives you ${offerC} card${offerC === 1 ? "" : "s"} for ${requestG}g`;
+      } else if (kind === "cards_for_cards" || (offerC > 0 && requestC > 0)) {
+        summary = `gives you ${offerC} card${offerC === 1 ? "" : "s"} for ${requestC} of yours`;
+      } else {
+        summary = `offers a trade (${offerG}g / ${offerC} cards ↔ ${requestG}g / ${requestC} cards)`;
+      }
+      const cardsYouReceive =
+        awaitingConfirm && p.proposer === yourSeat
+          ? requestCards
+          : p.target === yourSeat
+            ? offerCards
+            : [];
       return (
-        <span className="text-sm">
-          <strong>{from}</strong> offers you a trade: they give{" "}
-          <strong className="text-royal-gold">{offer}g</strong>, ask for{" "}
-          <strong className="text-royal-gold">{request}g</strong>
-          {offer > 0 && request === 0 && (
-            <span className="block text-xs text-amber-800 mt-0.5">
-              One-way gift — accepting brands you Oathbreaker.
-            </span>
+        <div className="text-sm w-full">
+          <p>
+            <strong>{awaitingConfirm && p.proposer === yourSeat ? to : from}</strong> {summary}
+          </p>
+          {!awaitingConfirm && requestC > 0 && p.target === yourSeat && requestCards.length === 0 && (
+            <p className="text-xs text-royal-dark/65 mt-0.5">
+              Accepting requires choosing {requestC} card{requestC === 1 ? "" : "s"} from your hand.
+              The other player will see them before the trade finishes.
+            </p>
           )}
-        </span>
+          {cardsYouReceive.length > 0 && (
+            <div className="mt-2">
+              <p className="font-display text-[11px] uppercase tracking-wide text-royal-dark/55 mb-1">
+                Cards you will receive
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {cardsYouReceive.map((c, i) => (
+                  <CardComponent key={`${c.id}-${i}`} card={c} previewable />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       );
     }
     if (p.type === "alliance") {
@@ -234,7 +330,7 @@ export default function GamePage() {
   };
 
   const revealCard = isReveal ? (decision?.context.card as CardData | undefined) : undefined;
-  const choiceCard = isChoice ? (decision?.context.card as CardData | undefined) : undefined;
+  const choiceCard = isChoice || isTarget ? (decision?.context.card as CardData | undefined) : undefined;
   const youAcked = Boolean(playerId && revealAcks.includes(playerId));
   const waitingNames = players
     .filter((p) => !p.is_bot && p.connected && playerId && !revealAcks.includes(p.id) && p.id !== playerId)
@@ -242,8 +338,16 @@ export default function GamePage() {
   const actorName = decision
     ? publicState.seats.find((s) => s.seat_id === decision.seat)?.player_name
     : null;
+  const cardOwnerName =
+    typeof decision?.context.card_seat === "number"
+      ? seatName(decision.context.card_seat)
+      : actorName;
+  const isTargetedChoice =
+    isChoice &&
+    typeof decision?.context.card_seat === "number" &&
+    decision.context.card_seat !== decision.seat;
 
-  const renderSeat = (seat: PublicSeat | undefined, compact = true) => {
+  const renderSeat = (seat: PublicSeat | undefined, compact = true, dense = false) => {
     if (!seat) return null;
     return (
       <PlayerSeat
@@ -256,44 +360,51 @@ export default function GamePage() {
         }
         allyNames={alliesOf(seat.seat_id)}
         compact={compact}
+        dense={dense}
       />
     );
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="hud-bar px-4 py-2.5">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-4">
-            <span className="font-display text-royal-gold">Match {matchNumber}/4</span>
-            <span className="text-sm text-parchment/75">
-              Round {publicState.current_round}/{publicState.n_rounds}
+    <div className="min-h-screen min-h-[100dvh] flex flex-col pb-[env(safe-area-inset-bottom,0)]">
+      <header className="hud-bar px-3 sm:px-4 py-2 sm:py-2.5 sticky top-0 z-30">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <span className="font-display text-royal-gold text-sm sm:text-base shrink-0">
+              Match {matchNumber}/4
+            </span>
+            <span className="text-xs sm:text-sm text-parchment/75 shrink-0">
+              R{publicState.current_round}/{publicState.n_rounds}
             </span>
             {meta && (
-              <span className="text-sm text-parchment/70">
+              <span className="text-xs sm:text-sm text-parchment/70 truncate">
                 You: {meta.total_points[playerId ?? ""] ?? 0} pts
               </span>
             )}
           </div>
-          <div className="text-center">
-            <p className="font-display text-base text-parchment">
+          <div className="text-center order-last sm:order-none basis-full sm:basis-auto">
+            <p className="font-display text-sm sm:text-base text-parchment">
               {phaseLabel}
               {phaseDetail ? ` · ${phaseDetail}` : ""}
             </p>
-            <p className="text-[11px] text-parchment/50">{phaseHelp(publicState.phase)}</p>
+            <p className="text-[10px] sm:text-[11px] text-parchment/50 hidden xs:block sm:block">
+              {phaseHelp(publicState.phase)}
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-parchment/55">
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto sm:ml-0">
+            <span className="text-[10px] sm:text-xs text-parchment/55 hidden md:inline">
               {publicState.turn_direction === 1 ? "Clockwise" : "Counter-clockwise"}
             </span>
             {vsBots && (
-              <label className="text-[11px] text-parchment/70 flex items-center gap-1.5 cursor-pointer">
+              <label className="text-[10px] sm:text-[11px] text-parchment/70 flex items-center gap-1.5 cursor-pointer">
                 <input
                   type="checkbox"
+                  className="accent-royal-gold"
                   checked={autoPlay}
                   onChange={(e) => setAutoPlay(e.target.checked)}
                 />
-                Bots play my turns
+                <span className="hidden sm:inline">Bots play my turns</span>
+                <span className="sm:hidden">Autopilot</span>
               </label>
             )}
             <RulesButton />
@@ -309,24 +420,86 @@ export default function GamePage() {
       </header>
 
       {youAreOathbreaker && publicState.phase === "negotiation" && (
-        <div className="bg-red-950/70 border-b border-red-500/40 text-center text-sm py-1.5 px-3">
-          You are <strong>{getStatusInfo("oathbreaker").label}</strong> — others cannot gift you gold. Hover the badge for why.
+        <div className="bg-red-950/70 border-b border-red-500/40 text-center text-xs sm:text-sm py-1.5 px-3">
+          You are <strong>{getStatusInfo("oathbreaker").label}</strong> — others cannot gift you gold or cards.
         </div>
       )}
 
       <div
-        className={`border-b text-center text-sm py-1.5 px-3 ${
+        className={`border-b text-center text-xs sm:text-sm py-1.5 px-3 ${
           allianceLines.length > 0
             ? "bg-sky-950/50 border-sky-500/30 text-sky-100"
             : "bg-royal-darker/60 border-parchment/10 text-parchment/55"
         }`}
       >
-        <span className="font-display text-[11px] tracking-wide text-sky-300">Alliances</span>
+        <span className="font-display text-[10px] sm:text-[11px] tracking-wide text-sky-300">Alliances</span>
         <span className="mx-2 text-parchment/30">·</span>
-        {allianceLines.length > 0 ? allianceLines.join("   ·   ") : "None declared yet — propose one during negotiation."}
+        <span className="break-words">
+          {allianceLines.length > 0 ? allianceLines.join(" · ") : "None declared yet"}
+        </span>
       </div>
 
-      <div className="flex-1 max-w-6xl mx-auto w-full px-3 py-3 grid grid-rows-[auto_minmax(220px,1fr)_auto] gap-3">
+      {/* Mobile table: opponents strip → felt → you */}
+      <div className="flex-1 max-w-6xl mx-auto w-full px-2 sm:px-3 py-2 sm:py-3 flex flex-col gap-2 sm:gap-3 md:hidden">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+          {renderSeat(byPos.left, true, true)}
+          {renderSeat(byPos.top, true, true)}
+          {renderSeat(byPos.right, true, true)}
+        </div>
+
+        <div className="felt-table flex flex-col items-center justify-center px-3 py-3 min-h-[160px]">
+          <p className="font-display text-xs sm:text-sm text-center text-parchment mb-2 px-1">
+            {isReveal && revealCard
+              ? `${seatName(decision.context.card_seat ?? decision.seat)} reveals ${revealCard.name}`
+              : isMyTurn && decision?.dtype === "negotiation"
+                ? "Your turn — trade, ally, or pass"
+                : isMyTurn && decision?.dtype === "play"
+                  ? `Lock in ${nPlay} face-down cards`
+                  : isMyTurn && isChoice
+                    ? "Choose a path for this card"
+                    : actorName
+                      ? `Waiting for ${actorName}`
+                      : "The court waits"}
+          </p>
+          {publicState.phase === "playing" && !isReveal && (
+            <div className="flex justify-center gap-2 sm:gap-3 mb-2 flex-wrap">
+              {publicState.seats.map((s) => {
+                const n = s.role === "king" ? 3 : 2;
+                const locked = (publicState.locked_seats ?? []).includes(s.seat_id);
+                return (
+                  <div key={s.seat_id} className="text-center">
+                    <div className="flex -space-x-1.5 justify-center">
+                      {Array.from({ length: n }).map((_, i) => (
+                        <div
+                          key={i}
+                          className={`w-5 h-7 rounded-sm border ${
+                            locked
+                              ? "card-back"
+                              : "border-dashed border-parchment/25 bg-black/20"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-[8px] text-parchment/55 mt-0.5 truncate max-w-[3.5rem]">
+                      {s.player_name.replace(/^The\s+/i, "")}
+                      {locked ? " · in" : ""}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <img src="/assets/crown.svg" alt="" className="w-6 h-6 mb-2 opacity-35" />
+          <div className="w-full max-w-md bg-royal-dark/55 rounded-xl px-3 py-2 border border-royal-gold/25">
+            <EventLog events={events} />
+          </div>
+        </div>
+
+        <div>{renderSeat(byPos.bottom, false)}</div>
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:grid flex-1 max-w-6xl mx-auto w-full px-3 py-3 grid-rows-[auto_minmax(220px,1fr)_auto] gap-3">
         <div className="flex justify-center">{renderSeat(byPos.top)}</div>
 
         <div className="grid grid-cols-[auto_1fr_auto] gap-3 items-center min-h-[220px]">
@@ -385,36 +558,114 @@ export default function GamePage() {
       </div>
 
       {pendingForMe.length > 0 && publicState.phase === "negotiation" && (
-        <div className="panel-parchment p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1.5rem)]">
+        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
           <p className="font-display text-sm mb-2">Incoming proposals</p>
-          {pendingForMe.map((p) => (
-            <div
-              key={p.id as string}
-              className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3 pb-3 border-b border-royal-gold/20 last:border-0 last:mb-0 last:pb-0"
-            >
-              {describeProposal(p)}
-              <div className="flex gap-2 sm:ml-auto shrink-0">
-                <button className="btn-royal text-xs py-1 px-3" onClick={() => acceptProposal(p.id as string)}>
-                  Accept
-                </button>
-                <button className="btn-outline text-xs py-1 px-3" onClick={() => rejectProposal(p.id as string)}>
-                  Reject
-                </button>
+          {pendingForMe.map((p) => {
+            const pid = p.id as string;
+            const awaitingConfirm = p.status === "pending_confirm";
+            const request = (p.request as { card_count?: number; cards?: string[] } | undefined) ?? {};
+            const needed = awaitingConfirm
+              ? 0
+              : Number(request.card_count ?? (Array.isArray(request.cards) ? request.cards.length : 0));
+            const isPicking = acceptingProposalId === pid;
+            const hand = privateState?.hand ?? [];
+            const selectedIds = fulfillmentTokens.map((t) => t.split(":").slice(1).join(":"));
+            return (
+              <div
+                key={pid}
+                className="flex flex-col gap-2 mb-3 pb-3 border-b border-royal-gold/20 last:border-0 last:mb-0 last:pb-0"
+              >
+                {describeProposal(p)}
+                {isPicking && needed > 0 && (
+                  <div>
+                    <p className="text-xs mb-1">
+                      Select {needed} card{needed === 1 ? "" : "s"} to give ({selectedIds.length}/{needed})
+                    </p>
+                    <div className="card-row mb-2">
+                      {hand.map((card, i) => {
+                        const token = `${i}:${card.id}`;
+                        return (
+                          <CardComponent
+                            key={token}
+                            card={card}
+                            selected={fulfillmentTokens.includes(token)}
+                            onClick={() => {
+                              setFulfillmentTokens((prev) => {
+                                if (prev.includes(token)) return prev.filter((t) => t !== token);
+                                if (prev.length >= needed) return prev;
+                                return [...prev, token];
+                              });
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
+                    <div className="flex gap-2 justify-center">
+                      <button
+                        className="btn-royal text-xs py-1 px-3"
+                        disabled={selectedIds.length !== needed}
+                        onClick={() => {
+                          acceptProposal(pid, selectedIds);
+                          setAcceptingProposalId(null);
+                          setFulfillmentTokens([]);
+                        }}
+                      >
+                        Offer these cards
+                      </button>
+                      <button
+                        className="btn-outline text-xs py-1 px-3"
+                        onClick={() => {
+                          setAcceptingProposalId(null);
+                          setFulfillmentTokens([]);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {!isPicking && (
+                  <div className="flex gap-2 sm:ml-auto shrink-0">
+                    <button
+                      className="btn-royal text-xs py-1 px-3"
+                      onClick={() => {
+                        if (awaitingConfirm) {
+                          acceptProposal(pid);
+                          return;
+                        }
+                        if (needed > 0) {
+                          setAcceptingProposalId(pid);
+                          setFulfillmentTokens([]);
+                        } else {
+                          acceptProposal(pid);
+                        }
+                      }}
+                    >
+                      {awaitingConfirm ? "Confirm trade" : "Accept"}
+                    </button>
+                    <button
+                      className="btn-outline text-xs py-1 px-3"
+                      onClick={() => rejectProposal(pid)}
+                    >
+                      {awaitingConfirm ? "Decline cards" : "Reject"}
+                    </button>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       {isMyTurn && decision?.dtype === "negotiation" && (
-        <div className="max-w-3xl mx-auto mb-3 w-[calc(100%-1.5rem)]">
+        <div className="max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
           <NegotiationPanel
             onPass={() => sendAction("pass")}
-            onTrade={(target, offer, request) =>
+            onTrade={(proposal) =>
               sendAction("propose_trade", {
-                target,
-                offer: { gold: offer },
-                request: { gold: request },
+                target: proposal.target,
+                offer: proposal.offer,
+                request: proposal.request,
               })
             }
             onAlliance={(targets) =>
@@ -425,7 +676,7 @@ export default function GamePage() {
       )}
 
       {isMyTurn && decision?.dtype === "play" && privateState && (
-        <div className="max-w-4xl mx-auto mb-3 w-[calc(100%-1.5rem)]">
+        <div className="max-w-4xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
           <PlayPanel
             hand={privateState.hand}
             nPlay={nPlay}
@@ -434,11 +685,47 @@ export default function GamePage() {
         </div>
       )}
 
-      {isMyTurn && isChoice && (
-        <div className="panel-parchment p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1.5rem)]">
+      {isMyTurn && isTarget && (
+        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
           <p className="font-display text-sm mb-1">
-            {choiceCard?.name ? `${choiceCard.name} — make a choice` : "Make a choice"}
+            {choiceCard?.name ? `${choiceCard.name} — choose your target` : "Choose your target"}
           </p>
+          <p className="text-xs text-royal-dark/65 mb-3">
+            Pick which opponent this card hits. Nothing resolves until you choose.
+          </p>
+          {choiceCard && (
+            <div className="flex justify-center my-3">
+              <CardComponent card={choiceCard} />
+            </div>
+          )}
+          <div className="flex flex-wrap gap-2 justify-center">
+            {legalTargets.map((seatId) => (
+              <button
+                key={seatId}
+                className="btn-royal text-sm"
+                onClick={() => sendAction("choose_target", { target_seat: seatId })}
+              >
+                {seatName(seatId)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {isMyTurn && isChoice && (
+        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
+          <p className="font-display text-sm mb-1">
+            {isTargetedChoice
+              ? `${cardOwnerName} played ${choiceCard?.name ?? "a card"} — you must choose a path`
+              : choiceCard?.name
+                ? `${choiceCard.name} — choose a path`
+                : "Make a choice"}
+          </p>
+          {isTargetedChoice && (
+            <p className="text-xs text-royal-dark/65 mb-2">
+              This card targets you. The path you pick decides what happens.
+            </p>
+          )}
           {choiceCard && (
             <div className="flex justify-center my-3">
               <CardComponent card={choiceCard} />
@@ -454,22 +741,43 @@ export default function GamePage() {
         </div>
       )}
 
+      {isMyTurn && isDiscard && (
+        <div className="max-w-4xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
+          <PlayPanel
+            hand={discardHand}
+            nPlay={Math.min(discardCount, discardHand.length)}
+            title={`Choose ${discardCount} card${discardCount > 1 ? "s" : ""} to discard`}
+            hint="You pick which card(s) leave your hand. Everyone will see what you discarded when the reveal continues."
+            submitLabel="Discard"
+            onSubmit={(indices) => sendAction("discard", { card_indices: indices })}
+          />
+        </div>
+      )}
+
       {!isMyTurn && !isReveal && decision && (
         <motion.p
           animate={{ opacity: [0.55, 1, 0.55] }}
           transition={{ repeat: Infinity, duration: 2 }}
           className="text-center text-parchment/70 mb-2 italic text-sm"
         >
-          {isChoice
-            ? `${actorName} is choosing a path${choiceCard?.name ? ` for ${choiceCard.name}` : ""}…`
-            : `Waiting for ${actorName}…`}
+          {isTarget
+            ? `${actorName} is choosing a target${choiceCard?.name ? ` for ${choiceCard.name}` : ""}…`
+            : isChoice
+              ? isTargetedChoice
+                ? `${actorName} is choosing a path for ${choiceCard?.name ?? "the card"}…`
+                : `${actorName} is choosing a path${choiceCard?.name ? ` for ${choiceCard.name}` : ""}…`
+              : isDiscard
+                ? `${actorName} is choosing which card${discardCount > 1 ? "s" : ""} to discard…`
+                : `Waiting for ${actorName}…`}
         </motion.p>
       )}
 
-      {privateState && decision?.dtype !== "play" && (
-        <div className="pb-4 px-3">
-          <p className="text-xs text-parchment/50 mb-2 text-center">Your hand · hover a card to read it</p>
-          <div className="flex gap-2 justify-center overflow-x-auto pb-2">
+      {privateState && decision?.dtype !== "play" && decision?.dtype !== "discard" && (
+        <div className="pb-4 px-2 sm:px-3">
+          <p className="text-xs text-parchment/50 mb-2 text-center">
+            Your hand · tap & hold a card to read it
+          </p>
+          <div className="card-row px-1">
             {privateState.hand.map((card, i) => (
               <CardComponent key={`${card.id}-${i}`} card={card} />
             ))}
@@ -494,6 +802,14 @@ export default function GamePage() {
           selectedChoice={
             typeof decision.context.selected_choice === "string"
               ? decision.context.selected_choice
+              : null
+          }
+          privatePeek={
+            privateState?.peek?.card
+              ? {
+                  fromSeat: Number(privateState.peek.from_seat),
+                  card: privateState.peek.card,
+                }
               : null
           }
           youAcked={youAcked}

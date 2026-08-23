@@ -68,6 +68,7 @@ class PublicSeatState(BaseModel):
     earned_gold: int
     gifted_gold: int
     gift_sent: int = 0
+    cards_sent: int = 0
     hand_size: int
     deck_size: int
     statuses: list[PublicStatus] = Field(default_factory=list)
@@ -94,6 +95,8 @@ class PrivateGameState(BaseModel):
     hand: list[dict[str, Any]]
     seat: int
     person_id: int
+    peek: dict[str, Any] | None = None
+    discard_choice: dict[str, Any] | None = None
 
 
 class DecisionInfo(BaseModel):

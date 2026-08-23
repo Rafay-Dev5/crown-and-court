@@ -12,11 +12,11 @@ export default function MatchIntroPage() {
     meta?.player_names?.[id] || players.find((p) => p.id === id)?.name || "Player";
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
+    <div className="min-h-screen min-h-[100dvh] flex items-center justify-center p-4 sm:p-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center max-w-lg"
+        className="text-center max-w-lg w-full"
       >
         <p className="text-royal-gold font-display text-xl tracking-widest mb-4">
           MATCH {matchNumber} OF {meta?.total_matches ?? 4}
@@ -26,7 +26,7 @@ export default function MatchIntroPage() {
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3, type: "spring" }}
-          className="panel-parchment p-8 mb-8"
+          className="panel-parchment p-5 sm:p-8 mb-6 sm:mb-8"
         >
           <motion.img
             src="/assets/crown.svg"
@@ -57,7 +57,7 @@ export default function MatchIntroPage() {
             </div>
           )}
           <p className="text-sm text-royal-dark/70 mt-4 leading-relaxed">
-            4 rounds. Only earned gold takes the crown. Cards reveal one by one so the whole table
+            4 rounds. Total gold takes the crown. Cards reveal one by one so the whole table
             can read what happened.
           </p>
         </motion.div>

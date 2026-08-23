@@ -99,7 +99,9 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
     }
     case "force_discard": {
       const who = targetLabel(p.target ?? "target");
-      lines.push(`${who} ${thirdPerson(who) ? "discards" : "discard"} ${cardNoun(p.count ?? 1)}.`);
+      lines.push(
+        `${who} ${thirdPerson(who) ? "chooses" : "choose"} ${cardNoun(p.count ?? 1)} to discard.`
+      );
       break;
     }
     case "draw_extra": {
@@ -108,8 +110,8 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       break;
     }
     case "peek_card": {
-      const who = targetLabel(p.target ?? "self");
-      lines.push(`${who} ${thirdPerson(who) ? "peeks" : "peek"} at a hidden card.`);
+      const who = targetLabel(p.target ?? "target");
+      lines.push(`You peek at one card in ${who === "you" ? "your" : who + "'s"} hand.`);
       break;
     }
     case "reveal_hand":

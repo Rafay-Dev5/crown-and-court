@@ -123,8 +123,17 @@ def aggressive_negotiation(state: GameState, seat: int, rng: GameRNG) -> None:
     if state.has_status(target, "oathbreaker"):
         pass_action(state, seat)
         return
-    amount = rng.randint(20, 35)
-    propose_trade(state, seat, target, {"gold": 0}, {"gold": amount})
+    amount = rng.randint(40, 80)
+    try:
+        propose_trade(
+            state,
+            seat,
+            target,
+            {"gold": amount, "cards": []},
+            {"gold": 0, "card_count": 1},
+        )
+    except ValueError:
+        pass_action(state, seat)
 
 
 def aggressive_play(state: GameState, seat: int, hand: list[dict]) -> list[int]:

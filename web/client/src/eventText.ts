@@ -12,11 +12,14 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
     case "gold_transfer":
       return `${e.amount}g moves from ${seatName(e.from_seat)} to ${seatName(e.to_seat)}`;
     case "gold_gifted":
-      return `${seatName(e.from_seat)} gifts ${e.amount}g to ${seatName(e.to_seat)} (does not help succession)`;
+      return `${seatName(e.from_seat)} gives ${e.amount}g to ${seatName(e.to_seat)}`;
+    case "card_gifted":
+      return `${seatName(e.from_seat)} gives ${e.card_name ?? "a card"} to ${seatName(e.to_seat)}`;
     case "mark_status": {
       const status = String(e.status ?? "a status");
-      if (e.reason === "negotiation_gift_received") {
-        return `${seatName(e.seat)} accepted a one-way gift and is now ${status} — they cannot receive more gifts for ${e.duration ?? 2} rounds`;
+      const reason = String(e.reason ?? "");
+      if (reason.includes("imbalance") || reason.includes("negotiation")) {
+        return `${seatName(e.seat)} is now ${status} from an unbalanced trade — no gold or card gifts for ${e.duration ?? 2} rounds`;
       }
       return `${seatName(e.seat)} becomes ${status} for ${e.duration ?? "?"} rounds`;
     }
@@ -24,8 +27,17 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
       return `Gift to ${seatName(e.to_seat)} blocked — they are ${e.status}`;
     case "alliance_bonus":
       return `Alliance bonus: +${e.amount}g to allied players`;
-    case "force_discard":
+    case "force_discard": {
+      const discarded = Array.isArray(e.discarded)
+        ? (e.discarded as Array<{ name?: string }>).map((c) => c.name).filter(Boolean)
+        : [];
+      if (discarded.length) {
+        return `${seatName(e.seat)} discards ${discarded.join(", ")}`;
+      }
       return `${seatName(e.seat)} discards ${cardNoun(e.count)}`;
+    }
+    case "discard_required":
+      return `${seatName(e.seat)} must choose ${cardNoun(e.count)} to discard`;
     case "steal_card":
       return `${seatName(e.to_seat)} steals ${cardNoun(e.count)} from ${seatName(e.from_seat)}`;
     case "draw_extra":
@@ -44,8 +56,17 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
       return `${seatName(e.seat)} will play an extra card next round`;
     case "swap_hands":
       return `${seatName(e.seat_a)} and ${seatName(e.seat_b)} swap hands`;
-    case "reveal_hand":
+    case "reveal_hand": {
+      const names = Array.isArray(e.cards)
+        ? (e.cards as Array<string | { name?: string; id?: string }>)
+            .map((c) => (typeof c === "string" ? c : c.name || c.id || "?"))
+            .filter(Boolean)
+        : [];
+      if (names.length) {
+        return `${seatName(e.seat)}'s hand is revealed: ${names.join(", ")}`;
+      }
       return `${seatName(e.seat)}'s hand is revealed`;
+    }
     case "choice_made":
       return `${seatName(e.seat)} chooses ${String(e.choice_id ?? "").replace(/_/g, " ")}`;
     case "dice_roll":
@@ -69,7 +90,13 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
     case "negotiation_complete":
       return "Negotiation ends";
     case "peek_card":
-      return `${seatName(e.seat)} peeks at a hidden card`;
+      if (e.empty) return `${seatName(e.seat)} peeks, but the hand is empty`;
+      return `${seatName(e.seat)} peeks at a card from ${seatName(e.target_seat)}'s hand`;
+    case "status_tick":
+      if (e.status === "corrupt") {
+        return `${seatName(e.seat)} pays ${e.amount ?? 100}g corrupt tax to ${seatName(e.to_seat)}`;
+      }
+      return `${seatName(e.seat)} suffers ${String(e.status)} upkeep`;
     case "gain_legitimacy":
       return `${seatName(e.seat)} gains legitimacy`;
     default:
@@ -88,8 +115,12 @@ export function describeEvent(e: Record<string, unknown>, seatName: SeatName): s
     case "propose_trade": {
       const offer = e.offer_gold ?? 0;
       const request = e.request_gold ?? 0;
-      return `${seatName(e.proposer)} offers ${offer}g to ${seatName(e.target)} (asks ${request}g)`;
+      const offerC = e.offer_cards ?? 0;
+      const requestC = e.request_cards ?? 0;
+      return `${seatName(e.proposer)} proposes a trade with ${seatName(e.target)} (${offer}g/${offerC} cards ↔ ${request}g/${requestC} cards)`;
     }
+    case "trade_cards_revealed":
+      return `${seatName(e.target)} revealed trade cards for ${seatName(e.proposer)} to review`;
     case "trade_executed":
       return `Trade completed (${seatName(e.proposer)} ↔ ${seatName(e.target)})`;
     case "alliance_formed": {

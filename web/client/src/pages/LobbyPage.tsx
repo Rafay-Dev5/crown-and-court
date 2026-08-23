@@ -60,15 +60,15 @@ export default function LobbyPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen min-h-[100dvh] flex flex-col items-center justify-center p-4 sm:p-6">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="w-full max-w-2xl"
       >
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-display text-royal-gold">Lobby</h1>
-          <p className="text-2xl tracking-[0.3em] font-display text-parchment mt-2">{roomCode}</p>
+          <h1 className="text-2xl sm:text-3xl font-display text-royal-gold">Lobby</h1>
+          <p className="text-xl sm:text-2xl tracking-[0.3em] font-display text-parchment mt-2">{roomCode}</p>
           <p className="text-parchment/60 text-sm mt-1">
             {players.length}/4 players · Waiting to start
           </p>
@@ -120,16 +120,16 @@ export default function LobbyPage() {
           })}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4 items-center">
-          <button className="btn-outline" onClick={copyInvite}>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4 items-stretch sm:items-center px-1">
+          <button className="btn-outline w-full sm:w-auto" onClick={copyInvite}>
             {copied ? "Link Copied!" : "Copy Invite Link"}
           </button>
           {me?.ready ? (
-            <button className="btn-royal" onClick={() => setReady(false)}>
+            <button className="btn-royal w-full sm:w-auto" onClick={() => setReady(false)}>
               Unready
             </button>
           ) : (
-            <button className="btn-royal" onClick={() => setReady(true)}>
+            <button className="btn-royal w-full sm:w-auto" onClick={() => setReady(true)}>
               Ready Up
             </button>
           )}

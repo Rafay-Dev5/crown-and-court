@@ -23,7 +23,8 @@ const categoryColors: Record<string, string> = {
 
 export default function CardPreview({ card, anchor, pinned, onDismiss }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 288 });
+  const [mobileSheet, setMobileSheet] = useState(false);
 
   const { sections } = describeCardFull(card as Parameters<typeof describeCardFull>[0]);
   const borderClass = categoryColors[card.category ?? ""] ?? "border-royal-gold";
@@ -34,9 +35,21 @@ export default function CardPreview({ card, anchor, pinned, onDismiss }: Props) 
     const pad = 12;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const w = el.offsetWidth;
-    const h = el.offsetHeight;
+    const narrow = vw < 640;
+    setMobileSheet(narrow);
 
+    if (narrow) {
+      const width = Math.min(vw - pad * 2, 360);
+      setPos({
+        top: Math.max(pad, Math.min(anchor.bottom + 8, vh * 0.12)),
+        left: (vw - width) / 2,
+        width,
+      });
+      return;
+    }
+
+    const w = el.offsetWidth || 288;
+    const h = el.offsetHeight || 320;
     let left = anchor.right + pad;
     let top = anchor.top;
 
@@ -51,7 +64,7 @@ export default function CardPreview({ card, anchor, pinned, onDismiss }: Props) 
     }
     if (top < pad) top = pad;
 
-    setPos({ top, left });
+    setPos({ top, left, width: 288 });
   }, [anchor]);
 
   useEffect(() => {
@@ -69,7 +82,7 @@ export default function CardPreview({ card, anchor, pinned, onDismiss }: Props) 
         <button
           type="button"
           aria-label="Dismiss card preview"
-          className="fixed inset-0 z-[90] bg-royal-darker/40 cursor-default border-0"
+          className="fixed inset-0 z-[90] bg-royal-darker/50 cursor-default border-0"
           onClick={onDismiss}
         />
       )}
@@ -77,8 +90,10 @@ export default function CardPreview({ card, anchor, pinned, onDismiss }: Props) 
         ref={ref}
         role="dialog"
         aria-label={`${card.name} details`}
-        className={`card-preview fixed z-[100] w-72 max-h-[min(80vh,32rem)] overflow-y-auto scrollbar-thin p-4 ${borderClass} border-l-4 ${pinned ? "pointer-events-auto" : "pointer-events-none"}`}
-        style={{ top: pos.top, left: pos.left }}
+        className={`card-preview fixed z-[100] max-h-[min(78vh,32rem)] overflow-y-auto scrollbar-thin p-4 ${borderClass} border-l-4 ${
+          pinned ? "pointer-events-auto" : "pointer-events-none"
+        } ${mobileSheet ? "w-[min(100%-1.5rem,22.5rem)] shadow-2xl" : "w-72"}`}
+        style={{ top: pos.top, left: pos.left, width: mobileSheet ? pos.width : undefined }}
       >
         <p className="text-[10px] uppercase tracking-[0.2em] text-royal-dark/55 font-display">
           {card.category ?? "card"}

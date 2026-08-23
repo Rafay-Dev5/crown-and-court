@@ -19,7 +19,16 @@ def _apply_negotiation_action(state, seat: int, action: int, rng: GameRNG) -> No
         pass_action(state, seat)
     elif action == 1:
         target = others[action % len(others)]
-        propose_trade(state, seat, target, {"gold": 50}, {"gold": 0})
+        try:
+            propose_trade(
+                state,
+                seat,
+                target,
+                {"gold": 50, "cards": []},
+                {"gold": 0, "card_count": 1},
+            )
+        except ValueError:
+            pass_action(state, seat)
     else:
         pass_action(state, seat)
 

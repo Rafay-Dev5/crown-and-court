@@ -93,6 +93,41 @@ async def drain_and_act(ws, name: str, your_id: str, is_host: bool, stop_event: 
                             }
                         )
                     )
+                elif dtype == "target":
+                    legal = decision.get("context", {}).get("legal_targets") or [0]
+                    await ws.send(
+                        json.dumps(
+                            {
+                                "type": "action",
+                                "payload": {
+                                    "action_type": "choose_target",
+                                    "data": {"target_seat": legal[0]},
+                                },
+                            }
+                        )
+                    )
+                elif dtype == "discard":
+                    count = int(decision.get("context", {}).get("count", 1))
+                    await ws.send(
+                        json.dumps(
+                            {
+                                "type": "action",
+                                "payload": {
+                                    "action_type": "discard",
+                                    "data": {"card_indices": list(range(count))},
+                                },
+                            }
+                        )
+                    )
+                elif dtype == "reveal":
+                    await ws.send(
+                        json.dumps(
+                            {
+                                "type": "action",
+                                "payload": {"action_type": "continue_reveal", "data": {}},
+                            }
+                        )
+                    )
 
         elif t == "match_end":
             print(f"[{name}] MATCH_END points={p.get('points_awarded')}")

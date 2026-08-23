@@ -48,6 +48,7 @@ def default_web_config() -> dict[str, Any]:
             "max_negotiation_trades_per_phase": 2,
             "alternate_turn_direction": True,
             "random_starting_king_seat": False,
+            "succession_checker": "gold_only",
             "pause_between_reveals": True,
         }
     )
@@ -71,6 +72,7 @@ class GameSession:
         self.rng = GameRNG(seed=seed)
         self.engine = DecisionEngine(self.config, self.rng)
         self._pending_human_action: HumanAction | None = None
+        self._pending_discard_indices: list[int] = []
         self._decision_counter = 0
         self._last_decision_key: tuple[int, str] | None = None
         self._cached_decision_id = ""
@@ -113,6 +115,28 @@ class GameSession:
         elif dec.dtype == DecisionType.CHOICE:
             choice_idx = int(action.payload.get("choice_index", 0))
             self.engine.step(choice_idx)
+        elif dec.dtype == DecisionType.TARGET:
+            legal = list(dec.context.get("legal_targets") or [])
+            raw = action.payload.get("target_seat", action.payload.get("target"))
+            try:
+                target = int(raw)
+            except (TypeError, ValueError):
+                target = legal[0] if legal else dec.seat
+            if legal and target not in legal:
+                target = legal[0]
+            self.engine.step(target)
+        elif dec.dtype == DecisionType.DISCARD:
+            count = int(dec.context.get("count", 1))
+            hand = self.state.seats[dec.seat].hand
+            raw_indices = action.payload.get("card_indices")
+            if not raw_indices:
+                selected = list(range(min(count, len(hand))))
+            else:
+                selected = sorted(
+                    {int(i) for i in raw_indices if 0 <= int(i) < len(hand)}
+                )[:count]
+            self._pending_discard_indices = selected
+            self.engine.step(0, action_handler=self._discard_handler)
         elif dec.dtype == DecisionType.REVEAL:
             self.engine.step(0)
         else:
@@ -156,8 +180,23 @@ class GameSession:
             condition = payload.get("condition", {})
             propose_conditional(state, seat, target, offer, condition)
         elif atype == "accept_proposal":
-            if not accept_proposal(state, seat, payload["proposal_id"]):
-                pass_action(state, seat)
+            from engine.negotiation import confirm_proposal
+
+            pid = payload["proposal_id"]
+            prop = next((p for p in state.pending_proposals if p.get("id") == pid), None)
+            if prop and prop.get("status") == "pending_confirm":
+                if not confirm_proposal(state, seat, pid):
+                    pass_action(state, seat)
+            else:
+                raw_cards = payload.get("fulfillment_cards") or payload.get("cards") or []
+                fulfillment = [str(c) for c in raw_cards] if isinstance(raw_cards, list) else []
+                if not accept_proposal(
+                    state,
+                    seat,
+                    pid,
+                    fulfillment_cards=fulfillment or None,
+                ):
+                    pass_action(state, seat)
         elif atype == "reject_proposal":
             if not reject_proposal(state, seat, payload["proposal_id"]):
                 pass_action(state, seat)
@@ -197,6 +236,14 @@ class GameSession:
             self.engine._play_reveal_idx = 0
             self.engine._resolve_next_reveal()
 
+    def _discard_handler(
+        self, state: GameState, seat: int, _action: int, _rng: GameRNG
+    ) -> None:
+        dec = self.engine.current_decision()
+        if dec is None:
+            return
+        self.engine._apply_discard_indices(dec, self._pending_discard_indices)
+
     def new_events(self) -> list[dict[str, Any]]:
         events = self.state.event_log[self._last_event_index :]
         self._last_event_index = len(self.state.event_log)
@@ -221,6 +268,7 @@ class GameSession:
                     hand_size=len(s.hand),
                     deck_size=len(s.deck),
                     gift_sent=int(self.state.negotiation_gift_sent.get(seat, 0)),
+                    cards_sent=int(self.state.negotiation_cards_sent.get(seat, 0)),
                     statuses=[
                         PublicStatus(
                             name=st.name,
@@ -249,7 +297,9 @@ class GameSession:
             alliances=[list(a.members) for a in self.state.alliances],
             event_log_tail=self.state.event_log[-20:],
             pending_proposals=[
-                p for p in self.state.pending_proposals if p.get("status") == "pending"
+                p
+                for p in self.state.pending_proposals
+                if p.get("status") in ("pending", "pending_confirm")
             ],
             negotiation_tick=neg_tick,
             negotiation_ticks=neg_ticks,
@@ -261,10 +311,22 @@ class GameSession:
     def build_private_state(self, player_id: str) -> PrivateGameState:
         seat = self.player_ids.index(player_id)
         s = self.state.seats[seat]
+        peek = copy.deepcopy(self.state.private_peeks.get(seat))
+        discard_choice = None
+        dec = self.current_decision()
+        if dec is not None and dec.dtype == DecisionType.DISCARD and dec.seat == seat:
+            discard_choice = {
+                "count": int(dec.context.get("count", 1)),
+                "hand": copy.deepcopy(s.hand),
+                "card": copy.deepcopy(dec.context.get("card")),
+                "card_seat": dec.context.get("card_seat"),
+            }
         return PrivateGameState(
             hand=copy.deepcopy(s.hand),
             seat=seat,
             person_id=s.person_id,
+            peek=peek,
+            discard_choice=discard_choice,
         )
 
     def build_decision_info(self) -> DecisionInfo | None:

@@ -18,7 +18,7 @@ export default function GameEndPage() {
     .sort((a, b) => b.points - a.points);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
+    <div className="min-h-screen min-h-[100dvh] flex items-center justify-center p-4 sm:p-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -27,21 +27,21 @@ export default function GameEndPage() {
         <motion.img
           src="/assets/crown.svg"
           alt=""
-          className="w-24 h-24 mx-auto mb-4"
+          className="w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4"
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ repeat: Infinity, duration: 2 }}
         />
 
-        <h1 className="text-4xl font-display text-royal-gold mb-2">
+        <h1 className="text-3xl sm:text-4xl font-display text-royal-gold mb-2 px-2">
           {gameEnd.co_winners ? "Shared Victory!" : "Grand Victory!"}
         </h1>
-        <p className="text-2xl text-parchment mb-8">
+        <p className="text-xl sm:text-2xl text-parchment mb-6 sm:mb-8 px-2">
           {gameEnd.winner_names.join(" & ")} {gameEnd.co_winners ? "Win" : "Wins"}!
         </p>
 
-        <div className="panel-parchment p-6 text-left">
+        <div className="panel-parchment p-4 sm:p-6 text-left overflow-x-auto">
           <h3 className="font-display text-lg text-royal-dark mb-4 text-center">Final Standings</h3>
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[280px]">
             <thead>
               <tr className="border-b border-royal-gold/30">
                 <th className="py-2 text-left">Player</th>

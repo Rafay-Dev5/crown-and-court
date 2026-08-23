@@ -375,7 +375,12 @@ class RoomManager:
         await self.drive_bots(room)
 
     async def handle_proposal_response(
-        self, room: GameRoom, player_id: str, accept: bool, proposal_id: str
+        self,
+        room: GameRoom,
+        player_id: str,
+        accept: bool,
+        proposal_id: str,
+        fulfillment_cards: list[str] | None = None,
     ) -> None:
         """Accept/reject a pending proposal without consuming the player's negotiation turn.
 
@@ -396,19 +401,34 @@ class RoomManager:
             (p for p in state.pending_proposals if p.get("id") == proposal_id),
             None,
         )
-        if proposal is None or proposal.get("status") != "pending":
+        if proposal is None or proposal.get("status") not in ("pending", "pending_confirm"):
             raise ValueError("Proposal not found")
 
         is_target = proposal.get("target") == player_seat
         is_alliance_target = player_seat in (proposal.get("targets") or [])
-        if not is_target and not is_alliance_target:
-            raise ValueError("This proposal is not addressed to you")
+        is_proposer = proposal.get("proposer") == player_seat
 
-        from engine.negotiation import accept_proposal, reject_proposal
+        from engine.negotiation import accept_proposal, confirm_proposal, reject_proposal
 
         if accept:
-            ok = accept_proposal(state, player_seat, proposal_id)
+            if proposal.get("status") == "pending_confirm":
+                if not is_proposer:
+                    raise ValueError("Only the proposer can confirm after cards are revealed")
+                ok = confirm_proposal(state, player_seat, proposal_id)
+            else:
+                if not is_target and not is_alliance_target:
+                    raise ValueError("This proposal is not addressed to you")
+                ok = accept_proposal(
+                    state,
+                    player_seat,
+                    proposal_id,
+                    fulfillment_cards=fulfillment_cards,
+                )
         else:
+            if not is_target and not is_alliance_target and not (
+                proposal.get("status") == "pending_confirm" and is_proposer
+            ):
+                raise ValueError("This proposal is not addressed to you")
             ok = reject_proposal(state, player_seat, proposal_id)
         if not ok:
             raise ValueError("Could not update proposal")
@@ -463,11 +483,27 @@ class RoomManager:
         session = room.session
         if session is None or session.state.phase.value != "negotiation":
             return False
-        from engine.negotiation import accept_proposal, reject_proposal
+        from engine.negotiation import (
+            _card_count_request,
+            accept_proposal,
+            confirm_proposal,
+            reject_proposal,
+        )
 
         for player in room.players.values():
             if not player.is_bot or player.seat is None:
                 continue
+
+            # Confirm trades where we proposed and they revealed cards.
+            to_confirm = [
+                p
+                for p in session.state.pending_proposals
+                if p.get("status") == "pending_confirm" and p.get("proposer") == player.seat
+            ]
+            if to_confirm:
+                ok = confirm_proposal(session.state, player.seat, to_confirm[0]["id"])
+                return bool(ok)
+
             pending = [
                 p
                 for p in session.state.pending_proposals
@@ -484,7 +520,20 @@ class RoomManager:
                 player.bot_key or "exploit", proposal, session.rng
             )
             if accept:
-                ok = accept_proposal(session.state, player.seat, proposal["id"])
+                needed = _card_count_request(proposal.get("request"))
+                fulfillment: list[str] | None = None
+                if needed > 0:
+                    hand = session.state.seats[player.seat].hand
+                    if len(hand) < needed:
+                        ok = reject_proposal(session.state, player.seat, proposal["id"])
+                        return bool(ok)
+                    fulfillment = [c["id"] for c in hand[:needed]]
+                ok = accept_proposal(
+                    session.state,
+                    player.seat,
+                    proposal["id"],
+                    fulfillment_cards=fulfillment,
+                )
             else:
                 ok = reject_proposal(session.state, player.seat, proposal["id"])
             return bool(ok)

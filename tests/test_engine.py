@@ -5,7 +5,7 @@ from engine.negotiation import accept_proposal, propose_trade
 from engine.phases import run_game, setup_game
 from engine.rng import GameRNG
 from engine.state import Phase, Role
-from engine.succession import earned_gold_eligible, perform_seat_swap, resolve_succession
+from engine.succession import gold_only_eligible, perform_seat_swap, resolve_succession
 
 
 def test_setup_creates_valid_state():
@@ -31,15 +31,15 @@ def test_full_game_runs_to_completion():
     assert any(e["type"] == "game_end" for e in state.event_log)
 
 
-def test_earned_gold_succession():
+def test_total_gold_succession():
     config = load_config()
     rng = GameRNG(seed=7)
     state = setup_game(config, rng)
     noble_seat = state.noble_seats()[0]
-    state.person_at_seat(noble_seat).earned_gold = 2000
     state.person_at_seat(noble_seat).gold = 2000
-    assert earned_gold_eligible(state, noble_seat)
-    ascending = resolve_succession(state, "earned_gold")
+    state.person_at_seat(noble_seat).earned_gold = 2000
+    assert gold_only_eligible(state, noble_seat)
+    ascending = resolve_succession(state, "gold_only")
     assert ascending == noble_seat
 
 
@@ -61,7 +61,7 @@ def test_seat_swap_keeps_gold_with_person():
     assert len(state.seats[noble_seat].hand) == king_hand_len
 
 
-def test_gifted_gold_does_not_count_for_succession():
+def test_negotiated_gold_counts_for_succession():
     config = load_config()
     rng = GameRNG(seed=9)
     state = setup_game(config, rng)
@@ -69,21 +69,33 @@ def test_gifted_gold_does_not_count_for_succession():
     king_seat = state.king_seat
     noble = state.person_at_seat(noble_seat)
     king = state.person_at_seat(king_seat)
-    noble.gold = king.earned_gold + 500
-    noble.gifted_gold = 500
-    assert noble.earned_gold <= king.earned_gold
-    assert not earned_gold_eligible(state, noble_seat)
+    noble.gold = king.gold + 100
+    assert gold_only_eligible(state, noble_seat)
+    assert resolve_succession(state, "gold_only") == noble_seat
 
 
-def test_negotiation_trade_tracks_gifted_gold():
+def test_gold_for_cards_trade_moves_assets():
     config = load_config()
     rng = GameRNG(seed=3)
     state = setup_game(config, rng)
     proposer = 0
     target = 1
-    pid = propose_trade(state, proposer, target, {"gold": 100}, {"gold": 0})
-    accept_proposal(state, target, pid)
-    assert state.person_at_seat(target).gifted_gold >= 100
+    card = state.seats[target].hand[0]
+    before_gold_p = state.person_at_seat(proposer).gold
+    before_gold_t = state.person_at_seat(target).gold
+    before_hand_t = len(state.seats[target].hand)
+    pid = propose_trade(
+        state,
+        proposer,
+        target,
+        {"gold": 80, "cards": []},
+        {"gold": 0, "card_count": 1},
+    )
+    assert accept_proposal(state, target, pid, fulfillment_cards=[card["id"]])
+    assert state.person_at_seat(proposer).gold == before_gold_p - 80
+    assert state.person_at_seat(target).gold == before_gold_t + 80
+    assert len(state.seats[target].hand) == before_hand_t - 1
+    assert any(c.get("id") == card["id"] for c in state.seats[proposer].hand)
 
 
 def test_negotiation_phase_gift_cap():
@@ -95,41 +107,39 @@ def test_negotiation_phase_gift_cap():
     proposer = 0
     target_a = 1
     target_b = 2
-    pid = propose_trade(state, proposer, target_a, {"gold": 100}, {"gold": 0})
-    accept_proposal(state, target_a, pid)
-    pid2 = propose_trade(state, proposer, target_b, {"gold": 100}, {"gold": 0})
-    accept_proposal(state, target_b, pid2)
-    assert state.person_at_seat(target_a).gifted_gold == 100
-    assert state.person_at_seat(target_b).gifted_gold == 50
+    card_a = state.seats[target_a].hand[0]
+    card_b = state.seats[target_b].hand[0]
+    gold_a0 = state.person_at_seat(target_a).gold
+    gold_b0 = state.person_at_seat(target_b).gold
+    pid = propose_trade(
+        state, proposer, target_a, {"gold": 100, "cards": []}, {"gold": 0, "card_count": 1}
+    )
+    accept_proposal(state, target_a, pid, fulfillment_cards=[card_a["id"]])
+    pid2 = propose_trade(
+        state, proposer, target_b, {"gold": 100, "cards": []}, {"gold": 0, "card_count": 1}
+    )
+    accept_proposal(state, target_b, pid2, fulfillment_cards=[card_b["id"]])
+    assert state.person_at_seat(target_a).gold == gold_a0 + 100
+    assert state.person_at_seat(target_b).gold == gold_b0 + 50
 
 
-def test_negotiation_trade_per_trade_cap():
+def test_gold_for_gold_trade_rejected():
     config = load_config()
-    config["max_negotiation_gift"] = 200
-    config["max_negotiation_gift_per_trade"] = 50
-    config["max_negotiation_gift_per_phase"] = 500
-    rng = GameRNG(seed=7)
-    state = setup_game(config, rng)
-    proposer = 0
-    target = 1
-    pid = propose_trade(state, proposer, target, {"gold": 150}, {"gold": 120})
-    accept_proposal(state, target, pid)
-    assert state.person_at_seat(target).gifted_gold == 50
-    assert state.person_at_seat(proposer).gifted_gold == 50
+    state = setup_game(config, GameRNG(seed=1))
+    with pytest.raises(ValueError, match="Gold-for-gold"):
+        propose_trade(state, 0, 1, {"gold": 40}, {"gold": 40})
 
 
-def test_gold_transfer_preserves_gifted_ledger():
+def test_gold_transfer_moves_total_gold():
     config = load_config()
     state = setup_game(config, GameRNG(seed=1))
     victim = 1
     thief = 2
     person = state.person_at_seat(victim)
     person.gold = 500
-    person.earned_gold = 100
-    person.gifted_gold = 400
+    person.earned_gold = 500
     thief_person = state.person_at_seat(thief)
-    thief_person.earned_gold = 0
-    thief_person.gifted_gold = 0
+    thief_before = thief_person.gold
     from engine.effects.primitives import gold_transfer
 
     ctx = {
@@ -140,8 +150,8 @@ def test_gold_transfer_preserves_gifted_ledger():
     }
     gold_transfer(state, ctx, GameRNG(seed=2))
     receiver = state.person_at_seat(thief)
-    assert receiver.earned_gold == 100
-    assert receiver.gifted_gold == 100
+    assert receiver.gold == thief_before + 200
+    assert state.person_at_seat(victim).gold == 300
 
 
 def test_random_starting_king_seat():

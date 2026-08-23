@@ -89,11 +89,14 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
             f"{target_label(p.get('from', 'target'))}."
         )
     elif primitive == "force_discard":
-        lines.append(f"{target_label(p.get('target', 'target'))} discard {p.get('count', 1)} card(s).")
+        lines.append(
+            f"{target_label(p.get('target', 'target'))} chooses {p.get('count', 1)} card(s) to discard."
+        )
     elif primitive == "draw_extra":
         lines.append(f"{target_label(p.get('target', 'self'))} draw {p.get('count', 1)} extra card(s).")
     elif primitive == "peek_card":
-        lines.append(f"{target_label(p.get('target', 'self'))} peek at a hidden card.")
+        who = target_label(p.get("target", "target"))
+        lines.append(f"You peek at one card in {who}'s hand (only you see it).")
     elif primitive == "reveal_hand":
         lines.append(f"{target_label(p.get('target', 'target'))}'s hand is revealed to everyone.")
     elif primitive == "block_succession":

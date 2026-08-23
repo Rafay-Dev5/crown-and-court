@@ -44,36 +44,51 @@ def test_oathbreaker_blocks_negotiation_gifts():
     state.seats[receiver].statuses.append(
         StatusTag(name="oathbreaker", expires_after_round=state.current_round + 2)
     )
-    proposal_id = propose_trade(state, giver, receiver, {"gold": 100}, {"gold": 0})
-    accept_proposal(state, receiver, proposal_id)
+    card = state.seats[receiver].hand[0]
+    gold_before = state.person_at_seat(receiver).gold
+    proposal_id = propose_trade(
+        state, giver, receiver, {"gold": 100, "cards": []}, {"gold": 0, "card_count": 1}
+    )
+    accept_proposal(state, receiver, proposal_id, fulfillment_cards=[card["id"]])
 
-    assert state.person_at_seat(receiver).gifted_gold == 0
+    assert state.person_at_seat(receiver).gold == gold_before
     assert any(
         event["type"] == "gift_blocked_by_status" and event["status"] == "oathbreaker"
         for event in state.event_log
     )
 
 
-def test_negotiation_gift_applies_oathbreaker_to_recipient():
+def test_unbalanced_gold_for_cards_applies_oathbreaker():
     state = setup_game(load_config(), GameRNG(seed=12))
     giver = state.king_seat
     receiver = state.noble_seats()[0]
-    proposal_id = propose_trade(state, giver, receiver, {"gold": 50}, {"gold": 0})
-    accept_proposal(state, receiver, proposal_id)
+    card = state.seats[receiver].hand[0]
+    proposal_id = propose_trade(
+        state, giver, receiver, {"gold": 100, "cards": []}, {"gold": 0, "card_count": 1}
+    )
+    accept_proposal(state, receiver, proposal_id, fulfillment_cards=[card["id"]])
 
     assert state.has_status(receiver, "oathbreaker")
-    assert state.person_at_seat(receiver).gifted_gold == 50
-
-
-def test_even_trade_does_not_apply_oathbreaker():
-    state = setup_game(load_config(), GameRNG(seed=13))
-    giver = state.king_seat
-    receiver = state.noble_seats()[0]
-    proposal_id = propose_trade(state, giver, receiver, {"gold": 40}, {"gold": 40})
-    accept_proposal(state, receiver, proposal_id)
-
-    assert not state.has_status(receiver, "oathbreaker")
     assert not state.has_status(giver, "oathbreaker")
+
+
+def test_cards_for_cards_imbalance_brands_receiver():
+    state = setup_game(load_config(), GameRNG(seed=14))
+    a = state.king_seat
+    b = state.noble_seats()[0]
+    offer_card = state.seats[a].hand[0]
+    take = [c["id"] for c in state.seats[b].hand[:4]]
+    proposal_id = propose_trade(
+        state,
+        a,
+        b,
+        {"gold": 0, "cards": [offer_card["id"]]},
+        {"gold": 0, "card_count": 4},
+    )
+    accept_proposal(state, b, proposal_id, fulfillment_cards=take)
+
+    assert state.has_status(a, "oathbreaker")
+    assert not state.has_status(b, "oathbreaker")
 
 
 def test_royal_census_forces_discredited_target_to_discard():

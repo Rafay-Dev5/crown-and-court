@@ -215,8 +215,14 @@ export function useGameSocket() {
     sendShared({ type: "action", payload: { action_type: actionType, data } });
   }, []);
 
-  const acceptProposal = useCallback((proposalId: string) => {
-    sendShared({ type: "accept_proposal", payload: { proposal_id: proposalId } });
+  const acceptProposal = useCallback((proposalId: string, fulfillmentCards: string[] = []) => {
+    sendShared({
+      type: "accept_proposal",
+      payload: {
+        proposal_id: proposalId,
+        fulfillment_cards: fulfillmentCards,
+      },
+    });
   }, []);
 
   const rejectProposal = useCallback((proposalId: string) => {

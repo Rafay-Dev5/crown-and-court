@@ -88,7 +88,7 @@ def load_config(path: Path | str | None = None) -> dict[str, Any]:
         "king_start_gold": 1000,
         "noble_start_gold": 600,
         "negotiation_ticks": 4,
-        "succession_checker": "earned_gold",
+        "succession_checker": "gold_only",
         "alternate_turn_direction": True,
     }
     if path is None:

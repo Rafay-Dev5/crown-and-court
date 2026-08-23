@@ -12,6 +12,43 @@ from web.server.meta_game import MetaGameManager, WIN_POINTS_THRESHOLD
 from web.server.game_session import GameSession, HumanAction
 
 
+def _step_until_done(session: GameSession, max_steps: int = 5000) -> None:
+    steps = 0
+    while not session.done and steps < max_steps:
+        dec = session.current_decision()
+        if dec is None:
+            break
+        if dec.dtype.value == "negotiation":
+            session.apply_action(HumanAction(action_type="pass"))
+        elif dec.dtype.value == "play":
+            n = dec.context.get("n_play", 2)
+            session.apply_action(
+                HumanAction(action_type="play", payload={"card_indices": list(range(n))})
+            )
+        elif dec.dtype.value == "target":
+            legal = dec.context.get("legal_targets") or [0]
+            session.apply_action(
+                HumanAction(action_type="choose_target", payload={"target_seat": legal[0]})
+            )
+        elif dec.dtype.value == "choice":
+            session.apply_action(
+                HumanAction(action_type="choice", payload={"choice_index": 0})
+            )
+        elif dec.dtype.value == "discard":
+            count = int(dec.context.get("count", 1))
+            session.apply_action(
+                HumanAction(
+                    action_type="discard",
+                    payload={"card_indices": list(range(count))},
+                )
+            )
+        elif dec.dtype.value == "reveal":
+            session.apply_action(HumanAction(action_type="continue_reveal"))
+        else:
+            break
+        steps += 1
+
+
 def test_health():
     client = TestClient(app)
     resp = client.get("/health")
@@ -26,23 +63,7 @@ def test_meta_game_king_defends():
     session = GameSession(ids, names, starting_king_seat=0, seed=42)
     meta.record_match_start(1, session.state)
 
-    while not session.done:
-        dec = session.current_decision()
-        if dec is None:
-            break
-        if dec.dtype.value == "negotiation":
-            session.apply_action(HumanAction(action_type="pass"))
-        elif dec.dtype.value == "play":
-            n = dec.context.get("n_play", 2)
-            session.apply_action(
-                HumanAction(action_type="play", payload={"card_indices": list(range(n))})
-            )
-        elif dec.dtype.value == "choice":
-            session.apply_action(
-                HumanAction(action_type="choice", payload={"choice_index": 0})
-            )
-        elif dec.dtype.value == "reveal":
-            session.apply_action(HumanAction(action_type="continue_reveal"))
+    _step_until_done(session)
 
     result = meta.compute_match_scores(session.state)
     assert result.winner_player_id in ids

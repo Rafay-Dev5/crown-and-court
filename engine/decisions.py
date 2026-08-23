@@ -11,7 +11,9 @@ from engine.negotiation import pass_action, random_negotiation_policy
 from engine.phases import (
     _cards_to_play,
     _default_target,
+    card_requires_chosen_target,
     draw_to_hand,
+    legal_card_targets,
     run_succession_check,
     setup_game,
 )
@@ -22,6 +24,8 @@ from engine.state import GameState, Phase
 class DecisionType(str, Enum):
     NEGOTIATION = "negotiation"
     PLAY = "play"
+    TARGET = "target"
+    DISCARD = "discard"
     CHOICE = "choice"
     REVEAL = "reveal"
     DONE = "done"
@@ -47,6 +51,7 @@ class DecisionEngine:
         self._played_buffer: list[tuple[int, dict]] = []
         self._play_reveal_idx = 0
         self._phase_stage = "negotiation"
+        self._deferred_reveal: dict[str, Any] | None = None
 
     def reset(self) -> GameState:
         self.state = setup_game(self.config, self.rng)
@@ -55,6 +60,7 @@ class DecisionEngine:
         self._played_buffer = []
         self._play_reveal_idx = 0
         self._phase_stage = "negotiation"
+        self._deferred_reveal = None
         self._reset_negotiation_tracking()
         self._build_negotiation_queue()
         return self.state
@@ -64,6 +70,7 @@ class DecisionEngine:
         assert self.state
         self.state.pending_proposals = []
         self.state.negotiation_gift_sent = {}
+        self.state.negotiation_cards_sent = {}
         self.state.negotiation_trades_executed = {}
 
     def _expire_pending_proposals(self) -> None:
@@ -139,17 +146,32 @@ class DecisionEngine:
             self.state.seats[card_seat].discard.append(card)
             effects = self.state.event_log[event_start:]
             self.queue.pop(0)
-            self._play_reveal_idx += 1
-            if self._pause_reveals():
-                self.queue = [
-                    self._reveal_decision(
-                        card, card_seat, target, effects, selected_choice=choice
-                    )
-                ]
+            self._finish_card_resolution(card, card_seat, target, effects, selected_choice=choice)
+        elif dec.dtype == DecisionType.TARGET:
+            legal = list(dec.context.get("legal_targets") or [])
+            target = int(action)
+            if legal and target not in legal:
+                target = legal[action % len(legal)] if legal else target
+            card = dec.context["card"]
+            card_seat = int(dec.context.get("card_seat", dec.seat))
+            self.queue.pop(0)
+            self._continue_reveal_with_target(card, card_seat, target)
+        elif dec.dtype == DecisionType.DISCARD:
+            if action_handler:
+                action_handler(self.state, dec.seat, action, self.rng)
+            else:
+                self._apply_discard_indices(dec, [action])
+            self.queue.pop(0)
+            if self.state.pending_discards:
+                self._queue_next_discard()
+            elif self._deferred_reveal:
+                self._emit_deferred_reveal()
             else:
                 self._resolve_next_reveal()
         elif dec.dtype == DecisionType.REVEAL:
             self.queue.pop(0)
+            if self.state:
+                self.state.private_peeks.clear()
             self._resolve_next_reveal()
 
         if not self.queue and not self.done:
@@ -233,13 +255,42 @@ class DecisionEngine:
             return
 
         seat, card = self._played_buffer[self._play_reveal_idx]
+        self.state.private_peeks.clear()
+        self.state.pending_discards.clear()
+        self._deferred_reveal = None
         self.state.log_event(
             "card_revealed",
             seat=seat,
             card_id=card.get("id"),
             name=card.get("name"),
         )
+
+        # Interactive tables: card player picks the opponent. Training keeps auto-target.
+        if self._pause_reveals() and card_requires_chosen_target(card):
+            legal = legal_card_targets(self.state, seat)
+            self.queue = [
+                PendingDecision(
+                    seat=seat,
+                    dtype=DecisionType.TARGET,
+                    context={
+                        "card": copy.deepcopy(card),
+                        "card_seat": seat,
+                        "legal_targets": legal,
+                        "index": self._play_reveal_idx + 1,
+                        "total": len(self._played_buffer),
+                        "effect_lines": describe_card_full_lines(card),
+                    },
+                )
+            ]
+            return
+
         target = _default_target(self.state, seat, card)
+        self._continue_reveal_with_target(card, seat, target)
+
+    def _continue_reveal_with_target(
+        self, card: dict[str, Any], seat: int, target: int
+    ) -> None:
+        assert self.state
         effect = card.get("effect", {})
         if effect.get("primitive") == "dice_swing":
             choices = (effect.get("params") or {}).get("choices", [])
@@ -258,6 +309,7 @@ class DecisionEngine:
                             "index": self._play_reveal_idx + 1,
                             "total": len(self._played_buffer),
                             "effect_lines": describe_card_full_lines(card),
+                            "choice_seat_role": params.get("choice_seat", "self"),
                         },
                     )
                 ]
@@ -267,10 +319,126 @@ class DecisionEngine:
         resolve_card(self.state, card, seat, self.rng, target_seat=target)
         self.state.seats[seat].discard.append(card)
         effects = self.state.event_log[event_start:]
-        self._play_reveal_idx += 1
-        if self._pause_reveals():
-            self.queue = [self._reveal_decision(card, seat, target, effects)]
+        self._finish_card_resolution(card, seat, target, effects)
+
+    def _finish_card_resolution(
+        self,
+        card: dict[str, Any],
+        card_seat: int,
+        target: int | None,
+        effects: list[dict[str, Any]],
+        selected_choice: str | None = None,
+    ) -> None:
+        assert self.state
+        self._deferred_reveal = {
+            "card": copy.deepcopy(card),
+            "card_seat": card_seat,
+            "target": target,
+            "effects": copy.deepcopy(effects),
+            "selected_choice": selected_choice,
+        }
+        if self.state.pending_discards:
+            self._queue_next_discard()
             return
+        self._emit_deferred_reveal()
+
+    def _queue_next_discard(self) -> None:
+        assert self.state
+        if not self.state.pending_discards:
+            self._emit_deferred_reveal()
+            return
+        req = self.state.pending_discards[0]
+        seat = int(req["seat"])
+        count = int(req["count"])
+        hand = self.state.seats[seat].hand
+        count = min(count, len(hand))
+        if count <= 0:
+            self.state.pending_discards.pop(0)
+            self._queue_next_discard()
+            return
+        req["count"] = count
+        deferred = self._deferred_reveal or {}
+        self.queue = [
+            PendingDecision(
+                seat=seat,
+                dtype=DecisionType.DISCARD,
+                context={
+                    "count": count,
+                    "card": deferred.get("card"),
+                    "card_seat": deferred.get("card_seat"),
+                    "target_seat": deferred.get("target"),
+                    "index": self._play_reveal_idx + 1,
+                    "total": len(self._played_buffer),
+                    "effect_lines": describe_card_full_lines(deferred["card"])
+                    if deferred.get("card")
+                    else [],
+                },
+            )
+        ]
+
+    def _apply_discard_indices(self, dec: PendingDecision, indices: list[int]) -> None:
+        assert self.state
+        seat = dec.seat
+        hand = self.state.seats[seat].hand
+        count = int(dec.context.get("count", 1))
+        cleaned = sorted({int(i) for i in indices if 0 <= int(i) < len(hand)})[:count]
+        while len(cleaned) < count and len(cleaned) < len(hand):
+            for i in range(len(hand)):
+                if i not in cleaned:
+                    cleaned.append(i)
+                if len(cleaned) >= count:
+                    break
+        discarded = []
+        for idx in sorted(cleaned, reverse=True):
+            card = self.state.seats[seat].hand.pop(idx)
+            self.state.seats[seat].discard.append(card)
+            discarded.append(
+                {
+                    "id": card.get("id"),
+                    "name": card.get("name"),
+                    "category": card.get("category"),
+                }
+            )
+        if self.state.pending_discards:
+            self.state.pending_discards.pop(0)
+        self.state.log_event(
+            "force_discard",
+            seat=seat,
+            count=len(discarded),
+            discarded=discarded,
+        )
+        if self._deferred_reveal is not None:
+            self._deferred_reveal["effects"] = list(self._deferred_reveal.get("effects") or []) + [
+                {
+                    "type": "force_discard",
+                    "seat": seat,
+                    "count": len(discarded),
+                    "discarded": discarded,
+                    "round": self.state.current_round,
+                    "phase": self.state.phase.value,
+                }
+            ]
+
+    def _emit_deferred_reveal(self) -> None:
+        assert self.state
+        deferred = self._deferred_reveal
+        self._deferred_reveal = None
+        self._play_reveal_idx += 1
+        if not deferred:
+            self._resolve_next_reveal()
+            return
+        if self._pause_reveals():
+            self.queue = [
+                self._reveal_decision(
+                    deferred["card"],
+                    deferred["card_seat"],
+                    deferred.get("target"),
+                    deferred.get("effects") or [],
+                    selected_choice=deferred.get("selected_choice"),
+                )
+            ]
+            return
+        self.state.private_peeks.clear()
         self._resolve_next_reveal()
 
     def _advance_phase(self) -> None:

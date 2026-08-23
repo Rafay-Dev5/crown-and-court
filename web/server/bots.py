@@ -112,25 +112,66 @@ def decide_bot_action(bot_key: str, session: GameSession, dec: PendingDecision) 
         if bot_key == "aggressive":
             if state.has_status(target, "oathbreaker"):
                 return HumanAction(action_type="pass")
-            amount = int(rng.randint(20, 35))
+            hand = state.seats[seat].hand
+            if not hand:
+                return HumanAction(action_type="pass")
+            # Overpay for one card so we are less likely to brand ourselves as buyer.
             return HumanAction(
                 action_type="propose_trade",
                 payload={
                     "target": target,
-                    "offer": {"gold": 0},
-                    "request": {"gold": amount},
+                    "offer": {"gold": 100, "cards": []},
+                    "request": {"gold": 0, "card_count": 1},
                 },
             )
         if bot_key == "exploit" and rng.random() < 0.35:
-            return HumanAction(
-                action_type="propose_trade",
-                payload={
-                    "target": target,
-                    "offer": {"gold": 20},
-                    "request": {"gold": 20},
-                },
-            )
+            hand = state.seats[seat].hand
+            if hand and not state.has_status(target, "oathbreaker"):
+                return HumanAction(
+                    action_type="propose_trade",
+                    payload={
+                        "target": target,
+                        "offer": {"gold": 0, "cards": [hand[0]["id"]]},
+                        "request": {"gold": 20, "card_count": 0},
+                    },
+                )
         return HumanAction(action_type="pass")
+
+    if dec.dtype == DecisionType.TARGET:
+        legal = list(dec.context.get("legal_targets") or others)
+        if not legal:
+            return HumanAction(action_type="choose_target", payload={"target_seat": seat})
+        if bot_key == "aggressive":
+            # Hit the richest earned-gold opponent.
+            pick = max(legal, key=lambda s: state.person_at_seat(s).earned_gold)
+        elif bot_key == "ally_neighbor":
+            neighbor = (seat + 1) % state.num_players
+            pick = neighbor if neighbor in legal else legal[0]
+        elif bot_key == "hoard":
+            # Prefer whoever has the most total gold to steal from.
+            pick = max(legal, key=lambda s: state.person_at_seat(s).gold)
+        else:
+            pick = legal[rng.randint(0, len(legal) - 1)]
+        return HumanAction(action_type="choose_target", payload={"target_seat": pick})
+
+    if dec.dtype == DecisionType.DISCARD:
+        count = int(dec.context.get("count", 1))
+        hand = state.seats[seat].hand
+        n = min(count, len(hand))
+        # Prefer discarding non-economy for aggressors; hoard keeps economy.
+        ranked = list(range(len(hand)))
+        if bot_key == "hoard":
+            ranked.sort(key=lambda i: 0 if hand[i].get("category") == "economy" else 1)
+        elif bot_key == "aggressive":
+            ranked.sort(
+                key=lambda i: 0
+                if hand[i].get("category") in ("disruption", "betrayal")
+                else 1
+            )
+        return HumanAction(
+            action_type="discard",
+            payload={"card_indices": ranked[:n]},
+        )
 
     if dec.dtype == DecisionType.PLAY:
         hand = state.seats[seat].hand
@@ -165,11 +206,15 @@ def bot_should_accept(bot_key: str, proposal: dict[str, Any], rng: GameRNG) -> b
         return ptype == "alliance"
     if bot_key == "aggressive":
         if ptype == "trade":
-            offer = int((proposal.get("offer") or {}).get("gold", 0) or 0)
-            request = int((proposal.get("request") or {}).get("gold", 0) or 0)
-            return offer >= request
+            offer_g = int((proposal.get("offer") or {}).get("gold", 0) or 0)
+            req_g = int((proposal.get("request") or {}).get("gold", 0) or 0)
+            offer_c = len((proposal.get("offer") or {}).get("cards") or [])
+            req_c = int((proposal.get("request") or {}).get("card_count", 0) or 0)
+            # Prefer deals that pay us gold or ask few cards of us.
+            return offer_g + offer_c * 40 >= req_g + req_c * 20
         return rng.random() > 0.7
     if ptype == "trade":
-        request = int((proposal.get("request") or {}).get("gold", 0) or 0)
-        return request <= 40
+        req_g = int((proposal.get("request") or {}).get("gold", 0) or 0)
+        req_c = int((proposal.get("request") or {}).get("card_count", 0) or 0)
+        return req_g <= 40 and req_c <= 2
     return rng.random() > 0.4

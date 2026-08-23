@@ -96,7 +96,7 @@ class MetaGameManager:
             king_pid = self._player_id_for_seat(king_starter_seat)
             points[king_pid] = 0
 
-        ranked = self._rank_nobles_by_earned_gold(state, non_winner_nobles)
+        ranked = self._rank_nobles_by_gold(state, non_winner_nobles)
         if winner_started_as_king:
             placement_points = [3, 2, 1]
         else:
@@ -118,7 +118,8 @@ class MetaGameManager:
                     "seat": seat,
                     "player_id": pid,
                     "player_name": self.player_names[seat],
-                    "earned_gold": person.earned_gold,
+                    "gold": person.gold,
+                    "earned_gold": person.gold,
                     "started_as_king": starting_roles.get(seat) == Role.KING,
                     "is_winner": seat == winner_seat,
                     "points_earned": points[pid],
@@ -140,14 +141,14 @@ class MetaGameManager:
         self.match_results.append(result)
         return result
 
-    def _rank_nobles_by_earned_gold(
+    def _rank_nobles_by_gold(
         self, state: GameState, seats: list[int]
     ) -> list[int]:
         def sort_key(seat: int) -> tuple[int, int]:
             person = state.person_at_seat(seat)
             noble_order = state.noble_play_order()
             order_idx = noble_order.index(seat) if seat in noble_order else 999
-            return (-person.earned_gold, order_idx)
+            return (-person.gold, order_idx)
 
         return sorted(seats, key=sort_key)
 

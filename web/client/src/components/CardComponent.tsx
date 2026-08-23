@@ -103,7 +103,13 @@ export default function CardComponent({
   if (faceDown) {
     return (
       <div
-        className={`card-back flex-shrink-0 ${large ? "w-36 h-52" : small ? "w-16 h-[5.75rem]" : "w-28 h-40"} flex items-center justify-center`}
+        className={`card-back flex-shrink-0 ${
+          large
+            ? "w-28 h-40 sm:w-36 sm:h-52"
+            : small
+              ? "w-14 h-20 sm:w-16 sm:h-[5.75rem]"
+              : "w-[4.75rem] h-[6.75rem] sm:w-28 sm:h-40"
+        } flex items-center justify-center`}
       >
         <img src="/assets/card-back.svg" alt="" className="w-8 h-8 opacity-60" />
       </div>
@@ -169,17 +175,21 @@ export default function CardComponent({
         onClick={handleClick}
         aria-label={`${card.category ?? "Card"}: ${card.name}`}
         className={`card-face flex-shrink-0 text-left transition-all duration-200 ${
-          large ? "w-40 h-56 p-3" : small ? "w-16 h-[5.75rem] p-1.5" : "w-32 h-44 p-2.5"
-        } ${borderClass} border-l-4 ${selected ? "ring-2 ring-royal-gold scale-105 -translate-y-2" : "hover:-translate-y-1"} ${onClick || previewable ? "cursor-pointer" : "cursor-default"}`}
+          large
+            ? "w-28 h-40 p-2 sm:w-40 sm:h-56 sm:p-3"
+            : small
+              ? "w-14 h-20 p-1 sm:w-16 sm:h-[5.75rem] sm:p-1.5"
+              : "w-[4.75rem] h-[6.75rem] p-1.5 sm:w-32 sm:h-44 sm:p-2.5"
+        } ${borderClass} border-l-4 ${selected ? "ring-2 ring-royal-gold scale-105 -translate-y-1 sm:-translate-y-2" : "hover:-translate-y-1"} ${onClick || previewable ? "cursor-pointer" : "cursor-default"}`}
       >
-        <p className={`uppercase tracking-wide opacity-60 ${large ? "text-[11px]" : small ? "text-[8px]" : "text-[10px]"}`}>
+        <p className={`uppercase tracking-wide opacity-60 ${large ? "text-[9px] sm:text-[11px]" : small ? "text-[7px] sm:text-[8px]" : "text-[8px] sm:text-[10px]"}`}>
           {card.category}
         </p>
-        <p className={`font-display font-bold leading-tight mt-1 ${large ? "text-base" : small ? "text-[10px] line-clamp-2" : "text-sm"}`}>
+        <p className={`font-display font-bold leading-tight mt-0.5 sm:mt-1 ${large ? "text-sm sm:text-base" : small ? "text-[9px] sm:text-[10px] line-clamp-2" : "text-[11px] sm:text-sm line-clamp-2 sm:line-clamp-none"}`}>
           {card.name}
         </p>
         {!small && (
-          <p className={`mt-1.5 opacity-80 leading-snug ${large ? "text-xs line-clamp-7" : "text-[11px] line-clamp-5"}`}>
+          <p className={`mt-1 opacity-80 leading-snug hidden sm:block ${large ? "text-xs line-clamp-7" : "text-[11px] line-clamp-5"}`}>
             {describeCardSummary(card)}
           </p>
         )}
