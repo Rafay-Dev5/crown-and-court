@@ -178,3 +178,22 @@ def test_websocket_ready_and_reconnect_token():
         msg = json.loads(ws2.receive_text())
         assert msg["type"] == "lobby_state"
         assert msg["payload"].get("reconnected") is True
+
+
+def test_idle_rooms_are_deleted_after_ttl():
+    import time as time_mod
+
+    from web.server.room_manager import RoomManager
+
+    mgr = RoomManager()
+    mgr.idle_ttl = 10
+    stale = mgr.create_room("old", "Old")
+    stale.last_activity = time_mod.monotonic() - 11
+    fresh = mgr.create_room("new", "New")
+
+    mgr.sweep_rooms()
+
+    assert mgr.get_room(stale.code) is None
+    assert mgr.get_room(fresh.code) is not None
+    assert "old" not in mgr.player_to_room
+    assert "new" in mgr.player_to_room

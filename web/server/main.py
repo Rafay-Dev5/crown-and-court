@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 import os
 import sys
 import uuid
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
@@ -17,7 +19,23 @@ if str(ROOT) not in sys.path:
 from web.server.protocol import ClientMessage, ClientMessageType, ServerMessage, ServerMessageType
 from web.server.room_manager import RoomManager, RoomPhase
 
-app = FastAPI(title="Crown & Court Multiplayer")
+rooms = RoomManager()
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    sweeper = asyncio.create_task(rooms.sweep_loop())
+    try:
+        yield
+    finally:
+        sweeper.cancel()
+        try:
+            await sweeper
+        except asyncio.CancelledError:
+            pass
+
+
+app = FastAPI(title="Crown & Court Multiplayer", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -25,8 +43,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-rooms = RoomManager()
 
 STATIC_DIR = ROOT / "web" / "client" / "dist"
 
@@ -59,14 +75,13 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             except Exception as exc:
                 await _send_error(websocket, f"Server error: {exc}")
     except WebSocketDisconnect:
+        pass
+    finally:
         if room_code and player_id:
-            room = rooms.get_room(room_code)
-            if room and player_id in room.players:
-                room.players[player_id].websocket = None
-                try:
-                    await rooms.broadcast_lobby(room)
-                except Exception:
-                    pass
+            try:
+                await rooms.handle_disconnect(room_code, player_id, websocket)
+            except Exception:
+                pass
 
 
 async def handle_message(
@@ -89,6 +104,7 @@ async def handle_message(
     if room is None:
         await _send_error(websocket, "Room not found")
         return player_id, room_code
+    rooms.touch(room)
 
     if msg.type == ClientMessageType.READY:
         if player_id not in room.players:

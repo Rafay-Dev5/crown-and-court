@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import random
 import string
+import time
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
@@ -16,6 +17,9 @@ from web.server.meta_game import MetaGameManager, TOTAL_MATCHES
 from web.server.protocol import PlayerInfo, ServerMessage, ServerMessageType
 
 _room_bot_locks: dict[str, asyncio.Lock] = {}
+
+ROOM_IDLE_TTL = 4 * 3600
+SWEEP_INTERVAL = 60.0
 
 
 class RoomPhase(str, Enum):
@@ -59,6 +63,8 @@ class GameRoom:
     session: GameSession | None = None
     pending_match: int = 0
     reveal_acks: set[str] = field(default_factory=set)
+    last_activity: float = field(default_factory=time.monotonic)
+    closed: bool = False
 
     def player_list(self) -> list[PlayerInfo]:
         ordered = sorted(self.players.values(), key=lambda p: p.seat if p.seat is not None else 99)
@@ -142,6 +148,8 @@ class RoomManager:
         self.rooms: dict[str, GameRoom] = {}
         self.player_to_room: dict[str, str] = {}
         self.token_to_player: dict[str, tuple[str, str]] = {}
+        self.idle_ttl = ROOM_IDLE_TTL
+        self.sweep_interval = SWEEP_INTERVAL
 
     def create_room(self, host_id: str, host_name: str) -> GameRoom:
         code = generate_room_code()
@@ -168,11 +176,13 @@ class RoomManager:
             raise ValueError("Room is full")
         if player_id in room.players:
             room.players[player_id].name = name
+            self.touch(room)
             return room
         player = ConnectedPlayer(id=player_id, name=name)
         room.players[player_id] = player
         self.player_to_room[player_id] = code.upper()
         self.token_to_player[player.reconnect_token] = (code.upper(), player_id)
+        self.touch(room)
         return room
 
     def fill_bots(self, room: GameRoom, count: int | None = None) -> list[ConnectedPlayer]:
@@ -214,7 +224,52 @@ class RoomManager:
         if player is None:
             raise ValueError("Player not found")
         player.websocket = websocket
+        self.touch(room)
         return room, player
+
+    def touch(self, room: GameRoom) -> None:
+        room.last_activity = time.monotonic()
+
+    def destroy_room(self, code: str) -> None:
+        room = self.rooms.get(code.upper())
+        if room is None:
+            return
+        room.closed = True
+        room.session = None
+        for pid, player in list(room.players.items()):
+            self.player_to_room.pop(pid, None)
+            self.token_to_player.pop(player.reconnect_token, None)
+        self.rooms.pop(code.upper(), None)
+        _room_bot_locks.pop(room.code, None)
+
+    def sweep_rooms(self) -> None:
+        now = time.monotonic()
+        for code, room in list(self.rooms.items()):
+            if now - room.last_activity >= self.idle_ttl:
+                self.destroy_room(code)
+
+    async def sweep_loop(self) -> None:
+        while True:
+            await asyncio.sleep(self.sweep_interval)
+            try:
+                self.sweep_rooms()
+            except Exception:
+                continue
+
+    async def handle_disconnect(
+        self, room_code: str, player_id: str, websocket: WebSocket
+    ) -> None:
+        room = self.get_room(room_code)
+        if room is None:
+            return
+        player = room.players.get(player_id)
+        if player is None or player.websocket is not websocket:
+            return
+        player.websocket = None
+        try:
+            await self.broadcast_lobby(room)
+        except Exception:
+            pass
 
     async def broadcast_lobby(self, room: GameRoom) -> None:
         """Send each player a personalized lobby payload (correct your_id / token)."""
@@ -443,7 +498,7 @@ class RoomManager:
         if lock.locked():
             return
         async with lock:
-            while room.session is not None and room.phase == RoomPhase.PLAYING:
+            while not room.closed and room.session is not None and room.phase == RoomPhase.PLAYING:
                 if await self._bots_answer_proposals(room):
                     await self.broadcast_game_state(room)
                     continue
