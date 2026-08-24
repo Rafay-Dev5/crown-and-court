@@ -71,9 +71,9 @@ export default function RulesModal({ onClose }: Props) {
           </p>
           <ul className="text-sm list-disc pl-5 space-y-1 leading-relaxed">
             <li>
-              <strong>Gold for cards / cards for gold:</strong> if someone receives gold worth more
-              than 50% of the cards they give, or receives cards worth more than 50% of the gold
-              they give, they become Oathbreaker.
+              <strong>Gold ↔ cards:</strong> each card counts as <strong>40 gold</strong>. Compare
+              what each side receives. Whoever gets the <strong>higher</strong> value becomes
+              Oathbreaker if the other side got <strong>half or less</strong> of that higher value.
             </li>
             <li>
               <strong>Cards for cards:</strong> if someone receives more than 3 cards per card they

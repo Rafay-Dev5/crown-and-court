@@ -401,18 +401,13 @@ def _maybe_brand_oathbreaker(
     brand = False
     reason = ""
     if kind in ("gold_for_cards", "cards_for_gold"):
-        # Sold cards for gold: branded if gold haul > 50% of card value gifted.
-        if cards_given > 0 and gold_received > 0:
-            card_value = cards_given * CARD_GOLD_VALUE
-            if gold_received > 0.5 * card_value:
-                brand = True
-                reason = "gold_for_cards_imbalance"
-        # Bought cards with gold: branded if card value > 50% of gold gifted.
-        if gold_given > 0 and cards_received > 0:
-            card_value = cards_received * CARD_GOLD_VALUE
-            if card_value > 0.5 * gold_given:
-                brand = True
-                reason = "cards_for_gold_imbalance"
+        # Convert cards at CARD_GOLD_VALUE. Brand whoever received the higher
+        # value if the lower side got ≤ half of that higher value.
+        value_received = gold_received + cards_received * CARD_GOLD_VALUE
+        value_counterparty = gold_given + cards_given * CARD_GOLD_VALUE
+        if value_received > value_counterparty and value_counterparty <= 0.5 * value_received:
+            brand = True
+            reason = "gold_card_value_imbalance"
     elif kind == "cards_for_cards":
         if cards_received > 3 * max(cards_given, 0):
             brand = True

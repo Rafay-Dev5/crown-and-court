@@ -7,7 +7,7 @@ export const STATUS_HELP: Record<string, { label: string; description: string }>
   oathbreaker: {
     label: "Oathbreaker",
     description:
-      "Cannot receive gold or cards in trades. Applied when a trade is too one-sided (see Rules), or by some cards. Lasts the shown number of rounds.",
+      "Cannot receive gold or cards in trades. Applied when a gold↔card deal gives you more than twice what the other side got (cards count as 40g each), when a card swap is too one-sided, or by some cards. Lasts the shown number of rounds.",
   },
   marked: {
     label: "Marked",

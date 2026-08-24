@@ -59,17 +59,78 @@ def test_oathbreaker_blocks_negotiation_gifts():
 
 
 def test_unbalanced_gold_for_cards_applies_oathbreaker():
+    """100g for 1 card (40): seller 100 vs buyer 40 → 40 ≤ 50 → seller OB."""
     state = setup_game(load_config(), GameRNG(seed=12))
-    giver = state.king_seat
-    receiver = state.noble_seats()[0]
-    card = state.seats[receiver].hand[0]
+    buyer = state.king_seat
+    seller = state.noble_seats()[0]
+    card = state.seats[seller].hand[0]
     proposal_id = propose_trade(
-        state, giver, receiver, {"gold": 100, "cards": []}, {"gold": 0, "card_count": 1}
+        state, buyer, seller, {"gold": 100, "cards": []}, {"gold": 0, "card_count": 1}
     )
-    accept_proposal(state, receiver, proposal_id, fulfillment_cards=[card["id"]])
+    accept_proposal(state, seller, proposal_id, fulfillment_cards=[card["id"]])
 
-    assert state.has_status(receiver, "oathbreaker")
-    assert not state.has_status(giver, "oathbreaker")
+    assert not state.has_status(buyer, "oathbreaker")
+    assert state.has_status(seller, "oathbreaker")
+
+
+def test_buyer_41g_for_two_cards_avoids_oathbreaker():
+    """41g for 2 cards (80): 41 > half of 80 → neither branded."""
+    state = setup_game(load_config(), GameRNG(seed=15))
+    buyer = state.king_seat
+    seller = state.noble_seats()[0]
+    cards = [c["id"] for c in state.seats[seller].hand[:2]]
+    proposal_id = propose_trade(
+        state, buyer, seller, {"gold": 41, "cards": []}, {"gold": 0, "card_count": 2}
+    )
+    accept_proposal(state, seller, proposal_id, fulfillment_cards=cards)
+
+    assert not state.has_status(buyer, "oathbreaker")
+    assert not state.has_status(seller, "oathbreaker")
+
+
+def test_underpriced_card_deal_brands_buyer_only():
+    """20g for 1 card (40): buyer 40 vs seller 20 → 20 ≤ 20 → buyer OB."""
+    state = setup_game(load_config(), GameRNG(seed=16))
+    buyer = state.king_seat
+    seller = state.noble_seats()[0]
+    card = state.seats[seller].hand[0]
+    proposal_id = propose_trade(
+        state, buyer, seller, {"gold": 20, "cards": []}, {"gold": 0, "card_count": 1}
+    )
+    accept_proposal(state, seller, proposal_id, fulfillment_cards=[card["id"]])
+
+    assert state.has_status(buyer, "oathbreaker")
+    assert not state.has_status(seller, "oathbreaker")
+
+
+def test_fair_priced_card_deal_brands_neither():
+    """40g for 1 card: equal values — neither branded."""
+    state = setup_game(load_config(), GameRNG(seed=17))
+    buyer = state.king_seat
+    seller = state.noble_seats()[0]
+    card = state.seats[seller].hand[0]
+    proposal_id = propose_trade(
+        state, buyer, seller, {"gold": 40, "cards": []}, {"gold": 0, "card_count": 1}
+    )
+    accept_proposal(state, seller, proposal_id, fulfillment_cards=[card["id"]])
+
+    assert not state.has_status(buyer, "oathbreaker")
+    assert not state.has_status(seller, "oathbreaker")
+
+
+def test_71g_for_one_card_brands_neither():
+    """71g for 1 card (40): 40 > half of 71 → neither branded."""
+    state = setup_game(load_config(), GameRNG(seed=18))
+    seller = state.king_seat
+    buyer = state.noble_seats()[0]
+    card = state.seats[seller].hand[0]
+    proposal_id = propose_trade(
+        state, seller, buyer, {"gold": 0, "cards": [card["id"]]}, {"gold": 71, "cards": []}
+    )
+    accept_proposal(state, buyer, proposal_id)
+
+    assert not state.has_status(seller, "oathbreaker")
+    assert not state.has_status(buyer, "oathbreaker")
 
 
 def test_cards_for_cards_imbalance_brands_receiver():

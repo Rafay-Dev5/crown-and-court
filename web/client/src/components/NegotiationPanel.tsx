@@ -69,25 +69,24 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
   const selectedIds = selectedTokens.map((t) => t.split(":").slice(1).join(":"));
 
   const imbalanceHint = useMemo(() => {
-    if (kind === "gold_for_cards") {
-      const value = cardCount * CARD_VALUE;
-      const brandThem = goldAmount > 0.5 * value;
-      const brandYou = value > 0.5 * goldAmount;
-      const bits: string[] = [];
-      if (brandThem) bits.push("They may become Oathbreaker (gold > 50% of cards they give).");
-      if (brandYou) bits.push("You may become Oathbreaker (cards worth > 50% of gold you give).");
-      if (!bits.length) bits.push("Balanced enough that Oathbreaker may not apply.");
-      return bits.join(" ");
-    }
-    if (kind === "cards_for_gold") {
-      const value = selectedIds.length * CARD_VALUE;
-      const brandYou = goldAmount > 0.5 * value;
-      const brandThem = value > 0.5 * goldAmount;
-      const bits: string[] = [];
-      if (brandYou) bits.push("You may become Oathbreaker (gold > 50% of cards you give).");
-      if (brandThem) bits.push("They may become Oathbreaker (cards worth > 50% of gold they give).");
-      if (!bits.length) bits.push("Balanced enough that Oathbreaker may not apply.");
-      return bits.join(" ");
+    if (kind === "gold_for_cards" || kind === "cards_for_gold") {
+      const yourValue =
+        kind === "gold_for_cards"
+          ? cardCount * CARD_VALUE
+          : goldAmount;
+      const theirValue =
+        kind === "gold_for_cards"
+          ? goldAmount
+          : selectedIds.length * CARD_VALUE;
+      const high = Math.max(yourValue, theirValue);
+      const low = Math.min(yourValue, theirValue);
+      if (high > low && low <= 0.5 * high) {
+        if (yourValue > theirValue) {
+          return "You may become Oathbreaker (you get more than twice their value).";
+        }
+        return "They may become Oathbreaker (they get more than twice your value).";
+      }
+      return "Values are close enough — neither side should get Oathbreaker from this deal.";
     }
     // cards for cards
     if (cardCount > 3 * selectedIds.length) {
