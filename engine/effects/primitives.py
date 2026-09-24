@@ -86,9 +86,12 @@ def gold_loss(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
         amount = int(ctx["params"]["amount"])
     attacker = ctx.get("seat", seat)
     if seat != attacker:
-        if check_and_consume_shield(state, seat, "gold_theft", attacker, amount):
-            log_attack(state, attacker, seat, "gold_theft", amount, blocked=True)
-            return
+        covered = check_and_consume_shield(state, seat, "gold_theft", attacker, amount)
+        if covered:
+            log_attack(state, attacker, seat, "gold_theft", covered, blocked=True)
+            amount -= covered
+            if amount <= 0:
+                return
         log_attack(state, attacker, seat, "gold_theft", amount, blocked=False)
     person.gold = max(0, person.gold - amount)
     person.earned_gold = max(0, person.earned_gold - min(amount, person.earned_gold))
@@ -109,10 +112,13 @@ def gold_transfer(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     amount = int(params["amount"])
     is_theft = params.get("as_theft", from_seat != to_seat and to_seat == ctx.get("seat"))
     if is_theft and from_seat != to_seat:
-        if check_and_consume_shield(state, from_seat, "gold_theft", to_seat, amount):
-            log_attack(state, to_seat, from_seat, "gold_theft", amount, blocked=True)
-            betrayer_pays_betrayal_cost(state, ctx, rng, blocked=True)
-            return
+        covered = check_and_consume_shield(state, from_seat, "gold_theft", to_seat, amount)
+        if covered:
+            log_attack(state, to_seat, from_seat, "gold_theft", covered, blocked=True)
+            amount -= covered
+            if amount <= 0:
+                betrayer_pays_betrayal_cost(state, ctx, rng, blocked=True)
+                return
         log_attack(state, to_seat, from_seat, "gold_theft", amount, blocked=False)
     from_person = state.person_at_seat(from_seat)
     to_person = state.person_at_seat(to_seat)

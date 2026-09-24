@@ -12,6 +12,7 @@ type Props = {
   large?: boolean;
   /** When false, no hover/tap preview (e.g. decorative backs). Default true for face-up. */
   previewable?: boolean;
+  locked?: boolean;
 };
 
 const categoryColors: Record<string, string> = {
@@ -36,6 +37,7 @@ export default function CardComponent({
   small,
   large,
   previewable = true,
+  locked = false,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -156,6 +158,7 @@ export default function CardComponent({
       dismissPinned();
       return;
     }
+    if (locked) return;
     onClick?.();
   };
 
@@ -174,7 +177,10 @@ export default function CardComponent({
         type="button"
         onClick={handleClick}
         aria-label={`${card.category ?? "Card"}: ${card.name}`}
+        title={locked ? "Betrayal cards can only be played against your ally" : undefined}
         className={`card-face flex-shrink-0 text-left transition-all duration-200 ${
+          locked ? "opacity-40 cursor-not-allowed " : ""
+        }${
           large
             ? "w-28 h-40 p-2 sm:w-40 sm:h-56 sm:p-3"
             : small

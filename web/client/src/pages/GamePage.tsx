@@ -702,6 +702,7 @@ export default function GamePage() {
           <PlayPanel
             hand={privateState.hand}
             nPlay={nPlay}
+            betrayalLocked={yourSeat != null && alliesOf(yourSeat).length === 0}
             onSubmit={(indices) => sendAction("play", { card_indices: indices })}
           />
         </div>

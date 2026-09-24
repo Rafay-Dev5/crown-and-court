@@ -35,7 +35,6 @@ def _gold_phrase(amount: Any, target: Any, verb: str) -> str:
 
 def _shield_blurb(params: dict[str, Any]) -> tuple[str, str]:
     blocks = str(params.get("blocks") or "gold_theft")
-    amount = params.get("amount", "?")
     if blocks == "force_discard":
         return (
             "a shield against a forced discard",
@@ -43,12 +42,11 @@ def _shield_blurb(params: dict[str, Any]) -> tuple[str, str]:
             "It does not protect gold, and it does not undo a discard revealed before it. "
             "A hit keeps the shield. A miss removes it.",
         )
-    label = blocks.replace("_", " ")
     return (
-        f"a shield for up to {amount} gold",
-        f"While it is up, it can stop a {label} revealed after this card. "
-        "It does not undo anything revealed before it. "
-        "A hit keeps the shield. A miss removes the unused shield.",
+        "a shield against gold theft",
+        "While it is up, it stops a gold theft revealed after this card, then it is used up. "
+        "It does not undo a theft revealed before it. "
+        "A hit keeps any unused shield. A miss removes it.",
     )
 
 
@@ -342,9 +340,17 @@ def _card_warnings(card: dict[str, Any]) -> list[str]:
         or requires.get("alliance_declared_with_target")
     )
     if card.get("category") == "betrayal":
-        warnings.append(
-            "Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft."
-        )
+        secondary = effect.get("secondary_effect")
+        extra = " ".join(describe_effect_block(secondary)) if secondary else ""
+        if extra:
+            warnings.append(
+                "Warning: only playable while you are allied, and only against that ally. "
+                f"Betrayal cost (paid even if a shield stops the theft): {extra}"
+            )
+        else:
+            warnings.append(
+                "Warning: only playable while you are allied, and only against that ally."
+            )
     if needs_alliance:
         warnings.append(
             "Warning: this needs an alliance with your target. Otherwise it does nothing."

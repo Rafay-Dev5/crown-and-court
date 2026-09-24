@@ -268,8 +268,21 @@ class GameSession:
                 set(int(i) for i in raw_indices if 0 <= int(i) < len(hand))
             )[:n_play]
 
-        selected = [hand[i] for i in selected_indices if i < len(hand)]
-        for idx in sorted([i for i in selected_indices if i < len(hand)], reverse=True):
+        playable = []
+        for i in selected_indices:
+            if i >= len(hand):
+                continue
+            card = hand[i]
+            if card.get("category") == "betrayal" and not any(
+                state.has_alliance_between(seat, other)
+                for other in range(state.num_players)
+                if other != seat
+            ):
+                continue
+            playable.append(i)
+        selected_indices = playable
+        selected = [hand[i] for i in selected_indices]
+        for idx in sorted(selected_indices, reverse=True):
             state.seats[seat].hand.pop(idx)
         for card in selected:
             self.engine._played_buffer.append((seat, card))

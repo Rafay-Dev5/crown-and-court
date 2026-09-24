@@ -121,8 +121,20 @@ class DecisionEngine:
                     for _ in range(n - 1):
                         indices.append((action + _ + 1) % len(hand))
                 indices = sorted(set(indices))[:n]
-                selected = [hand[i] for i in indices if i < len(hand)]
-                for idx in sorted([i for i in indices if i < len(hand)], reverse=True):
+                selected_indices = []
+                for i in indices:
+                    if i >= len(hand):
+                        continue
+                    card = hand[i]
+                    if card.get("category") == "betrayal" and not any(
+                        self.state.has_alliance_between(dec.seat, other)
+                        for other in range(self.state.num_players)
+                        if other != dec.seat
+                    ):
+                        continue
+                    selected_indices.append(i)
+                selected = [hand[i] for i in selected_indices]
+                for idx in sorted(selected_indices, reverse=True):
                     self.state.seats[dec.seat].hand.pop(idx)
                 for card in selected:
                     self._played_buffer.append((dec.seat, card))
@@ -281,7 +293,7 @@ class DecisionEngine:
 
         # Interactive tables: card player picks the opponent. Training keeps auto-target.
         if self._pause_reveals() and card_requires_chosen_target(card):
-            legal = legal_card_targets(self.state, seat)
+            legal = legal_card_targets(self.state, seat, card)
             self.queue = [
                 PendingDecision(
                     seat=seat,

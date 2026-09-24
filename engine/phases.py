@@ -233,8 +233,11 @@ def card_requires_chosen_target(card: dict) -> bool:
     return _effect_references_chosen_target(card.get("effect"))
 
 
-def legal_card_targets(state: GameState, seat: int) -> list[int]:
-    return [s for s in range(state.num_players) if s != seat]
+def legal_card_targets(state: GameState, seat: int, card: dict | None = None) -> list[int]:
+    others = [s for s in range(state.num_players) if s != seat]
+    if card and card.get("category") == "betrayal":
+        return [s for s in others if state.has_alliance_between(seat, s)]
+    return others
 
 
 def _default_target(state: GameState, seat: int, card: dict) -> int:

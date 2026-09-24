@@ -95,3 +95,44 @@ def test_king_ward_hits_when_attacked_later_in_phase():
     finalize_protection_bets(state, GameRNG(seed=3))
     assert any(e["type"] == "protection_hit" for e in state.event_log)
     assert any(e["type"] == "shield_blocked" for e in state.event_log)
+
+
+def test_shield_stops_a_theft_larger_than_its_printed_amount():
+    config = load_config()
+    state = setup_game(config, GameRNG(seed=11))
+    king = state.king_seat
+    noble = state.noble_seats()[0]
+    king_gold = state.person_at_seat(king).gold
+    noble_gold = state.person_at_seat(noble).gold
+    card = {
+        "id": "king_expand_bastion_wall_010",
+        "name": "Bastion Wall",
+        "category": "protection",
+        "effect": {
+            "primitive": "protect_gold",
+            "params": {
+                "target": "self",
+                "amount": 90,
+                "duration_rounds": 1,
+                "blocks": "gold_theft",
+                "trigger": {"type": "attacked_this_phase", "target": "self", "attack_type": "gold_theft"},
+            },
+        },
+        "on_whiff_penalty": {"primitive": "gold_loss", "params": {"target": "self", "amount": 80}},
+    }
+    resolve_card(state, card, king, GameRNG(seed=1))
+    from engine.effects.primitives import gold_transfer
+
+    gold_transfer(
+        state,
+        {
+            "seat": noble,
+            "target_seat": king,
+            "card": {"category": "disruption", "name": "Assassin's Blade"},
+            "params": {"from": "king", "to": "self", "amount": 235, "as_theft": True},
+        },
+        GameRNG(seed=2),
+    )
+    assert state.person_at_seat(king).gold == king_gold
+    assert state.person_at_seat(noble).gold == noble_gold
+    assert all(s.consumed for s in state.active_shields)

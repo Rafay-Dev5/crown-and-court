@@ -56,10 +56,9 @@ function shieldBlurb(p: Record<string, unknown>): [string, string] {
       "While it is up, it stops a forced discard revealed after this card. It does not protect gold, and it does not undo a discard revealed before it. A hit keeps the shield. A miss removes it.",
     ];
   }
-  const label = blocks.replace(/_/g, " ");
   return [
-    `a shield for up to ${p.amount ?? "?"} gold`,
-    `While it is up, it can stop a ${label} revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.`,
+    `a shield against gold theft`,
+    `While it is up, it stops a gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit keeps any unused shield. A miss removes it.`,
   ];
 }
 
@@ -404,8 +403,13 @@ export function cardWarnings(card: {
     card.effect?.primitive === "alliance_bonus" ||
     Boolean(card.requires_state?.alliance_declared_with_target);
   if (card.category === "betrayal") {
+    const extra = card.effect?.secondary_effect
+      ? describeEffectBlock(card.effect.secondary_effect).join(" ")
+      : "";
     lines.push(
-      "Betrayal. You still suffer this card's extra cost if a shield blocks the theft."
+      extra
+        ? `Only while you are allied, and only against that ally. Betrayal cost (paid even if a shield stops the theft): ${extra}`
+        : "Only while you are allied, and only against that ally."
     );
   }
   if (needsAlliance) {

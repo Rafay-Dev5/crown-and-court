@@ -78,9 +78,9 @@ export default function RulesModal({ onClose }: Props) {
           </p>
           <p className="text-sm leading-relaxed">
             Every protection card except the succession blocks (Diplomatic Immunity and Loyal Guard)
-            stops a <strong>gold theft</strong> revealed after it, up to the amount on the card. A
-            theft revealed earlier in the round still counts and is not undone. Succession cards
-            stop a crown change, not a theft.
+            stops a <strong>gold theft</strong> revealed after it. The shield is used up when it
+            stops that theft. A theft revealed earlier in the round still counts and is not undone.
+            Succession cards stop a crown change, not a theft.
           </p>
         </section>
 
@@ -151,9 +151,10 @@ export default function RulesModal({ onClose }: Props) {
           <p className="text-sm leading-relaxed">
             A declared alliance is public. Each player can be in only one at a time. Forming a new
             pact ends any other alliance either player already has. Some cards pay only if you are
-            still allied with the target. Playing a betrayal card against your ally ends that
-            alliance immediately, even if a shield later stops the theft. An alliance or betrayal
-            card that cannot legally resolve is discarded, not returned to your hand.
+            still allied with the target. A betrayal card can be played only while you have an
+            alliance, and only against that ally. Playing it ends the alliance immediately. The
+            card’s extra cost — shown when you hover it — is still paid if a shield stops the
+            theft. An alliance or betrayal card that cannot legally resolve is discarded.
           </p>
         </section>
 

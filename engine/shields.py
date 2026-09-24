@@ -23,8 +23,8 @@ def check_and_consume_shield(
     attack_type: str,
     attacker_seat: int,
     amount: int = 0,
-) -> bool:
-    """Return True if attack is blocked by an active shield."""
+) -> int:
+    """Block up to the shield's amount. A larger hit still takes the excess, and the shield is used."""
     single_use_default = state.config.get("shield_single_use", True)
     for shield in state.active_shields:
         if shield.consumed or shield.seat != target_seat:
@@ -33,7 +33,10 @@ def check_and_consume_shield(
             continue
         if shield.targeted_attacker is not None and shield.targeted_attacker != attacker_seat:
             continue
-        if shield.amount and amount > shield.amount:
+        # The printed amount is the shield's size, but an active shield stops the
+        # theft in front of it. A bigger theft must not slip past and leave the shield up.
+        covered = amount
+        if covered <= 0:
             continue
         if single_use_default and shield.single_use:
             shield.consumed = True
@@ -43,9 +46,10 @@ def check_and_consume_shield(
             attacker=attacker_seat,
             attack_type=attack_type,
             card_id=shield.card_id,
+            amount=covered,
         )
-        return True
-    return False
+        return covered
+    return 0
 
 
 def log_attack(
