@@ -217,18 +217,11 @@ python -m scripts.export_rules_cards
 
 ## Card catalog
 
-Play-deck cards used in the standard rules (**42 King** / **40 Noble**). Card set version: `c7cdfc9bd59a9751`.
+Play-deck cards used in the standard rules (**42 King** / **40 Noble**). Card set version: `a05b194deedede8f`.
 
 This list matches the simulation play decks (`king_deck_size` / `noble_deck_size` in `configs/balance.yaml`). Numbers and wording may change between playtest printings. Statuses mentioned on cards (e.g. *oathbreaker*, *marked*, *corrupt*, *discredited*) are temporary tags applied by effects; follow each card’s text.
 
 ### King deck
-
-#### Border Levy — *Economy* · Common
-
-> Expansion design — Border Levy.
-
-Resolves when revealed in play order.
-You gain 78 gold.
 
 #### Crown Tribute — *Economy* · Common
 
@@ -258,12 +251,12 @@ If “Hide the Cargo” is chosen: Roll a 6-sided die. Success on 5 or 6.
 Resolves when revealed in play order.
 62 gold moves from your chosen opponent to you.
 
-#### Mint Dues — *Economy* · Common
+#### Tax Levy — *Economy* · Common
 
-> Expansion design — Mint Dues.
+> The crown's share comes due.
 
 Resolves when revealed in play order.
-You gain 95 gold.
+You gain 62 gold.
 
 #### Toll Bridge — *Economy* · Common
 
@@ -280,6 +273,7 @@ Resolves when revealed in play order.
 Can only be played if:
   - You have a declared alliance with your target.
 If your alliance is still active, allied players each gain 41 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Crown Patronage — *Alliance* · Common
 
@@ -287,6 +281,7 @@ If your alliance is still active, allied players each gain 41 gold.
 
 Resolves when revealed in play order.
 If your alliance is still active, allied players each gain 54 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Royal Alliance Pact — *Alliance* · Common
 
@@ -294,6 +289,7 @@ If your alliance is still active, allied players each gain 54 gold.
 
 Resolves when revealed in play order.
 If your alliance is still active, allied players each gain 58 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Royal Pact — *Alliance* · Common
 
@@ -301,6 +297,7 @@ If your alliance is still active, allied players each gain 58 gold.
 
 Resolves when revealed in play order.
 If your alliance is still active, allied players each gain 72 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Summit Oath — *Alliance* · Common
 
@@ -308,6 +305,7 @@ If your alliance is still active, allied players each gain 72 gold.
 
 Resolves when revealed in play order.
 If your alliance is still active, allied players each gain 58 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Crown Gambit — *Betrayal* · Common
 
@@ -315,6 +313,7 @@ If your alliance is still active, allied players each gain 58 gold.
 
 Resolves when revealed in play order.
 88 gold moves from your chosen opponent to you.
+Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
 
 #### False Summons — *Betrayal* · Common
 
@@ -322,6 +321,7 @@ Resolves when revealed in play order.
 
 Resolves when revealed in play order.
 10 gold moves from your chosen opponent to you.
+Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
 
 #### Broken Crown — *Disruption* · Rare
 
@@ -386,68 +386,97 @@ If your chosen opponent has the “marked” status:
 Resolves when revealed in play order.
 Your chosen opponent chooses 1 card(s) to discard.
 
+#### Tithe of Silence — *Disruption* · Rare
+
+> Take the King's coin quietly, or reach for more.
+
+Resolves when revealed in play order.
+Your chosen opponent chooses one path:
+  - Accept Stipend
+  - Gamble for More
+If “Accept Stipend” is chosen:
+  - your chosen opponent gain 40 gold. Then: you gain 80 gold. Then: your chosen opponent receive the “oathbreaker” status for 3 round(s).
+If “Gamble for More” is chosen: Roll a 6-sided die. Success on 5 or 6.
+  - Success: your chosen opponent gain 150 gold.
+  - Failure: 100 gold moves from your chosen opponent to you.
+  - On failure they also get “corrupt” for 2 round(s).
+
 #### Bastion Wall — *Protection* · Common
 
 > Expansion design — Bastion Wall.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round when this resolves, gold is protected (up to 90 gold).
-If your guess was wrong (protection whiff):
-  - you lose 25 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 90 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals.
+While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 80 gold.
 
 #### Customs Seal — *Protection* · Rare
 
 > Wrong thief, wrong day — or wrong guess.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round (gold theft) when this resolves, gold is protected (up to 200 gold).
-If your guess was wrong (protection whiff):
-  - you lose 5 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 200 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 60 gold.
 
 #### Diplomatic Immunity — *Protection* · Rare
 
 > The crown does not yield today.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.
-If your guess was wrong (protection whiff):
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, the succession block goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if a Noble has more gold than the King.
+A hit keeps the block, so the succession check that follows can be stopped. A miss removes the block before that check.
+If the guess misses:
   - you lose 50% of your current gold.
 
 #### Iron Curtain — *Protection* · Common
 
 > The treasury closes its gates.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round (gold theft) when this resolves, gold is protected (up to 120 gold).
-If your guess was wrong (protection whiff):
-  - you lose 5 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 60 gold.
 
 #### Iron Gate — *Protection* · Common
 
 > Expansion design — Iron Gate.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round (gold theft) when this resolves, gold is protected (up to 80 gold).
-If your guess was wrong (protection whiff):
-  - you lose 25 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 80 gold.
 
 #### Loyal Guard — *Protection* · Supercard
 
 > The crown does not fall while he stands.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.
-If your guess was wrong (protection whiff):
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, the succession block goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if a Noble has more gold than the King.
+A hit keeps the block, so the succession check that follows can be stopped. A miss removes the block before that check.
+If the guess misses:
   - you lose 50% of your current gold.
 
 #### Vault Seal — *Protection* · Common
 
 > The seal holds — if thieves come knocking.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round (gold theft) when this resolves, gold is protected (up to 110 gold).
-If your guess was wrong (protection whiff):
-  - you lose 5 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 110 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 60 gold.
 
 #### Decree Haste — *Tempo* · Common
 
@@ -538,11 +567,16 @@ Then: you lose 110 gold.
 
 #### Imperial Mandate — *Supercard* · Supercard
 
-> Expansion design — Imperial Mandate.
+> Mark them for the warrant, or take the coin and sit out a card.
 
 Resolves when revealed in play order.
-You gain 145 gold.
-Then: you draw 1 extra card(s).
+Choose one path:
+  - Brand a Rival
+  - Squeeze the Court
+If “Brand a Rival” is chosen:
+  - you gain 50 gold. Then: your chosen opponent receive the “marked” status for 2 round(s).
+If “Squeeze the Court” is chosen:
+  - you gain 140 gold. Then: you play one fewer card next round.
 
 #### Royal Pardon — *Supercard* · Supercard
 
@@ -605,13 +639,6 @@ Resolves when revealed in play order.
 Resolves when revealed in play order.
 You gain 93 gold.
 
-#### Merchant League — *Economy* · Common
-
-> Expansion design — Merchant League.
-
-Resolves when revealed in play order.
-You gain 70 gold.
-
 #### Night Collection — *Economy* · Common
 
 > Rent comes due after dark.
@@ -627,12 +654,20 @@ If “Stage a Shakedown” is chosen: Roll a 6-sided die. Success on 5 or 6.
   - Failure: you lose 20 gold.
   - On failure they also get “discredited” for 1 round(s).
 
-#### Silk Route — *Economy* · Common
+#### People's Levy — *Economy* · Common
 
-> Expansion design — Silk Route.
+> A crowd can fund a cause or turn on the hand that shook it down.
 
 Resolves when revealed in play order.
-You gain 88 gold.
+Choose one path:
+  - Organize Donations
+  - Squeeze the Crowd
+If “Organize Donations” is chosen:
+  - you gain 45 gold.
+If “Squeeze the Crowd” is chosen: Roll a 6-sided die. Success on 5 or 6.
+  - Success: 110 gold moves from your chosen opponent to you.
+  - Failure: you lose 35 gold.
+  - On failure they also get “oathbreaker” for 2 round(s).
 
 #### Smuggler's Cut — *Economy* · Common
 
@@ -662,6 +697,7 @@ If “Run a Deep Route” is chosen: Roll a 6-sided die. Success on 5 or 6.
 
 Resolves when revealed in play order.
 If your alliance is still active, allied players each gain 55 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Mob Contract — *Alliance* · Common
 
@@ -669,6 +705,7 @@ If your alliance is still active, allied players each gain 55 gold.
 
 Resolves when revealed in play order.
 If your alliance is still active, allied players each gain 55 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Neighborhood Pact — *Alliance* · Common
 
@@ -676,6 +713,7 @@ If your alliance is still active, allied players each gain 55 gold.
 
 Resolves when revealed in play order.
 If your alliance is still active, allied players each gain 30 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Secret Compact — *Alliance* · Common
 
@@ -683,6 +721,7 @@ If your alliance is still active, allied players each gain 30 gold.
 
 Resolves when revealed in play order.
 If your alliance is still active, allied players each gain 65 gold.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Back-Alley Stab — *Betrayal* · Common
 
@@ -691,6 +730,7 @@ If your alliance is still active, allied players each gain 65 gold.
 Resolves when revealed in play order.
 20 gold moves from your chosen opponent to you.
 Then: you receive the “marked” status for 1 round(s).
+Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
 
 #### Backstab Deal — *Betrayal* · Rare
 
@@ -700,6 +740,8 @@ Resolves when revealed in play order.
 Can only be played if:
   - You have a declared alliance with your target.
 60 gold moves from your chosen opponent to you.
+Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Broken Vow — *Betrayal* · Common
 
@@ -710,6 +752,8 @@ Can only be played if:
   - You have a declared alliance with your target.
 30 gold moves from your chosen opponent to you.
 Then: you receive the “oathbreaker” status for 3 round(s).
+Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Coup Plot — *Betrayal* · Rare
 
@@ -720,6 +764,8 @@ Can only be played if:
   - You have a declared alliance with your target.
 125 gold moves from your chosen opponent to you.
 Then: you receive the “marked” status for 2 round(s).
+Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
+Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Coup Plot II — *Betrayal* · Common
 
@@ -727,6 +773,7 @@ Then: you receive the “marked” status for 2 round(s).
 
 Resolves when revealed in play order.
 75 gold moves from the King to you.
+Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
 
 #### Shakedown — *Betrayal* · Common
 
@@ -734,6 +781,7 @@ Resolves when revealed in play order.
 
 Resolves when revealed in play order.
 26 gold moves from your chosen opponent to you.
+Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
 
 #### Blackmail — *Disruption* · Common
 
@@ -781,37 +829,45 @@ Your chosen opponent chooses 1 card(s) to discard.
 
 > Expansion design — Body Double.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round (gold theft) when this resolves, gold is protected (up to 80 gold).
-If your guess was wrong (protection whiff):
-  - you lose 25 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 80 gold.
 
 #### Bodyguard — *Protection* · Rare
 
 > You hired him to stop the wrong kind of theft.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round when this resolves, gold is protected (up to 120 gold).
-If your guess was wrong (protection whiff):
-  - you lose 5 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals.
+While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 60 gold.
 
 #### Hidden Cache — *Protection* · Common
 
 > Coins buried where thieves won't look.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round (gold theft) when this resolves, gold is protected (up to 100 gold).
-If your guess was wrong (protection whiff):
-  - you lose 5 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 100 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 60 gold.
 
 #### Hidden Cache II — *Protection* · Common
 
 > Expansion design — Hidden Cache II.
 
-Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If you were attacked this round when this resolves, gold is protected (up to 85 gold).
-If your guess was wrong (protection whiff):
-  - you lose 25 gold.
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield for up to 85 gold goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals.
+While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+If the guess misses:
+  - you lose 80 gold.
 
 #### Courier Swap — *Tempo* · Common
 
@@ -830,6 +886,13 @@ You draw 2 extra card(s).
 #### Night Ride — *Tempo* · Common
 
 > Expansion design — Night Ride.
+
+Resolves when revealed in play order.
+You may play an extra card next round.
+
+#### Opportunist — *Tempo* · Common
+
+> Strike while the court blinks.
 
 Resolves when revealed in play order.
 You may play an extra card next round.

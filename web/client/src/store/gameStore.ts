@@ -54,6 +54,7 @@ export type PublicGameState = {
   locked_seats?: number[];
   max_negotiation_gift?: number;
   max_negotiation_gift_per_phase?: number;
+  ledger?: { seat: number; delta: number; reason: string; round: number }[];
 };
 
 export type PrivateGameState = {

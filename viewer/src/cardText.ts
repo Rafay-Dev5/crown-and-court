@@ -41,14 +41,22 @@ function describeDie(sides: number, targetMin: number): string {
   return `Roll a ${sides}-sided die. Success on ${successFaces(sides, targetMin)}.`;
 }
 
+function deferredProtectionLines(what: string, hitWhen: string, outcome: string): string[] {
+  return [
+    `When this card is revealed, ${what} goes up immediately and stays up through the rest of the reveals.`,
+    `The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if ${hitWhen}.`,
+    outcome,
+  ];
+}
+
 function describeTrigger(trigger: Record<string, unknown>): string {
   const t = trigger.type as string;
   if (t === "attacked_this_phase") {
     const atk = trigger.attack_type ? ` (${String(trigger.attack_type).replace(/_/g, " ")})` : "";
-    return `you were attacked this round${atk}`;
+    return `you were attacked during this round's reveals${atk}`;
   }
-  if (t === "attacker_is") return `a specific attacker targets you`;
-  if (t === "succession_imminent") return `a Noble is about to become King`;
+  if (t === "attacker_is") return `that attacker targeted you during this round's reveals`;
+  if (t === "succession_imminent") return `a Noble has more gold than the King`;
   if (t === "always") return `always`;
   return t.replace(/_/g, " ");
 }
@@ -123,7 +131,11 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
     case "block_succession":
       if (p.trigger) {
         lines.push(
-          `If ${describeTrigger(p.trigger as Record<string, unknown>)} at the moment this card resolves, the next succession check is blocked.`
+          ...deferredProtectionLines(
+            "the succession block",
+            describeTrigger(p.trigger as Record<string, unknown>),
+            "A hit keeps the block, so the succession check that follows can be stopped. A miss removes the block before that check."
+          )
         );
       } else {
         lines.push("The next succession check is blocked.");
@@ -131,8 +143,13 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       break;
     case "protect_gold":
       if (p.trigger) {
+        const blocks = String(p.blocks ?? "gold_theft").replace(/_/g, " ");
         lines.push(
-          `If ${describeTrigger(p.trigger as Record<string, unknown>)} when this resolves, gold is protected (up to ${p.amount ?? "?"} gold).`
+          ...deferredProtectionLines(
+            `a shield for up to ${p.amount ?? "?"} gold`,
+            describeTrigger(p.trigger as Record<string, unknown>),
+            `While it is up, it can stop a ${blocks} revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.`
+          )
         );
       } else {
         lines.push(`Protect up to ${p.amount ?? "?"} gold for ${p.duration_rounds ?? 1} round(s).`);
@@ -275,7 +292,7 @@ export function describeRequiresState(req: Record<string, unknown> | undefined):
 export function describeWhiffPenalty(block: EffectBlock | undefined): string[] {
   if (!block) return [];
   return [
-    "If your guess was wrong (protection whiff):",
+    "If the guess misses:",
     ...describeEffectBlock(block).map((l) => `  ${l}`),
   ];
 }
@@ -284,7 +301,7 @@ export function describeTiming(timing: string): string {
   const map: Record<string, string> = {
     on_reveal: "Resolves when this card is revealed in play order.",
     reactive:
-      "Played face-down like any other card. When it reaches your slot in reveal order, it only works if the situation matches your guess — otherwise you pay the miss penalty.",
+      "Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.",
     end_of_round: "Resolves at the end of the round.",
     negotiation_only: "Only usable during the negotiation phase.",
   };

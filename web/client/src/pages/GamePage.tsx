@@ -6,6 +6,7 @@ import NegotiationPanel from "../components/NegotiationPanel";
 import PlayPanel from "../components/PlayPanel";
 import PlayerSeat from "../components/PlayerSeat";
 import DieRollOverlay from "../components/DieRollOverlay";
+import { LedgerButton } from "../components/LedgerPanel";
 import RevealOverlay from "../components/RevealOverlay";
 import { RulesButton } from "../components/RulesModal";
 import SuccessionOverlay from "../components/SuccessionOverlay";
@@ -417,6 +418,11 @@ export default function GamePage() {
                 onSend={sendWhisper}
               />
             )}
+            <LedgerButton
+              seats={publicState.seats}
+              ledger={publicState.ledger ?? []}
+              yourSeat={yourSeat}
+            />
             <RulesButton />
           </div>
         </div>

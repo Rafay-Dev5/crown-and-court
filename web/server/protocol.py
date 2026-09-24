@@ -91,6 +91,7 @@ class PublicGameState(BaseModel):
     locked_seats: list[int] = Field(default_factory=list)
     max_negotiation_gift: int = 120
     max_negotiation_gift_per_phase: int = 120
+    ledger: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class PrivateGameState(BaseModel):

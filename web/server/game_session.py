@@ -55,6 +55,41 @@ def default_web_config() -> dict[str, Any]:
     return cfg
 
 
+def build_ledger(state: GameState) -> list[dict[str, Any]]:
+    """One row per gold change, with who it hit and why."""
+    rows: list[dict[str, Any]] = []
+
+    def add(seat: int, delta: int, reason: str, round_n: int) -> None:
+        if delta == 0:
+            return
+        rows.append({"seat": int(seat), "delta": int(delta), "reason": reason, "round": round_n})
+
+    for event in state.event_log:
+        kind = event.get("type")
+        rnd = int(event.get("round") or 0)
+        if kind == "gold_gain":
+            add(event["seat"], int(event.get("amount") or 0), str(event.get("reason") or "Gold gained"), rnd)
+        elif kind == "gold_loss":
+            add(event["seat"], -int(event.get("amount") or 0), str(event.get("reason") or "Gold lost"), rnd)
+        elif kind == "gold_transfer":
+            if event.get("blocked") or event.get("from_seat") == event.get("to_seat"):
+                continue
+            amount = int(event.get("amount") or 0)
+            why = str(event.get("reason") or "Gold moved")
+            add(event["from_seat"], -amount, why, rnd)
+            add(event["to_seat"], amount, why, rnd)
+        elif kind == "gold_gifted":
+            amount = int(event.get("amount") or 0)
+            add(event["from_seat"], -amount, "Negotiation", rnd)
+            add(event["to_seat"], amount, "Negotiation", rnd)
+        elif kind == "alliance_bonus":
+            amount = int(event.get("amount") or 0)
+            why = str(event.get("reason") or "Alliance payout")
+            for seat in event.get("seats") or []:
+                add(int(seat), amount, why, rnd)
+    return rows
+
+
 class GameSession:
     """Wraps DecisionEngine for human multiplayer play."""
 
@@ -306,6 +341,7 @@ class GameSession:
             locked_seats=locked_seats,
             max_negotiation_gift=max_gift,
             max_negotiation_gift_per_phase=max_gift_phase,
+            ledger=build_ledger(self.state),
         )
 
     def build_private_state(self, player_id: str) -> PrivateGameState:

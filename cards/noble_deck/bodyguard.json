@@ -24,7 +24,7 @@
     "primitive": "gold_loss",
     "params": {
       "target": "self",
-      "amount": 5
+      "amount": 60
     }
   },
   "tags": [

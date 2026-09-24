@@ -29,7 +29,7 @@
     "primitive": "gold_loss",
     "params": {
       "target": "self",
-      "amount": 25
+      "amount": 80
     }
   }
 }

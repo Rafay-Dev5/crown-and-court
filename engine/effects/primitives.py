@@ -38,7 +38,14 @@ def gold_gain(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     person = state.person_at_seat(seat)
     person.gold += amount
     person.earned_gold += amount
-    state.log_event("gold_gain", seat=seat, amount=amount, person=person.person_id)
+    card = ctx.get("card") or {}
+    state.log_event(
+        "gold_gain",
+        seat=seat,
+        amount=amount,
+        person=person.person_id,
+        reason=card.get("name") or "Gold gained",
+    )
 
 
 def _evaluate_trigger(state: GameState, trigger: dict, ctx: EffectContext) -> bool:
@@ -85,7 +92,14 @@ def gold_loss(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
         log_attack(state, attacker, seat, "gold_theft", amount, blocked=False)
     person.gold = max(0, person.gold - amount)
     person.earned_gold = max(0, person.earned_gold - min(amount, person.earned_gold))
-    state.log_event("gold_loss", seat=seat, amount=amount, person=person.person_id)
+    card = ctx.get("card") or {}
+    state.log_event(
+        "gold_loss",
+        seat=seat,
+        amount=amount,
+        person=person.person_id,
+        reason=card.get("name") or "Gold lost",
+    )
 
 
 def gold_transfer(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
@@ -108,12 +122,15 @@ def gold_transfer(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     to_person.gold += transfer
     to_person.earned_gold += transfer
     # Gifted/earned split retired — total gold is what matters.
+    card = ctx.get("card") or {}
     state.log_event(
         "gold_transfer",
         from_seat=from_seat,
         to_seat=to_seat,
         amount=transfer,
         blocked=False,
+        reason=card.get("name")
+        or ("Corrupt upkeep" if ctx.get("card_id") == "status_corrupt_tick" else "Gold moved"),
     )
     if is_theft:
         betrayer_pays_betrayal_cost(state, ctx, rng, blocked=False)
@@ -323,7 +340,12 @@ def alliance_bonus(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
             person = state.person_at_seat(seat)
             person.gold += amount
             person.earned_gold += amount
-        state.log_event("alliance_bonus", seats=[a, b], amount=amount)
+        state.log_event(
+            "alliance_bonus",
+            seats=[a, b],
+            amount=amount,
+            reason=(ctx.get("card") or {}).get("name") or "Alliance payout",
+        )
 
 
 def skip_next_play(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:

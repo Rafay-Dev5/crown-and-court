@@ -33,16 +33,27 @@ def _gold_phrase(amount: Any, target: Any, verb: str) -> str:
     return f"{n} gold is taken from {opponent}"
 
 
+def _deferred_protection_lines(what: str, hit_when: str, outcome: str) -> list[str]:
+    return [
+        f"When this card is revealed, {what} goes up immediately and stays up through the rest of the reveals.",
+        (
+            "The guess is not scored then. It is checked after every card has been revealed, "
+            f"before succession. It hits if {hit_when}."
+        ),
+        outcome,
+    ]
+
+
 def describe_trigger(trigger: dict[str, Any]) -> str:
     t = str(trigger.get("type", ""))
     if t == "attacked_this_phase":
         atk = trigger.get("attack_type")
         suffix = f" ({str(atk).replace('_', ' ')})" if atk else ""
-        return f"you were attacked this round{suffix}"
+        return f"you were attacked during this round's reveals{suffix}"
     if t == "attacker_is":
-        return "a specific attacker targets you"
+        return "that attacker targeted you during this round's reveals"
     if t == "succession_imminent":
-        return "a Noble is about to become King"
+        return "a Noble has more gold than the King"
     if t == "always":
         return "always"
     return t.replace("_", " ")
@@ -120,18 +131,28 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
         lines.append(f"{target_label(p.get('target', 'target'))}'s hand is revealed to everyone.")
     elif primitive == "block_succession":
         if p.get("trigger"):
-            lines.append(
-                f"If {describe_trigger(p['trigger'])} at the moment this card resolves, "
-                "the next succession check is blocked."
-            )
+            lines.extend(_deferred_protection_lines(
+                "the succession block",
+                describe_trigger(p["trigger"]),
+                (
+                    "A hit keeps the block, so the succession check that follows can be stopped. "
+                    "A miss removes the block before that check."
+                ),
+            ))
         else:
             lines.append("The next succession check is blocked.")
     elif primitive == "protect_gold":
         if p.get("trigger"):
-            lines.append(
-                f"If {describe_trigger(p['trigger'])} when this resolves, gold is protected "
-                f"(up to {p.get('amount', '?')} gold)."
-            )
+            blocks = str(p.get("blocks") or "gold_theft").replace("_", " ")
+            lines.extend(_deferred_protection_lines(
+                f"a shield for up to {p.get('amount', '?')} gold",
+                describe_trigger(p["trigger"]),
+                (
+                    f"While it is up, it can stop a {blocks} revealed after this card. "
+                    "It does not undo anything revealed before it. "
+                    "A hit keeps the shield. A miss removes the unused shield."
+                ),
+            ))
         else:
             lines.append(
                 f"Protect up to {p.get('amount', '?')} gold for {p.get('duration_rounds', 1)} round(s)."
@@ -245,7 +266,7 @@ def describe_whiff_penalty(block: dict[str, Any] | None) -> list[str]:
     if not block:
         return []
     return [
-        "If your guess was wrong (protection whiff):",
+        "If the guess misses:",
         *[f"  {line}" for line in describe_effect_block(block)],
     ]
 
@@ -254,8 +275,8 @@ def describe_timing(timing: str) -> str:
     return {
         "on_reveal": "Resolves when revealed in play order.",
         "reactive": (
-            "Played face-down. When it resolves, it only works if the situation matches "
-            "your guess — otherwise you pay the miss penalty."
+            "Played face-down. It arms when revealed and stays up. "
+            "The guess is scored after every card has been revealed, before succession."
         ),
         "end_of_round": "Resolves at the end of the round.",
         "negotiation_only": "Only usable during the negotiation phase.",

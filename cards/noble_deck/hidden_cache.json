@@ -13,6 +13,7 @@
       "amount": 100,
       "duration_rounds": 1,
       "specificity": "generic",
+      "penalty_scale": 1.0,
       "trigger": {
         "type": "attacked_this_phase",
         "target": "self",
@@ -24,7 +25,7 @@
     "primitive": "gold_loss",
     "params": {
       "target": "self",
-      "amount": 5
+      "amount": 60
     }
   },
   "tags": [
