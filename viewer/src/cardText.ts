@@ -29,6 +29,18 @@ function goldPhrase(amount: unknown, target: unknown, verb: "gain" | "lose" | "s
   return `${n} gold is taken from ${who === "you" ? "an opponent" : who}`;
 }
 
+function successFaces(sides: number, targetMin: number): string {
+  const faces: number[] = [];
+  for (let n = targetMin; n <= sides; n += 1) faces.push(n);
+  if (faces.length <= 1) return String(faces[0] ?? targetMin);
+  if (faces.length === 2) return `${faces[0]} or ${faces[1]}`;
+  return `${faces.slice(0, -1).join(", ")}, or ${faces[faces.length - 1]}`;
+}
+
+function describeDie(sides: number, targetMin: number): string {
+  return `Roll a ${sides}-sided die. Success on ${successFaces(sides, targetMin)}.`;
+}
+
 function describeTrigger(trigger: Record<string, unknown>): string {
   const t = trigger.type as string;
   if (t === "attacked_this_phase") {
@@ -77,7 +89,14 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       lines.push(goldPhrase(p.amount, p.target ?? "self", "gain") + ".");
       break;
     case "gold_loss":
-      lines.push(goldPhrase(p.amount, p.target ?? "self", "lose") + ".");
+      if (p.fraction_of_wealth != null) {
+        const pct = Math.round(Number(p.fraction_of_wealth) * 100);
+        const who = targetLabel(p.target ?? "self");
+        const possessive = who === "you" ? "your" : "their";
+        lines.push(`${who} lose ${pct}% of ${possessive} current gold.`);
+      } else {
+        lines.push(goldPhrase(p.amount, p.target ?? "self", "lose") + ".");
+      }
       break;
     case "gold_transfer":
       lines.push(
@@ -153,9 +172,13 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       for (const [choiceId, branch] of Object.entries(branches)) {
         const label = choices.find((c) => c.id === choiceId)?.label ?? humanizeChoiceId(choiceId);
         const die = branch.die as { sides?: number; target_min?: number } | undefined;
-        const sides = die?.sides ?? 6;
-        const need = die?.target_min ?? 4;
-        lines.push(`If you chose “${label}”: roll a d${sides} (need ${need}+).`);
+        if (die) {
+          const sides = die.sides ?? 6;
+          const need = die.target_min ?? 4;
+          lines.push(`If you chose “${label}”: ${describeDie(sides, need)}`);
+        } else {
+          lines.push(`If you chose “${label}”:`);
+        }
         if (branch.on_success) {
           lines.push(`  Success: ${describeEffectBlock(branch.on_success as EffectBlock).join(" ")}`);
         }
@@ -193,7 +216,31 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
     case "roll_die": {
       const sides = Number(p.sides) || 6;
       const need = Number(p.target_min) || 4;
-      lines.push(`Roll a d${sides}; you need ${need} or higher.`);
+      lines.push(describeDie(sides, need));
+      break;
+    }
+    case "conditional_on_status": {
+      const who = targetLabel(p.target ?? "target");
+      lines.push(`If ${who} has the “${p.status_name}” status:`);
+      if (p.effect_if_present) {
+        lines.push(`  Then: ${describeEffectBlock(p.effect_if_present as EffectBlock).join(" ")}`);
+      }
+      if (p.effect_if_absent) {
+        lines.push(`  Otherwise: ${describeEffectBlock(p.effect_if_absent as EffectBlock).join(" ")}`);
+      }
+      break;
+    }
+    case "conditional_on_choice": {
+      const who = targetLabel(p.target ?? "target");
+      const choice = humanizeChoiceId(String(p.choice_id ?? "a path"));
+      const within = p.within_rounds ? ` in the last ${p.within_rounds} rounds` : "";
+      lines.push(`If ${who} previously chose “${choice}”${within}:`);
+      if (p.effect_if_match) {
+        lines.push(`  Then: ${describeEffectBlock(p.effect_if_match as EffectBlock).join(" ")}`);
+      }
+      if (p.effect_if_no_match) {
+        lines.push(`  Otherwise: ${describeEffectBlock(p.effect_if_no_match as EffectBlock).join(" ")}`);
+      }
       break;
     }
     default:

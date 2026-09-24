@@ -33,6 +33,36 @@ def test_ward_whiff_applies_penalty():
     assert any(e["type"] == "protection_whiff" for e in state.event_log)
 
 
+def test_succession_block_whiff_drops_the_block_and_charges_half_gold():
+    config = load_config()
+    state = setup_game(config, GameRNG(seed=4))
+    king = state.king_seat
+    person = state.person_at_seat(king)
+    person.gold = 1000
+    card = {
+        "id": "king_diplomatic_immunity_001",
+        "name": "Diplomatic Immunity",
+        "category": "protection",
+        "timing": "reactive",
+        "effect": {
+            "primitive": "block_succession",
+            "params": {
+                "duration_rounds": 1,
+                "trigger": {"type": "succession_imminent"},
+            },
+        },
+        "on_whiff_penalty": {
+            "primitive": "gold_loss",
+            "params": {"target": "self", "fraction_of_wealth": 0.5},
+        },
+    }
+    resolve_card(state, card, king, GameRNG(seed=1))
+    assert state.has_status(king, "block_succession")
+    finalize_protection_bets(state, GameRNG(seed=2))
+    assert not state.has_status(king, "block_succession")
+    assert person.gold == 500
+
+
 def test_king_ward_hits_when_attacked_later_in_phase():
     config = load_config()
     state = setup_game(config, GameRNG(seed=10))

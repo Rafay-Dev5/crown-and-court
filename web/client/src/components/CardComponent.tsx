@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { describeCardSummary } from "../cardText";
+import { cardWarnings, describeCardSummary } from "../cardText";
 import type { CardData } from "../store/gameStore";
 import CardPreview from "./CardPreview";
 
@@ -191,6 +191,11 @@ export default function CardComponent({
         {!small && (
           <p className={`mt-1 opacity-80 leading-snug hidden sm:block ${large ? "text-xs line-clamp-7" : "text-[11px] line-clamp-5"}`}>
             {describeCardSummary(card)}
+          </p>
+        )}
+        {!faceDown && cardWarnings(card).length > 0 && (
+          <p className={`mt-1 text-red-800 font-semibold leading-tight ${small ? "text-[7px] line-clamp-2" : "text-[8px] sm:text-[10px] line-clamp-3"}`}>
+            {card.category === "betrayal" ? "Betrayal" : "Needs an alliance"}
           </p>
         )}
       </button>

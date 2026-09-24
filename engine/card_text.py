@@ -67,6 +67,21 @@ def describe_condition(cond: dict[str, Any]) -> str:
     return "a special condition is met"
 
 
+def _success_faces(sides: int, target_min: int) -> str:
+    faces = [str(n) for n in range(int(target_min), int(sides) + 1)]
+    if not faces:
+        return "no number"
+    if len(faces) == 1:
+        return faces[0]
+    if len(faces) == 2:
+        return f"{faces[0]} or {faces[1]}"
+    return ", ".join(faces[:-1]) + f", or {faces[-1]}"
+
+
+def _describe_die(sides: int, target_min: int) -> str:
+    return f"Roll a {sides}-sided die. Success on {_success_faces(sides, target_min)}."
+
+
 def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[str]:
     if not block or not block.get("primitive"):
         return []
@@ -154,9 +169,9 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
             )
             die = branch.get("die")
             if die:
-                sides = die.get("sides", 6)
-                need = die.get("target_min", 4)
-                lines.append(f'If “{label}” is chosen: roll a d{sides} (need {need}+).')
+                sides = int(die.get("sides", 6))
+                need = int(die.get("target_min", 4))
+                lines.append(f'If “{label}” is chosen: {_describe_die(sides, need)}')
             else:
                 lines.append(f'If “{label}” is chosen:')
             if branch.get("on_success"):
@@ -185,7 +200,23 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
     elif primitive == "roll_die":
         sides = int(p.get("sides") or 6)
         need = int(p.get("target_min") or 4)
-        lines.append(f"Roll a d{sides}; you need {need} or higher.")
+        lines.append(_describe_die(sides, need))
+    elif primitive == "conditional_on_status":
+        who = target_label(p.get("target", "target"))
+        lines.append(f"If {who} has the “{p.get('status_name')}” status:")
+        if p.get("effect_if_present"):
+            lines.append(f"  Then: {' '.join(describe_effect_block(p['effect_if_present']))}")
+        if p.get("effect_if_absent"):
+            lines.append(f"  Otherwise: {' '.join(describe_effect_block(p['effect_if_absent']))}")
+    elif primitive == "conditional_on_choice":
+        who = target_label(p.get("target", "target"))
+        choice = humanize_choice_id(str(p.get("choice_id") or "a path"))
+        within = f" in the last {p['within_rounds']} rounds" if p.get("within_rounds") else ""
+        lines.append(f"If {who} previously chose “{choice}”{within}:")
+        if p.get("effect_if_match"):
+            lines.append(f"  Then: {' '.join(describe_effect_block(p['effect_if_match']))}")
+        if p.get("effect_if_no_match"):
+            lines.append(f"  Otherwise: {' '.join(describe_effect_block(p['effect_if_no_match']))}")
     else:
         lines.append(f"{str(primitive).replace('_', ' ')} (see technical details).")
 
@@ -262,4 +293,26 @@ def describe_card_full_lines(card: dict[str, Any]) -> list[str]:
     if whiff:
         lines.extend(whiff)
 
+    lines.extend(_card_warnings(card))
+
     return lines
+
+
+def _card_warnings(card: dict[str, Any]) -> list[str]:
+    warnings: list[str] = []
+    effect = card.get("effect") or {}
+    requires = card.get("requires_state") or {}
+    needs_alliance = (
+        card.get("category") == "alliance"
+        or effect.get("primitive") == "alliance_bonus"
+        or requires.get("alliance_declared_with_target")
+    )
+    if card.get("category") == "betrayal":
+        warnings.append(
+            "Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft."
+        )
+    if needs_alliance:
+        warnings.append(
+            "Warning: this needs an alliance with your target. Otherwise it does nothing."
+        )
+    return warnings

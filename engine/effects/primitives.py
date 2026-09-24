@@ -311,12 +311,19 @@ def alliance_bonus(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     if isinstance(members, list) and len(members) == 2:
         a = _resolve_target(state, members[0], ctx)
         b = _resolve_target(state, members[1], ctx)
-        if state.has_alliance_between(a, b):
-            for seat in (a, b):
-                person = state.person_at_seat(seat)
-                person.gold += amount
-                person.earned_gold += amount
-            state.log_event("alliance_bonus", seats=[a, b], amount=amount)
+        if not state.has_alliance_between(a, b):
+            state.log_event(
+                "alliance_failed",
+                seat=a,
+                target_seat=b,
+                card_id=ctx.get("card_id"),
+            )
+            return
+        for seat in (a, b):
+            person = state.person_at_seat(seat)
+            person.gold += amount
+            person.earned_gold += amount
+        state.log_event("alliance_bonus", seats=[a, b], amount=amount)
 
 
 def skip_next_play(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
@@ -462,8 +469,13 @@ def dice_swing(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
         return
 
     die_cfg = branch.get("die", params.get("die", {"sides": 6, "target_min": 4}))
-    roll_die(state, {**ctx, "params": die_cfg}, rng)
-    success = ctx.get("last_roll_success", False)
+    # roll_die writes the result onto the context it is given. A copied
+    # context would drop that result and every roll would be treated as a miss.
+    rolled = {**ctx, "params": die_cfg}
+    roll_die(state, rolled, rng)
+    success = bool(rolled.get("last_roll_success", False))
+    ctx["last_roll"] = rolled.get("last_roll")
+    ctx["last_roll_success"] = success
 
     effect_key = "on_success" if success else "on_failure"
     effect = branch.get(effect_key) or params.get(effect_key)

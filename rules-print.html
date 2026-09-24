@@ -462,7 +462,7 @@
       <!-- BEGIN CARD CATALOG -->
 <section class="card-catalog page-break">
 <h2>Card catalog</h2>
-<p>Play-deck cards used in the standard rules (<strong>42 King</strong> / <strong>40 Noble</strong>). Card set version: <code>3829e707413b8f83</code>.</p>
+<p>Play-deck cards used in the standard rules (<strong>42 King</strong> / <strong>40 Noble</strong>). Card set version: <code>c7cdfc9bd59a9751</code>.</p>
 <p>This list matches the simulation play decks (<code>king_deck_size</code> / <code>noble_deck_size</code>). Numbers and wording may change between playtest printings. Statuses named on cards (e.g. <em>oathbreaker</em>, <em>marked</em>, <em>corrupt</em>, <em>discredited</em>) are temporary tags from effects.</p>
 <h3>King deck</h3>
 <article class="card-entry">
@@ -478,7 +478,7 @@
 <article class="card-entry">
 <h4>Grain Toll <span class="meta">— Economy · Common</span></h4>
 <p class="flavor">Every wagon pays the crown before it passes.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses one path:</li><li>Pay the Tariff</li><li>Hide the Cargo</li><li>If “Pay the Tariff” is chosen:</li><li class="sub">70 gold moves from your chosen opponent to you.</li><li>If “Hide the Cargo” is chosen: roll a d6 (need 5+).</li><li class="sub">Success: your chosen opponent gain 35 gold.</li><li class="sub">Failure: 100 gold moves from your chosen opponent to you.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses one path:</li><li>Pay the Tariff</li><li>Hide the Cargo</li><li>If “Pay the Tariff” is chosen:</li><li class="sub">70 gold moves from your chosen opponent to you.</li><li>If “Hide the Cargo” is chosen: Roll a 6-sided die. Success on 5 or 6.</li><li class="sub">Success: your chosen opponent gain 35 gold.</li><li class="sub">Failure: 100 gold moves from your chosen opponent to you.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Harbor Dues <span class="meta">— Economy · Common</span></h4>
@@ -543,7 +543,7 @@
 <article class="card-entry">
 <h4>Garrison Inspection <span class="meta">— Disruption · Common</span></h4>
 <p class="flavor">Soldiers toss the saddlebags. Something always falls out.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses 1 card(s) to discard.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Noble Containment <span class="meta">— Disruption · Common</span></h4>
@@ -553,22 +553,22 @@
 <article class="card-entry">
 <h4>Quarter Search <span class="meta">— Disruption · Common</span></h4>
 <p class="flavor">Expansion design — Quarter Search.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 2 card(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses 2 card(s) to discard.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Royal Decree <span class="meta">— Disruption · Common</span></h4>
 <p class="flavor">By order of the crown, discard your plans.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses 1 card(s) to discard.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Sealed Warrant <span class="meta">— Disruption · Rare</span></h4>
 <p class="flavor">Signed, sealed, confiscated.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Conditional on status (see technical details).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your chosen opponent has the “marked” status:</li><li class="sub">Then: 100 gold moves from your chosen opponent to you.</li><li class="sub">Otherwise: 80 gold moves from your chosen opponent to you.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Sealed Warrant II <span class="meta">— Disruption · Common</span></h4>
 <p class="flavor">Expansion design — Sealed Warrant II.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses 1 card(s) to discard.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Bastion Wall <span class="meta">— Protection · Common</span></h4>
@@ -583,7 +583,7 @@
 <article class="card-entry">
 <h4>Diplomatic Immunity <span class="meta">— Protection · Rare</span></h4>
 <p class="flavor">The crown does not yield today.</p>
-<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 5 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 50% of your current gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Iron Curtain <span class="meta">— Protection · Common</span></h4>
@@ -593,12 +593,12 @@
 <article class="card-entry">
 <h4>Iron Gate <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">Expansion design — Iron Gate.</p>
-<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 25 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 80 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 25 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Loyal Guard <span class="meta">— Protection · Supercard</span></h4>
 <p class="flavor">The crown does not fall while he stands.</p>
-<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 8 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 50% of your current gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Vault Seal <span class="meta">— Protection · Common</span></h4>
@@ -633,7 +633,7 @@
 <article class="card-entry">
 <h4>Court Intrigue <span class="meta">— Information · Rare</span></h4>
 <p class="flavor">Secrets travel faster than armies.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent peek at a hidden card.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You peek at one card in your chosen opponent&#x27;s hand (only you see it).</li></ul>
 </article>
 <article class="card-entry">
 <h4>Court Scribe <span class="meta">— Information · Common</span></h4>
@@ -653,12 +653,12 @@
 <article class="card-entry">
 <h4>Royal Census <span class="meta">— Information · Common</span></h4>
 <p class="flavor">Clerks count heads — and hands.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Conditional on status (see technical details).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your chosen opponent has the “discredited” status:</li><li class="sub">Then: your chosen opponent&#x27;s hand is revealed to everyone. Then: your chosen opponent chooses 1 card(s) to discard.</li><li class="sub">Otherwise: your chosen opponent&#x27;s hand is revealed to everyone.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Spy Master <span class="meta">— Information · Rare</span></h4>
 <p class="flavor">Eyes everywhere, even in your hand.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent peek at a hidden card.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You peek at one card in your chosen opponent&#x27;s hand (only you see it).</li></ul>
 </article>
 <article class="card-entry">
 <h4>Imperial Edict <span class="meta">— Supercard · Supercard</span></h4>
@@ -679,7 +679,7 @@
 <article class="card-entry">
 <h4>Development Fund II <span class="meta">— Economy · Rare</span></h4>
 <p class="flavor">Progress has a price — and a roll of the dice.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Public Works</li><li>Private Enrichment</li><li>Cook the Books</li><li>If “Public Works” is chosen: roll a d6 (need 4+).</li><li class="sub">Success: you gain 140 gold.</li><li class="sub">Failure: you lose 68 gold.</li><li>If “Private Enrichment” is chosen: roll a d6 (need 4+).</li><li class="sub">Success: you gain 189 gold.</li><li class="sub">Failure: you lose 42 gold.</li><li class="sub">On failure they also get “corrupt” for 3 round(s).</li><li>If “Cook the Books” is chosen:</li><li class="sub">you gain 70 gold. Then: you receive the “corrupt” status for 2 round(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Public Works</li><li>Private Enrichment</li><li>Cook the Books</li><li>If “Public Works” is chosen: Roll a 6-sided die. Success on 4, 5, or 6.</li><li class="sub">Success: you gain 140 gold.</li><li class="sub">Failure: you lose 68 gold.</li><li>If “Private Enrichment” is chosen: Roll a 6-sided die. Success on 4, 5, or 6.</li><li class="sub">Success: you gain 189 gold.</li><li class="sub">Failure: you lose 42 gold.</li><li class="sub">On failure they also get “corrupt” for 3 round(s).</li><li>If “Cook the Books” is chosen:</li><li class="sub">you gain 70 gold. Then: you receive the “corrupt” status for 2 round(s).</li></ul>
 </article>
 <article class="card-entry">
 <h4>Fence Goods <span class="meta">— Economy · Common</span></h4>
@@ -689,7 +689,7 @@
 <article class="card-entry">
 <h4>Gambler&#x27;s Wager <span class="meta">— Economy · Common</span></h4>
 <p class="flavor">Fortune favors the reckless. Sometimes.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Double Down</li><li>If “Double Down” is chosen: roll a d6 (need 5+).</li><li class="sub">Success: you gain 111 gold.</li><li class="sub">Failure: you lose 53 gold.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Double Down</li><li>If “Double Down” is chosen: Roll a 6-sided die. Success on 5 or 6.</li><li class="sub">Success: you gain 111 gold.</li><li class="sub">Failure: you lose 53 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Loan Shark <span class="meta">— Economy · Rare</span></h4>
@@ -709,7 +709,7 @@
 <article class="card-entry">
 <h4>Night Collection <span class="meta">— Economy · Common</span></h4>
 <p class="flavor">Rent comes due after dark.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Collect Quietly</li><li>Stage a Shakedown</li><li>If “Collect Quietly” is chosen:</li><li class="sub">you gain 30 gold.</li><li>If “Stage a Shakedown” is chosen: roll a d6 (need 5+).</li><li class="sub">Success: 60 gold moves from your chosen opponent to you.</li><li class="sub">Failure: you lose 20 gold.</li><li class="sub">On failure they also get “discredited” for 1 round(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Collect Quietly</li><li>Stage a Shakedown</li><li>If “Collect Quietly” is chosen:</li><li class="sub">you gain 30 gold.</li><li>If “Stage a Shakedown” is chosen: Roll a 6-sided die. Success on 5 or 6.</li><li class="sub">Success: 60 gold moves from your chosen opponent to you.</li><li class="sub">Failure: you lose 20 gold.</li><li class="sub">On failure they also get “discredited” for 1 round(s).</li></ul>
 </article>
 <article class="card-entry">
 <h4>Silk Route <span class="meta">— Economy · Common</span></h4>
@@ -724,7 +724,7 @@
 <article class="card-entry">
 <h4>Smuggler&#x27;s Tithe <span class="meta">— Economy · Common</span></h4>
 <p class="flavor">What the crown doesn&#x27;t see, you keep.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Take a Quiet Cut</li><li>Run a Deep Route</li><li>If “Take a Quiet Cut” is chosen:</li><li class="sub">you gain 35 gold.</li><li>If “Run a Deep Route” is chosen: roll a d6 (need 5+).</li><li class="sub">Success: you gain 95 gold.</li><li class="sub">Failure: you lose 25 gold.</li><li class="sub">On failure they also get “marked” for 1 round(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Choose one path:</li><li>Take a Quiet Cut</li><li>Run a Deep Route</li><li>If “Take a Quiet Cut” is chosen:</li><li class="sub">you gain 35 gold.</li><li>If “Run a Deep Route” is chosen: Roll a 6-sided die. Success on 5 or 6.</li><li class="sub">Success: you gain 95 gold.</li><li class="sub">Failure: you lose 25 gold.</li><li class="sub">On failure they also get “marked” for 1 round(s).</li></ul>
 </article>
 <article class="card-entry">
 <h4>Blood Oath <span class="meta">— Alliance · Common</span></h4>
@@ -784,7 +784,7 @@
 <article class="card-entry">
 <h4>Cut Supply Lines <span class="meta">— Disruption · Common</span></h4>
 <p class="flavor">No carriages reach the palace tonight.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses 1 card(s) to discard.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Embargo <span class="meta">— Disruption · Rare</span></h4>
@@ -799,17 +799,17 @@
 <article class="card-entry">
 <h4>Poisoned Chalice <span class="meta">— Disruption · Common</span></h4>
 <p class="flavor">Expansion design — Poisoned Chalice.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 2 card(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses 2 card(s) to discard.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Sabotage <span class="meta">— Disruption · Common</span></h4>
 <p class="flavor">Expansion design — Sabotage.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent discard 1 card(s).</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent chooses 1 card(s) to discard.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Body Double <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">Expansion design — Body Double.</p>
-<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 25 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.</li><li>If you were attacked this round (gold theft) when this resolves, gold is protected (up to 80 gold).</li><li>If your guess was wrong (protection whiff):</li><li class="sub">you lose 25 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Bodyguard <span class="meta">— Protection · Rare</span></h4>
@@ -849,7 +849,7 @@
 <article class="card-entry">
 <h4>Hidden Ledger <span class="meta">— Information · Common</span></h4>
 <p class="flavor">Even kings leave a paper trail.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>The King peek at a hidden card.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You peek at one card in the King&#x27;s hand (only you see it).</li></ul>
 </article>
 <article class="card-entry">
 <h4>Spy Network <span class="meta">— Information · Common</span></h4>
@@ -859,7 +859,7 @@
 <article class="card-entry">
 <h4>Stolen Ledger <span class="meta">— Information · Common</span></h4>
 <p class="flavor">Their secrets are yours for a night.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Your chosen opponent peek at a hidden card.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You peek at one card in your chosen opponent&#x27;s hand (only you see it).</li></ul>
 </article>
 <article class="card-entry">
 <h4>Whisper Ring <span class="meta">— Information · Common</span></h4>

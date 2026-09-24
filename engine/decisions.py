@@ -247,8 +247,10 @@ class DecisionEngine:
             for seat in range(self.state.num_players):
                 redraw = 3 if seat == self.state.king_seat else 2
                 draw_to_hand(self.state, seat, redraw, self.rng, hand_size)
+            from engine.protection import finalize_protection_bets
             from engine.status_ticks import apply_status_tick_effects
 
+            finalize_protection_bets(self.state, self.rng)
             apply_status_tick_effects(self.state, self.rng)
             self.state.tick_statuses()
             self.queue = []

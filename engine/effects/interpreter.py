@@ -100,7 +100,7 @@ def resolve_card(
 ) -> bool:
     """Resolve a card's effect. Returns False if waiting on player choice."""
     if not card_preconditions_met(state, card, seat, target_seat):
-        state.log_event("card_precondition_failed", card_id=card.get("id"), seat=seat)
+        state.log_event("card_precondition_failed", card_id=card.get("id"), name=card.get("name"), seat=seat)
         return True
 
     ctx: dict[str, Any] = {

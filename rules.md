@@ -217,7 +217,7 @@ python -m scripts.export_rules_cards
 
 ## Card catalog
 
-Play-deck cards used in the standard rules (**42 King** / **40 Noble**). Card set version: `3829e707413b8f83`.
+Play-deck cards used in the standard rules (**42 King** / **40 Noble**). Card set version: `c7cdfc9bd59a9751`.
 
 This list matches the simulation play decks (`king_deck_size` / `noble_deck_size` in `configs/balance.yaml`). Numbers and wording may change between playtest printings. Statuses mentioned on cards (e.g. *oathbreaker*, *marked*, *corrupt*, *discredited*) are temporary tags applied by effects; follow each card’s text.
 
@@ -247,7 +247,7 @@ Your chosen opponent chooses one path:
   - Hide the Cargo
 If “Pay the Tariff” is chosen:
   - 70 gold moves from your chosen opponent to you.
-If “Hide the Cargo” is chosen: roll a d6 (need 5+).
+If “Hide the Cargo” is chosen: Roll a 6-sided die. Success on 5 or 6.
   - Success: your chosen opponent gain 35 gold.
   - Failure: 100 gold moves from your chosen opponent to you.
 
@@ -347,7 +347,7 @@ If they previously chose “Invest Private” in the last 2 rounds:
 > Soldiers toss the saddlebags. Something always falls out.
 
 Resolves when revealed in play order.
-Your chosen opponent discard 1 card(s).
+Your chosen opponent chooses 1 card(s) to discard.
 
 #### Noble Containment — *Disruption* · Common
 
@@ -361,28 +361,30 @@ Your chosen opponent play one fewer card next round.
 > Expansion design — Quarter Search.
 
 Resolves when revealed in play order.
-Your chosen opponent discard 2 card(s).
+Your chosen opponent chooses 2 card(s) to discard.
 
 #### Royal Decree — *Disruption* · Common
 
 > By order of the crown, discard your plans.
 
 Resolves when revealed in play order.
-Your chosen opponent discard 1 card(s).
+Your chosen opponent chooses 1 card(s) to discard.
 
 #### Sealed Warrant — *Disruption* · Rare
 
 > Signed, sealed, confiscated.
 
 Resolves when revealed in play order.
-Conditional on status (see technical details).
+If your chosen opponent has the “marked” status:
+  - Then: 100 gold moves from your chosen opponent to you.
+  - Otherwise: 80 gold moves from your chosen opponent to you.
 
 #### Sealed Warrant II — *Disruption* · Common
 
 > Expansion design — Sealed Warrant II.
 
 Resolves when revealed in play order.
-Your chosen opponent discard 1 card(s).
+Your chosen opponent chooses 1 card(s) to discard.
 
 #### Bastion Wall — *Protection* · Common
 
@@ -487,7 +489,7 @@ You draw 1 extra card(s).
 > Secrets travel faster than armies.
 
 Resolves when revealed in play order.
-Your chosen opponent peek at a hidden card.
+You peek at one card in your chosen opponent's hand (only you see it).
 
 #### Court Scribe — *Information* · Common
 
@@ -515,14 +517,16 @@ Your chosen opponent's hand is revealed to everyone.
 > Clerks count heads — and hands.
 
 Resolves when revealed in play order.
-Conditional on status (see technical details).
+If your chosen opponent has the “discredited” status:
+  - Then: your chosen opponent's hand is revealed to everyone. Then: your chosen opponent chooses 1 card(s) to discard.
+  - Otherwise: your chosen opponent's hand is revealed to everyone.
 
 #### Spy Master — *Information* · Rare
 
 > Eyes everywhere, even in your hand.
 
 Resolves when revealed in play order.
-Your chosen opponent peek at a hidden card.
+You peek at one card in your chosen opponent's hand (only you see it).
 
 #### Imperial Edict — *Supercard* · Supercard
 
@@ -559,10 +563,10 @@ Choose one path:
   - Public Works
   - Private Enrichment
   - Cook the Books
-If “Public Works” is chosen: roll a d6 (need 4+).
+If “Public Works” is chosen: Roll a 6-sided die. Success on 4, 5, or 6.
   - Success: you gain 140 gold.
   - Failure: you lose 68 gold.
-If “Private Enrichment” is chosen: roll a d6 (need 4+).
+If “Private Enrichment” is chosen: Roll a 6-sided die. Success on 4, 5, or 6.
   - Success: you gain 189 gold.
   - Failure: you lose 42 gold.
   - On failure they also get “corrupt” for 3 round(s).
@@ -583,7 +587,7 @@ Resolves when revealed in play order.
 Resolves when revealed in play order.
 Choose one path:
   - Double Down
-If “Double Down” is chosen: roll a d6 (need 5+).
+If “Double Down” is chosen: Roll a 6-sided die. Success on 5 or 6.
   - Success: you gain 111 gold.
   - Failure: you lose 53 gold.
 
@@ -618,7 +622,7 @@ Choose one path:
   - Stage a Shakedown
 If “Collect Quietly” is chosen:
   - you gain 30 gold.
-If “Stage a Shakedown” is chosen: roll a d6 (need 5+).
+If “Stage a Shakedown” is chosen: Roll a 6-sided die. Success on 5 or 6.
   - Success: 60 gold moves from your chosen opponent to you.
   - Failure: you lose 20 gold.
   - On failure they also get “discredited” for 1 round(s).
@@ -647,7 +651,7 @@ Choose one path:
   - Run a Deep Route
 If “Take a Quiet Cut” is chosen:
   - you gain 35 gold.
-If “Run a Deep Route” is chosen: roll a d6 (need 5+).
+If “Run a Deep Route” is chosen: Roll a 6-sided die. Success on 5 or 6.
   - Success: you gain 95 gold.
   - Failure: you lose 25 gold.
   - On failure they also get “marked” for 1 round(s).
@@ -743,7 +747,7 @@ Resolves when revealed in play order.
 > No carriages reach the palace tonight.
 
 Resolves when revealed in play order.
-Your chosen opponent discard 1 card(s).
+Your chosen opponent chooses 1 card(s) to discard.
 
 #### Embargo — *Disruption* · Rare
 
@@ -764,14 +768,14 @@ You steal 1 card(s) from your chosen opponent.
 > Expansion design — Poisoned Chalice.
 
 Resolves when revealed in play order.
-Your chosen opponent discard 2 card(s).
+Your chosen opponent chooses 2 card(s) to discard.
 
 #### Sabotage — *Disruption* · Common
 
 > Expansion design — Sabotage.
 
 Resolves when revealed in play order.
-Your chosen opponent discard 1 card(s).
+Your chosen opponent chooses 1 card(s) to discard.
 
 #### Body Double — *Protection* · Common
 
@@ -842,7 +846,7 @@ You draw 1 extra card(s).
 > Even kings leave a paper trail.
 
 Resolves when revealed in play order.
-The King peek at a hidden card.
+You peek at one card in the King's hand (only you see it).
 
 #### Spy Network — *Information* · Common
 
@@ -856,7 +860,7 @@ Your chosen opponent's hand is revealed to everyone.
 > Their secrets are yours for a night.
 
 Resolves when revealed in play order.
-Your chosen opponent peek at a hidden card.
+You peek at one card in your chosen opponent's hand (only you see it).
 
 #### Whisper Ring — *Information* · Common
 

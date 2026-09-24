@@ -10,12 +10,8 @@ from engine.cards import write_manifest
 ROOT = Path(__file__).resolve().parent.parent
 
 KING_EXPANSION: list[dict] = [
-    {"file": "expand_king_01.json", "id": "king_expand_mint_dues_001", "name": "Mint Dues", "category": "economy",
-     "effect": {"primitive": "gold_gain", "params": {"target": "self", "amount": 95}}},
     {"file": "expand_king_02.json", "id": "king_expand_toll_bridge_002", "name": "Toll Bridge", "category": "economy",
      "effect": {"primitive": "gold_transfer", "params": {"from": "target", "to": "self", "amount": 55, "as_theft": True}}},
-    {"file": "expand_king_03.json", "id": "king_expand_border_levy_003", "name": "Border Levy", "category": "economy",
-     "effect": {"primitive": "gold_gain", "params": {"target": "self", "amount": 78}}},
     {"file": "expand_king_04.json", "id": "king_expand_royal_pact_004", "name": "Royal Pact", "category": "alliance",
      "effect": {"primitive": "alliance_bonus", "params": {"amount": 72, "players": ["self", "target"]}}},
     {"file": "expand_king_05.json", "id": "king_expand_summit_oath_005", "name": "Summit Oath", "category": "alliance",
@@ -45,17 +41,28 @@ KING_EXPANSION: list[dict] = [
     {"file": "expand_king_14.json", "id": "king_expand_crown_gambit_014", "name": "Crown Gambit", "category": "betrayal",
      "effect": {"primitive": "gold_transfer", "params": {"from": "target", "to": "self", "amount": 88, "as_theft": True}}},
     {"file": "expand_king_15.json", "id": "king_expand_imperial_mandate_015", "name": "Imperial Mandate", "category": "supercard",
-     "rarity": "supercard", "effect": {"primitive": "gold_gain", "params": {"target": "self", "amount": 145}},
-     "secondary_effect": {"primitive": "draw_extra", "params": {"target": "self", "count": 1}}},
+     "rarity": "supercard", "flavor_text": "Mark them for the warrant, or take the coin and sit out a card.",
+     "effect": {"primitive": "dice_swing", "params": {
+         "choices": [
+             {"id": "brand", "label": "Brand a Rival"},
+             {"id": "squeeze", "label": "Squeeze the Court"},
+         ],
+         "branches": {
+             "brand": {"on_success": {
+                 "primitive": "gold_gain", "params": {"target": "self", "amount": 50},
+                 "secondary_effect": {"primitive": "mark_status", "params": {"target": "target", "status_name": "marked", "duration_rounds": 2}},
+             }},
+             "squeeze": {"on_success": {
+                 "primitive": "gold_gain", "params": {"target": "self", "amount": 140},
+                 "secondary_effect": {"primitive": "skip_next_play", "params": {"target": "self"}},
+             }},
+         },
+     }}},
 ]
 
 NOBLE_EXPANSION: list[dict] = [
-    {"file": "expand_noble_01.json", "id": "noble_expand_silk_route_001", "name": "Silk Route", "category": "economy",
-     "effect": {"primitive": "gold_gain", "params": {"target": "self", "amount": 88}}},
     {"file": "expand_noble_02.json", "id": "noble_expand_smugglers_cut_002", "name": "Smuggler's Cut", "category": "economy",
      "effect": {"primitive": "gold_transfer", "params": {"from": "king", "to": "self", "amount": 52, "as_theft": True}}},
-    {"file": "expand_noble_03.json", "id": "noble_expand_merchant_league_003", "name": "Merchant League", "category": "economy",
-     "effect": {"primitive": "gold_gain", "params": {"target": "self", "amount": 70}}},
     {"file": "expand_noble_04.json", "id": "noble_expand_secret_compact_004", "name": "Secret Compact", "category": "alliance",
      "effect": {"primitive": "alliance_bonus", "params": {"amount": 65, "players": ["self", "target"]}}},
     {"file": "expand_noble_05.json", "id": "noble_expand_blood_oath_005", "name": "Blood Oath", "category": "alliance",

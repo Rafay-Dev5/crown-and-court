@@ -70,14 +70,27 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
     case "choice_made":
       return `${seatName(e.seat)} chooses ${String(e.choice_id ?? "").replace(/_/g, " ")}`;
     case "dice_roll":
-    case "dice_swing":
+    case "dice_swing": {
+      const sides = Number(e.sides) || 6;
+      const need = Number(e.target_min) || 4;
+      const faces: number[] = [];
+      for (let n = need; n <= sides; n += 1) faces.push(n);
+      const list =
+        faces.length <= 1
+          ? String(faces[0] ?? need)
+          : faces.length === 2
+            ? `${faces[0]} or ${faces[1]}`
+            : `${faces.slice(0, -1).join(", ")}, or ${faces[faces.length - 1]}`;
       return e.success
-        ? `Dice: ${e.roll} — success`
-        : `Dice: ${e.roll} — failure`;
+        ? `Die shows ${e.roll} — success (${list})`
+        : `Die shows ${e.roll} — miss (needed ${list})`;
+    }
     case "card_revealed":
       return `${seatName(e.seat)} reveals ${e.name}`;
     case "card_precondition_failed":
-      return `${e.name ? `${e.name}: ` : ""}The card's requirement was not met — it fizzles`;
+      return `${e.name ? `${e.name}: ` : ""}It fizzles — the requirement was not met`;
+    case "alliance_failed":
+      return `${seatName(e.seat)} has no alliance with ${seatName(e.target_seat)} — the pact does nothing`;
     case "succession":
     case "seat_swap":
       return `Succession: ${seatName(e.new_king_seat ?? e.ascending_seat)} takes the crown`;

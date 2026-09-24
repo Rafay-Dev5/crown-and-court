@@ -108,6 +108,7 @@ export type MatchEndPayload = {
   match_number: number;
   winner_player_id: string;
   winner_started_as_king: boolean;
+  succession_stopped?: boolean;
   points_awarded: Record<string, number>;
   placements: Record<string, unknown>[];
   meta: MetaState;
@@ -146,6 +147,8 @@ export type GameStore = {
   lastSuccession: Record<string, unknown> | null;
   revealAcks: string[];
   whispers: Whisper[];
+  diceQueue: { id: number; event: Record<string, unknown> }[];
+  dismissDice: () => void;
 
   setScreen: (s: Screen) => void;
   setPlayerName: (name: string) => void;
@@ -187,7 +190,10 @@ const initialState = {
   lastSuccession: null as Record<string, unknown> | null,
   revealAcks: [] as string[],
   whispers: [] as Whisper[],
+  diceQueue: [] as { id: number; event: Record<string, unknown> }[],
 };
+
+let diceRollSeq = 0;
 
 function eventKey(e: Record<string, unknown>): string {
   return JSON.stringify(e);
@@ -281,15 +287,23 @@ export function createGameStore(set: (partial: Partial<GameStore> | ((s: GameSto
     handleEvent: (payload) => {
       const event = payload.event as Record<string, unknown>;
       const prev = get().events;
-      if (prev.some((e) => eventKey(e) === eventKey(event))) {
-        return;
+      const duplicate = prev.some((e) => eventKey(e) === eventKey(event));
+      const updates: Partial<GameStore> = {};
+      if (!duplicate) {
+        updates.events = [...prev, event].slice(-50);
+        if (event.type === "succession" || event.type === "seat_swap") {
+          updates.lastSuccession = event;
+        }
       }
-      const events = [...prev, event].slice(-50);
-      const updates: Partial<GameStore> = { events };
-      if (event.type === "succession" || event.type === "seat_swap") {
-        updates.lastSuccession = event;
+      if (event.type === "dice_roll") {
+        diceRollSeq += 1;
+        updates.diceQueue = [...get().diceQueue, { id: diceRollSeq, event }];
       }
-      set(updates);
+      if (Object.keys(updates).length) set(updates);
+    },
+
+    dismissDice: () => {
+      set((state) => ({ diceQueue: state.diceQueue.slice(1) }));
     },
 
     handleMatchEnd: (payload) => {

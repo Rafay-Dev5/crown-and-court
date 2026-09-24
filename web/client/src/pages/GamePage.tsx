@@ -5,6 +5,7 @@ import EventLog from "../components/EventLog";
 import NegotiationPanel from "../components/NegotiationPanel";
 import PlayPanel from "../components/PlayPanel";
 import PlayerSeat from "../components/PlayerSeat";
+import DieRollOverlay from "../components/DieRollOverlay";
 import RevealOverlay from "../components/RevealOverlay";
 import { RulesButton } from "../components/RulesModal";
 import SuccessionOverlay from "../components/SuccessionOverlay";
@@ -89,7 +90,7 @@ export default function GamePage() {
   const { sendAction, acceptProposal, rejectProposal, sendWhisper } = useGameSocket();
   const {
     publicState, privateState, yourSeat, decision, playerId, players,
-    events, meta, matchNumber, lastSuccession, revealAcks, whispers,
+    events, meta, matchNumber, lastSuccession, revealAcks, whispers, diceQueue, dismissDice,
   } = useGameStore();
 
   const vsBots = players.filter((p) => p.is_bot).length >= 2;
@@ -831,6 +832,22 @@ export default function GamePage() {
         event={showSuccession ? lastSuccession : null}
         onDismiss={() => setShowSuccession(false)}
       />
+
+      {diceQueue[0] && (
+        <DieRollOverlay
+          key={diceQueue[0].id}
+          roll={Number(diceQueue[0].event.roll) || 1}
+          sides={Number(diceQueue[0].event.sides) || 6}
+          targetMin={Number(diceQueue[0].event.target_min) || 1}
+          success={Boolean(diceQueue[0].event.success)}
+          rollerName={
+            typeof diceQueue[0].event.seat === "number"
+              ? seatName(Number(diceQueue[0].event.seat))
+              : "Someone"
+          }
+          onDone={dismissDice}
+        />
+      )}
     </div>
   );
 }

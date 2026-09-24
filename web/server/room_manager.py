@@ -124,6 +124,7 @@ class GameRoom:
             "match_number": result.match_number,
             "winner_player_id": result.winner_player_id,
             "winner_started_as_king": result.winner_started_as_king,
+            "succession_stopped": _succession_stopped_the_crown(self.session.state),
             "points_awarded": result.points_awarded,
             "placements": result.placements,
             "meta": self.meta.to_dict(),
@@ -142,6 +143,19 @@ class GameRoom:
             "meta": self.meta.to_dict(),
             "co_winners": len(winners) > 1,
         }
+
+
+def _succession_stopped_the_crown(state: Any) -> bool:
+    """True when the match's last succession check kept the King only because a block fired."""
+    for event in reversed(state.event_log):
+        kind = event.get("type")
+        if kind == "game_end":
+            continue
+        if kind == "succession_blocked":
+            return bool(event.get("would_have_succeeded"))
+        if kind == "succession_check_complete":
+            return False
+    return False
 
 
 class RoomManager:

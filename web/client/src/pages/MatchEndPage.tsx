@@ -35,11 +35,42 @@ export default function MatchEndPage() {
           Winner: <strong>{winnerName}</strong>
           {matchEnd.winner_started_as_king ? " (defended as King)" : " (rose from Noble)"}
         </p>
+        {matchEnd.succession_stopped && (
+          <p className="text-center text-royal-dark font-semibold mb-2">
+            Won because a succession check was stopped.
+          </p>
+        )}
         <p className="text-center mb-6">
           <span className="text-royal-gold font-bold text-xl">
             +{matchEnd.points_awarded[matchEnd.winner_player_id]} pts
           </span>
         </p>
+
+        <p className="text-center mb-2 text-xs uppercase tracking-[0.2em] text-royal-dark/50">
+          Gold at the end
+        </p>
+        <table className="w-full text-sm mb-6">
+          <thead>
+            <tr className="border-b border-royal-gold/30">
+              <th className="text-left py-2">Player</th>
+              <th className="text-right py-2">Gold</th>
+            </tr>
+          </thead>
+          <tbody>
+            {matchEnd.placements
+              .slice()
+              .sort((a, b) => (b.gold as number) - (a.gold as number))
+              .map((p, i) => (
+                <tr key={`gold-${i}`} className="border-b border-royal-gold/10">
+                  <td className="py-2">
+                    {p.player_name as string}
+                    {p.is_winner ? " · King" : ""}
+                  </td>
+                  <td className="text-right py-2 font-semibold">{p.gold as number}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
 
         <table className="w-full text-sm mb-6">
           <thead>

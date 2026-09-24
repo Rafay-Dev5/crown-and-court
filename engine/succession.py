@@ -66,7 +66,9 @@ def find_succession_block(state: GameState) -> bool:
 def resolve_succession(state: GameState, checker_name: str = "gold_only") -> int | None:
     """Return ascending seat id or None. Respects block_succession status."""
     if find_succession_block(state):
-        state.log_event("succession_blocked")
+        checker = get_checker(checker_name)
+        would_have = any(checker(state, s) for s in state.noble_seats())
+        state.log_event("succession_blocked", would_have_succeeded=would_have)
         return None
 
     checker = get_checker(checker_name)

@@ -7,22 +7,41 @@
   "copies_in_deck": 1,
   "timing": "on_reveal",
   "effect": {
-    "primitive": "gold_gain",
+    "primitive": "dice_swing",
     "params": {
-      "target": "self",
-      "amount": 145
-    },
-    "secondary_effect": {
-      "primitive": "draw_extra",
-      "params": {
-        "target": "self",
-        "count": 1
+      "choices": [
+        { "id": "brand", "label": "Brand a Rival" },
+        { "id": "squeeze", "label": "Squeeze the Court" }
+      ],
+      "branches": {
+        "brand": {
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": { "target": "self", "amount": 50 },
+            "secondary_effect": {
+              "primitive": "mark_status",
+              "params": {
+                "target": "target",
+                "status_name": "marked",
+                "duration_rounds": 2
+              }
+            }
+          }
+        },
+        "squeeze": {
+          "on_success": {
+            "primitive": "gold_gain",
+            "params": { "target": "self", "amount": 140 },
+            "secondary_effect": {
+              "primitive": "skip_next_play",
+              "params": { "target": "self" }
+            }
+          }
+        }
       }
     }
   },
-  "tags": [
-    "supercard"
-  ],
-  "flavor_text": "Expansion design \u2014 Imperial Mandate.",
-  "designer_notes": "Phase 5a deck expansion for subset sweeps."
+  "tags": ["supercard"],
+  "flavor_text": "Mark them for the warrant, or take the coin and sit out a card.",
+  "designer_notes": "Brand marks the target so Sealed Warrant and similar cards hit harder. Squeeze pays more but you play one fewer card next round."
 }

@@ -43,6 +43,22 @@ def test_total_gold_succession():
     assert ascending == noble_seat
 
 
+def test_blocked_succession_records_that_a_noble_would_have_taken_the_crown():
+    config = load_config()
+    state = setup_game(config, GameRNG(seed=3))
+    noble_seat = state.noble_seats()[0]
+    state.person_at_seat(noble_seat).gold = state.person_at_seat(state.king_seat).gold + 50
+    state.apply_status(state.king_seat, "block_succession", 1)
+    assert resolve_succession(state, "gold_only") is None
+    blocked = [e for e in state.event_log if e["type"] == "succession_blocked"]
+    assert blocked[-1]["would_have_succeeded"] is True
+
+    from web.server.room_manager import _succession_stopped_the_crown
+
+    state.log_event("game_end", winner_seat=state.king_seat)
+    assert _succession_stopped_the_crown(state) is True
+
+
 def test_seat_swap_keeps_gold_with_person():
     config = load_config()
     rng = GameRNG(seed=7)
