@@ -71,14 +71,18 @@ def _evaluate_trigger(state: GameState, trigger: dict, ctx: EffectContext) -> bo
 
 def gold_loss(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = _resolve_target(state, ctx["params"].get("target", "self"), ctx)
-    amount = int(ctx["params"]["amount"])
+    person = state.person_at_seat(seat)
+    if "fraction_of_wealth" in ctx["params"]:
+        fraction = float(ctx["params"]["fraction_of_wealth"])
+        amount = int(person.gold * fraction)
+    else:
+        amount = int(ctx["params"]["amount"])
     attacker = ctx.get("seat", seat)
     if seat != attacker:
         if check_and_consume_shield(state, seat, "gold_theft", attacker, amount):
             log_attack(state, attacker, seat, "gold_theft", amount, blocked=True)
             return
         log_attack(state, attacker, seat, "gold_theft", amount, blocked=False)
-    person = state.person_at_seat(seat)
     person.gold = max(0, person.gold - amount)
     person.earned_gold = max(0, person.earned_gold - min(amount, person.earned_gold))
     state.log_event("gold_loss", seat=seat, amount=amount, person=person.person_id)

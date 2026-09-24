@@ -221,6 +221,12 @@ async def handle_message(
         except ValueError as e:
             await _send_error(websocket, str(e))
 
+    elif msg.type == ClientMessageType.WHISPER:
+        try:
+            await rooms.handle_whisper(room, player_id, msg.payload)
+        except ValueError as exc:
+            await _send_error(websocket, str(exc))
+
     elif msg.type == ClientMessageType.ADD_BOTS:
         if player_id != room.host_id:
             await _send_error(websocket, "Only the host can add bots")
@@ -321,6 +327,7 @@ async def _handle_reconnect(
             ServerMessage(type=ServerMessageType.LOBBY_STATE, payload=payload),
         )
 
+    await rooms.send_whisper_history(room, player)
     return player.id, room.code
 
 

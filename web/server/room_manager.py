@@ -65,6 +65,7 @@ class GameRoom:
     reveal_acks: set[str] = field(default_factory=set)
     last_activity: float = field(default_factory=time.monotonic)
     closed: bool = False
+    whispers: list[dict[str, Any]] = field(default_factory=list)
 
     def player_list(self) -> list[PlayerInfo]:
         ordered = sorted(self.players.values(), key=lambda p: p.seat if p.seat is not None else 99)
@@ -270,6 +271,44 @@ class RoomManager:
             await self.broadcast_lobby(room)
         except Exception:
             pass
+
+    async def handle_whisper(
+        self, room: GameRoom, sender_id: str, payload: dict[str, Any]
+    ) -> None:
+        sender = room.players.get(sender_id)
+        if sender is None:
+            raise ValueError("Player not in room")
+        target_id = str(payload.get("to") or "")
+        target = room.players.get(target_id)
+        if target is None or target_id == sender_id:
+            raise ValueError("Pick another player")
+        text = str(payload.get("text") or "").strip()
+        if not text or len(text) > 240:
+            raise ValueError("Message must be 1–240 characters")
+        note = {
+            "id": uuid.uuid4().hex[:12],
+            "from_id": sender.id,
+            "to_id": target.id,
+            "from_name": sender.name,
+            "to_name": target.name,
+            "text": text,
+        }
+        room.whispers.append(note)
+        if len(room.whispers) > 80:
+            room.whispers = room.whispers[-80:]
+        msg = ServerMessage(type=ServerMessageType.WHISPER, payload=note)
+        await self.send_to(sender, msg)
+        if not target.is_bot:
+            await self.send_to(target, msg)
+
+    async def send_whisper_history(self, room: GameRoom, player: ConnectedPlayer) -> None:
+        for note in room.whispers:
+            if player.id not in (note.get("from_id"), note.get("to_id")):
+                continue
+            await self.send_to(
+                player,
+                ServerMessage(type=ServerMessageType.WHISPER, payload=note),
+            )
 
     async def broadcast_lobby(self, room: GameRoom) -> None:
         """Send each player a personalized lobby payload (correct your_id / token)."""

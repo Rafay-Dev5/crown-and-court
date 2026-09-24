@@ -17,6 +17,7 @@ class ClientMessageType(str, Enum):
     ACCEPT_PROPOSAL = "accept_proposal"
     REJECT_PROPOSAL = "reject_proposal"
     ADD_BOTS = "add_bots"
+    WHISPER = "whisper"
 
 
 class ServerMessageType(str, Enum):
@@ -29,6 +30,7 @@ class ServerMessageType(str, Enum):
     PROPOSAL_RECEIVED = "proposal_received"
     MATCH_END = "match_end"
     GAME_END = "game_end"
+    WHISPER = "whisper"
 
 
 class ClientMessage(BaseModel):

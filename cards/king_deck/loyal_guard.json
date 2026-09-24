@@ -21,7 +21,7 @@
     "primitive": "gold_loss",
     "params": {
       "target": "self",
-      "amount": 8
+      "fraction_of_wealth": 0.5
     }
   },
   "tags": [
@@ -32,5 +32,5 @@
     "king_defense"
   ],
   "flavor_text": "The crown does not fall while he stands.",
-  "designer_notes": "Played blind like every other card. Resolves in King's slot; blocks next succession check if a Noble would qualify. Whiff: King loses 150 gold if no ascension was imminent. King-first resolution makes this a reliable defensive tool."
+  "designer_notes": "Played blind like every other card. Resolves in King's slot; blocks next succession check if a Noble would qualify. Whiff: King loses half their current gold if no ascension was imminent."
 }

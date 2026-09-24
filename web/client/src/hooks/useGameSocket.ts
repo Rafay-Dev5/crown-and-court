@@ -123,6 +123,9 @@ function ensureSharedSocket() {
       case "game_end":
         s.handleGameEnd(msg.payload ?? {});
         break;
+      case "whisper":
+        s.handleWhisper(msg.payload ?? {});
+        break;
     }
   };
 
@@ -229,6 +232,10 @@ export function useGameSocket() {
     sendShared({ type: "reject_proposal", payload: { proposal_id: proposalId } });
   }, []);
 
+  const sendWhisper = useCallback((to: string, text: string) => {
+    sendShared({ type: "whisper", payload: { to, text } });
+  }, []);
+
   return {
     send: sendShared,
     createLobby,
@@ -243,6 +250,7 @@ export function useGameSocket() {
     sendAction,
     acceptProposal,
     rejectProposal,
+    sendWhisper,
     connected,
   };
 }

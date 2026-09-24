@@ -7,14 +7,17 @@
   "copies_in_deck": 1,
   "timing": "reactive",
   "effect": {
-    "primitive": "block_succession",
+    "primitive": "protect_gold",
     "params": {
-      "scope": "next_check_this_round",
+      "target": "self",
+      "amount": 80,
       "duration_rounds": 1,
+      "specificity": "generic",
       "trigger": {
-        "type": "succession_imminent"
-      },
-      "specificity": "targeted"
+        "type": "attacked_this_phase",
+        "target": "self",
+        "attack_type": "gold_theft"
+      }
     }
   },
   "tags": [

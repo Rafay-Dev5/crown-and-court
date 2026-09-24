@@ -8,6 +8,7 @@ import PlayerSeat from "../components/PlayerSeat";
 import RevealOverlay from "../components/RevealOverlay";
 import { RulesButton } from "../components/RulesModal";
 import SuccessionOverlay from "../components/SuccessionOverlay";
+import WhisperPanel from "../components/WhisperPanel";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useGameStore } from "../store";
 import type { CardData, PublicSeat } from "../store/gameStore";
@@ -85,10 +86,10 @@ function GoldRace({
 }
 
 export default function GamePage() {
-  const { sendAction, acceptProposal, rejectProposal } = useGameSocket();
+  const { sendAction, acceptProposal, rejectProposal, sendWhisper } = useGameSocket();
   const {
     publicState, privateState, yourSeat, decision, playerId, players,
-    events, meta, matchNumber, lastSuccession, revealAcks,
+    events, meta, matchNumber, lastSuccession, revealAcks, whispers,
   } = useGameStore();
 
   const vsBots = players.filter((p) => p.is_bot).length >= 2;
@@ -406,6 +407,14 @@ export default function GamePage() {
                 <span className="hidden sm:inline">Bots play my turns</span>
                 <span className="sm:hidden">Autopilot</span>
               </label>
+            )}
+            {playerId && (
+              <WhisperPanel
+                seats={publicState.seats}
+                yourId={playerId}
+                whispers={whispers}
+                onSend={sendWhisper}
+              />
             )}
             <RulesButton />
           </div>

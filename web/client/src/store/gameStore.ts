@@ -1,5 +1,14 @@
 export type Screen = "home" | "lobby" | "match_intro" | "game" | "match_end" | "game_end";
 
+export type Whisper = {
+  id: string;
+  from_id: string;
+  to_id: string;
+  from_name: string;
+  to_name: string;
+  text: string;
+};
+
 export type PlayerInfo = {
   id: string;
   name: string;
@@ -136,6 +145,7 @@ export type GameStore = {
   gameEnd: GameEndPayload | null;
   lastSuccession: Record<string, unknown> | null;
   revealAcks: string[];
+  whispers: Whisper[];
 
   setScreen: (s: Screen) => void;
   setPlayerName: (name: string) => void;
@@ -147,6 +157,7 @@ export type GameStore = {
   handleEvent: (payload: Record<string, unknown>) => void;
   handleMatchEnd: (payload: Record<string, unknown>) => void;
   handleGameEnd: (payload: Record<string, unknown>) => void;
+  handleWhisper: (payload: Record<string, unknown>) => void;
   reset: () => void;
 };
 
@@ -175,6 +186,7 @@ const initialState = {
   gameEnd: null as GameEndPayload | null,
   lastSuccession: null as Record<string, unknown> | null,
   revealAcks: [] as string[],
+  whispers: [] as Whisper[],
 };
 
 function eventKey(e: Record<string, unknown>): string {
@@ -221,6 +233,7 @@ export function createGameStore(set: (partial: Partial<GameStore> | ((s: GameSto
         meta: (payload.meta as MetaState) ?? get().meta,
         connected: true,
         error: null,
+        whispers: phase === "lobby" ? [] : get().whispers,
       });
     },
 
@@ -294,6 +307,14 @@ export function createGameStore(set: (partial: Partial<GameStore> | ((s: GameSto
         gameEnd: payload as unknown as GameEndPayload,
         meta: payload.meta as MetaState,
       });
+    },
+
+    handleWhisper: (payload) => {
+      const note = payload as unknown as Whisper;
+      if (!note?.id || !note.text) return;
+      const prev = get().whispers;
+      if (prev.some((w) => w.id === note.id)) return;
+      set({ whispers: [...prev, note].slice(-80) });
     },
   };
 }

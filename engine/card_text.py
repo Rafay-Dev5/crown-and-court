@@ -77,7 +77,11 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
     if primitive == "gold_gain":
         lines.append(_gold_phrase(p.get("amount"), p.get("target", "self"), "gain") + ".")
     elif primitive == "gold_loss":
-        lines.append(_gold_phrase(p.get("amount"), p.get("target", "self"), "lose") + ".")
+        if p.get("fraction_of_wealth") is not None:
+            pct = int(round(float(p["fraction_of_wealth"]) * 100))
+            lines.append(f"{target_label(p.get('target', 'self'))} lose {pct}% of your current gold.")
+        else:
+            lines.append(_gold_phrase(p.get("amount"), p.get("target", "self"), "lose") + ".")
     elif primitive == "gold_transfer":
         lines.append(
             f"{int(p.get('amount') or 0)} gold moves from "

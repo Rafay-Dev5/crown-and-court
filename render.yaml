@@ -2,6 +2,7 @@ services:
   - type: web
     name: crown-court
     runtime: docker
+    plan: free
     dockerfilePath: ./web/Dockerfile
     dockerContext: .
     healthCheckPath: /health

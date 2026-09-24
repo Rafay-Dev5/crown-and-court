@@ -20,7 +20,7 @@
     "primitive": "gold_loss",
     "params": {
       "target": "self",
-      "amount": 5
+      "fraction_of_wealth": 0.5
     }
   },
   "tags": [

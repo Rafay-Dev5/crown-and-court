@@ -180,6 +180,35 @@ def test_websocket_ready_and_reconnect_token():
         assert msg["payload"].get("reconnected") is True
 
 
+def test_whisper_is_private_between_two_players():
+    client = TestClient(app)
+    with client.websocket_connect("/ws") as a, client.websocket_connect("/ws") as b, client.websocket_connect("/ws") as c:
+        a.send_json({"type": "join", "payload": {"action": "create", "name": "Ann"}})
+        lobby = json.loads(a.receive_text())
+        code = lobby["payload"]["code"]
+        ann = lobby["payload"]["your_id"]
+        b.send_json({"type": "join", "payload": {"action": "join", "code": code, "name": "Bea"}})
+        bea_lobby = json.loads(b.receive_text())
+        bea = bea_lobby["payload"]["your_id"]
+        json.loads(a.receive_text())
+        c.send_json({"type": "join", "payload": {"action": "join", "code": code, "name": "Cal"}})
+        json.loads(c.receive_text())
+        json.loads(a.receive_text())
+        json.loads(b.receive_text())
+
+        a.send_json({"type": "whisper", "payload": {"to": bea, "text": "Take 40 for the card?"}})
+        got_a = json.loads(a.receive_text())
+        got_b = json.loads(b.receive_text())
+        assert got_a["type"] == "whisper"
+        assert got_b["type"] == "whisper"
+        assert got_a["payload"]["text"] == "Take 40 for the card?"
+        assert got_a["payload"]["from_id"] == ann
+        assert got_b["payload"]["to_id"] == bea
+        c.send_json({"type": "ready", "payload": {"ready": True}})
+        cal_next = json.loads(c.receive_text())
+        assert cal_next["type"] == "lobby_state"
+
+
 def test_idle_rooms_are_deleted_after_ttl():
     import time as time_mod
 

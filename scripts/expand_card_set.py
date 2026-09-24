@@ -215,7 +215,7 @@ NEW_KING = [
         },
         "on_whiff_penalty": {
             "primitive": "gold_loss",
-            "params": {"target": "self", "amount": 100},
+            "params": {"target": "self", "fraction_of_wealth": 0.5},
         },
         "tags": ["protection", "succession"],
         "flavor_text": "The crown does not yield today.",

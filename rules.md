@@ -62,7 +62,7 @@ When someone becomes King:
 - They swap **roles, deck, hand, and discard pile** with the former King.
 - **Gold stays with the player** — your coins follow you even if you change seats.
 
-Some cards can **block succession** for a check (e.g. *Loyal Guard*).
+The King deck has two succession blocks (*Loyal Guard* and *Diplomatic Immunity*). Missing with either costs half the King's current gold. Nobles have none.
 
 ---
 
@@ -409,7 +409,7 @@ If your guess was wrong (protection whiff):
 Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
 If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.
 If your guess was wrong (protection whiff):
-  - you lose 5 gold.
+  - you lose 50% of your current gold.
 
 #### Iron Curtain — *Protection* · Common
 
@@ -425,7 +425,7 @@ If your guess was wrong (protection whiff):
 > Expansion design — Iron Gate.
 
 Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.
+If you were attacked this round (gold theft) when this resolves, gold is protected (up to 80 gold).
 If your guess was wrong (protection whiff):
   - you lose 25 gold.
 
@@ -436,7 +436,7 @@ If your guess was wrong (protection whiff):
 Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
 If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.
 If your guess was wrong (protection whiff):
-  - you lose 8 gold.
+  - you lose 50% of your current gold.
 
 #### Vault Seal — *Protection* · Common
 
@@ -778,7 +778,7 @@ Your chosen opponent discard 1 card(s).
 > Expansion design — Body Double.
 
 Played face-down. When it resolves, it only works if the situation matches your guess — otherwise you pay the miss penalty.
-If a Noble is about to become King at the moment this card resolves, the next succession check is blocked.
+If you were attacked this round (gold theft) when this resolves, gold is protected (up to 80 gold).
 If your guess was wrong (protection whiff):
   - you lose 25 gold.
 
