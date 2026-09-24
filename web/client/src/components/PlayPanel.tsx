@@ -10,6 +10,7 @@ type Props = {
   title?: string;
   hint?: string;
   submitLabel?: string;
+  exact?: boolean;
 };
 
 export default function PlayPanel({
@@ -17,8 +18,9 @@ export default function PlayPanel({
   nPlay,
   onSubmit,
   title,
-  hint = "Cards stay hidden until everyone has locked in. Then they reveal one by one — you will see what each card does and click Continue.",
+  hint = "You may play fewer than the maximum, including none. Cards stay hidden until everyone has locked in. Then they reveal one by one.",
   submitLabel = "Lock In",
+  exact = false,
 }: Props) {
   const [selected, setSelected] = useState<number[]>([]);
 
@@ -39,7 +41,9 @@ export default function PlayPanel({
       <p className="font-display text-sm mb-1">
         {title
           ? `${title} (${selected.length}/${nPlay})`
-          : `Select ${nPlay} card${nPlay > 1 ? "s" : ""} (${selected.length}/${nPlay})`}
+          : exact
+            ? `Select ${nPlay} card${nPlay > 1 ? "s" : ""} (${selected.length}/${nPlay})`
+            : `Play up to ${nPlay} card${nPlay > 1 ? "s" : ""} (${selected.length}/${nPlay})`}
       </p>
       <p className="text-xs text-royal-dark/60 mb-3">{hint}</p>
       {selected.flatMap((i) => cardWarnings(hand[i]).map((line) => `${hand[i].name}: ${line}`)).length > 0 && (
@@ -65,7 +69,7 @@ export default function PlayPanel({
       </div>
       <button
         className="btn-royal w-full"
-        disabled={selected.length !== nPlay}
+        disabled={exact ? selected.length !== nPlay : selected.length > nPlay}
         onClick={() => onSubmit(selected)}
       >
         {submitLabel}

@@ -89,6 +89,17 @@ def resolve_on_whiff_penalty(
     resolve_effect(state, penalty, ctx, rng, scale=scale)
 
 
+def _note_fizzled_card(state: GameState, seat: int, card: dict[str, Any]) -> None:
+    """A fizzled alliance or betrayal leaves the hand and is discarded by the reveal."""
+    state.seats[seat].hand = [c for c in state.seats[seat].hand if c is not card]
+    state.log_event(
+        "card_fizzled",
+        seat=seat,
+        card_id=card.get("id"),
+        name=card.get("name"),
+    )
+
+
 def resolve_card(
     state: GameState,
     card: dict[str, Any],
@@ -99,8 +110,19 @@ def resolve_card(
     selected_choice: str | None = None,
 ) -> bool:
     """Resolve a card's effect. Returns False if waiting on player choice."""
+    category = card.get("category", "")
+    if (
+        category == "betrayal"
+        and target_seat is not None
+        and target_seat != seat
+        and state.has_alliance_between(seat, target_seat)
+    ):
+        state.end_alliance(seat, target_seat, card.get("name") or "betrayal")
+
     if not card_preconditions_met(state, card, seat, target_seat):
         state.log_event("card_precondition_failed", card_id=card.get("id"), name=card.get("name"), seat=seat)
+        if category in ("alliance", "betrayal"):
+            _note_fizzled_card(state, seat, card)
         return True
 
     ctx: dict[str, Any] = {
@@ -114,7 +136,6 @@ def resolve_card(
 
     effect = card.get("effect") or {}
     timing = card.get("timing", "on_reveal")
-    category = card.get("category", "")
     params = effect.get("params") or {}
     trigger = params.get("trigger")
 

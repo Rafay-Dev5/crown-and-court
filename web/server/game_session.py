@@ -174,6 +174,14 @@ class GameSession:
             self.engine.step(0, action_handler=self._discard_handler)
         elif dec.dtype == DecisionType.REVEAL:
             self.engine.step(0)
+        elif dec.dtype == DecisionType.ALLIANCE:
+            partners = [int(s) for s in (dec.context.get("partners") or [])]
+            raw = action.payload.get("keep_index", action.payload.get("choice_index", -1))
+            try:
+                keep_index = int(raw)
+            except (TypeError, ValueError):
+                keep_index = -1
+            self.engine.step(keep_index if 0 <= keep_index < len(partners) else -1)
         else:
             self.engine.step(0)
 
@@ -251,8 +259,8 @@ class GameSession:
         dec = self.current_decision()
         n_play = dec.context.get("n_play", 2) if dec else 2
 
-        if not raw_indices:
-            # Bots / empty payload — play the first n_play cards.
+        if raw_indices is None:
+            # Bots / missing payload — play the first n_play cards.
             selected_indices = list(range(min(n_play, len(hand))))
         else:
             # Never pad a partial human selection — that plays unintended cards.

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import CardComponent from "./CardComponent";
+import { describeCardFull } from "../cardText";
 import { describeResolveEvent } from "../eventText";
 import type { CardData } from "../store/gameStore";
 
@@ -19,6 +20,10 @@ type Props = {
   onContinue: () => void;
 };
 
+function cardDetailLines(card: CardData): string[] {
+  return describeCardFull(card).sections.flatMap((section) => section.lines);
+}
+
 function asCardData(raw: unknown): CardData | null {
   if (!raw || typeof raw !== "object") return null;
   const c = raw as Record<string, unknown>;
@@ -29,6 +34,9 @@ function asCardData(raw: unknown): CardData | null {
     category: typeof c.category === "string" ? c.category : undefined,
     rarity: typeof c.rarity === "string" ? c.rarity : undefined,
     effect: (c.effect as CardData["effect"]) ?? undefined,
+    timing: typeof c.timing === "string" ? c.timing : undefined,
+    on_whiff_penalty: (c.on_whiff_penalty as CardData["on_whiff_penalty"]) ?? undefined,
+    requires_state: (c.requires_state as CardData["requires_state"]) ?? undefined,
     flavor_text: typeof c.flavor_text === "string" ? c.flavor_text : undefined,
   };
 }
@@ -141,6 +149,11 @@ export default function RevealOverlay({
             <div className="flex justify-center">
               <CardComponent card={privatePeek.card} previewable />
             </div>
+            <ul className="mt-3 space-y-1 text-sm text-royal-dark/85">
+              {cardDetailLines(privatePeek.card).map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
           </div>
         )}
 
@@ -151,7 +164,14 @@ export default function RevealOverlay({
             </p>
             <div className="card-row">
               {pile.cards.map((c, i) => (
-                <CardComponent key={`${c.id}-d-${i}`} card={c} previewable />
+                <div key={`${c.id}-d-${i}`} className="max-w-[16rem]">
+                  <CardComponent card={c} previewable />
+                  <ul className="mt-1 space-y-0.5 text-[11px] text-royal-dark/80">
+                    {cardDetailLines(c).map((line, n) => (
+                      <li key={n}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
               ))}
             </div>
           </div>

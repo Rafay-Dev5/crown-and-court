@@ -33,6 +33,25 @@ def _gold_phrase(amount: Any, target: Any, verb: str) -> str:
     return f"{n} gold is taken from {opponent}"
 
 
+def _shield_blurb(params: dict[str, Any]) -> tuple[str, str]:
+    blocks = str(params.get("blocks") or "gold_theft")
+    amount = params.get("amount", "?")
+    if blocks == "force_discard":
+        return (
+            "a shield against a forced discard",
+            "While it is up, it stops a forced discard revealed after this card. "
+            "It does not protect gold, and it does not undo a discard revealed before it. "
+            "A hit keeps the shield. A miss removes it.",
+        )
+    label = blocks.replace("_", " ")
+    return (
+        f"a shield for up to {amount} gold",
+        f"While it is up, it can stop a {label} revealed after this card. "
+        "It does not undo anything revealed before it. "
+        "A hit keeps the shield. A miss removes the unused shield.",
+    )
+
+
 def _deferred_protection_lines(what: str, hit_when: str, outcome: str) -> list[str]:
     return [
         f"When this card is revealed, {what} goes up immediately and stays up through the rest of the reveals.",
@@ -48,8 +67,9 @@ def describe_trigger(trigger: dict[str, Any]) -> str:
     t = str(trigger.get("type", ""))
     if t == "attacked_this_phase":
         atk = trigger.get("attack_type")
-        suffix = f" ({str(atk).replace('_', ' ')})" if atk else ""
-        return f"you were attacked during this round's reveals{suffix}"
+        if atk:
+            return f"you suffered a {str(atk).replace('_', ' ')} during this round's reveals"
+        return "you were attacked in any way during this round's reveals"
     if t == "attacker_is":
         return "that attacker targeted you during this round's reveals"
     if t == "succession_imminent":
@@ -143,16 +163,8 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
             lines.append("The next succession check is blocked.")
     elif primitive == "protect_gold":
         if p.get("trigger"):
-            blocks = str(p.get("blocks") or "gold_theft").replace("_", " ")
-            lines.extend(_deferred_protection_lines(
-                f"a shield for up to {p.get('amount', '?')} gold",
-                describe_trigger(p["trigger"]),
-                (
-                    f"While it is up, it can stop a {blocks} revealed after this card. "
-                    "It does not undo anything revealed before it. "
-                    "A hit keeps the shield. A miss removes the unused shield."
-                ),
-            ))
+            what, outcome = _shield_blurb(p)
+            lines.extend(_deferred_protection_lines(what, describe_trigger(p["trigger"]), outcome))
         else:
             lines.append(
                 f"Protect up to {p.get('amount', '?')} gold for {p.get('duration_rounds', 1)} round(s)."
@@ -164,7 +176,8 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
         )
     elif primitive == "alliance_bonus":
         lines.append(
-            f"If your alliance is still active, allied players each gain {p.get('amount', 50)} gold."
+            f"You and the player you target each gain {p.get('amount', 50)} gold, "
+            "but only if you are allied with them when this resolves. If you are not, the card does nothing."
         )
     elif primitive == "skip_next_play":
         lines.append(f"{target_label(p.get('target', 'target'))} play one fewer card next round.")

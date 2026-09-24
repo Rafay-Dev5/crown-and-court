@@ -217,7 +217,7 @@ python -m scripts.export_rules_cards
 
 ## Card catalog
 
-Play-deck cards used in the standard rules (**42 King** / **40 Noble**). Card set version: `a05b194deedede8f`.
+Play-deck cards used in the standard rules (**42 King** / **40 Noble**). Card set version: `5014d381c568dd41`.
 
 This list matches the simulation play decks (`king_deck_size` / `noble_deck_size` in `configs/balance.yaml`). Numbers and wording may change between playtest printings. Statuses mentioned on cards (e.g. *oathbreaker*, *marked*, *corrupt*, *discredited*) are temporary tags applied by effects; follow each card’s text.
 
@@ -272,7 +272,7 @@ Resolves when revealed in play order.
 Resolves when revealed in play order.
 Can only be played if:
   - You have a declared alliance with your target.
-If your alliance is still active, allied players each gain 41 gold.
+You and the player you target each gain 41 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Crown Patronage — *Alliance* · Common
@@ -280,7 +280,7 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 > Favor flows to those who stand beside the throne.
 
 Resolves when revealed in play order.
-If your alliance is still active, allied players each gain 54 gold.
+You and the player you target each gain 54 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Royal Alliance Pact — *Alliance* · Common
@@ -288,7 +288,7 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 > Loyalty rewarded — if it holds.
 
 Resolves when revealed in play order.
-If your alliance is still active, allied players each gain 58 gold.
+You and the player you target each gain 58 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Royal Pact — *Alliance* · Common
@@ -296,7 +296,7 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 > Expansion design — Royal Pact.
 
 Resolves when revealed in play order.
-If your alliance is still active, allied players each gain 72 gold.
+You and the player you target each gain 72 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Summit Oath — *Alliance* · Common
@@ -304,7 +304,7 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 > Expansion design — Summit Oath.
 
 Resolves when revealed in play order.
-If your alliance is still active, allied players each gain 58 gold.
+You and the player you target each gain 58 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Crown Gambit — *Betrayal* · Common
@@ -407,8 +407,8 @@ If “Gamble for More” is chosen: Roll a 6-sided die. Success on 5 or 6.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 90 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals.
-While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 80 gold.
 
@@ -418,7 +418,7 @@ If the guess misses:
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 200 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
 While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
@@ -440,7 +440,7 @@ If the guess misses:
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
 While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
@@ -451,7 +451,7 @@ If the guess misses:
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
 While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 80 gold.
@@ -473,7 +473,7 @@ If the guess misses:
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 110 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
 While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
@@ -696,7 +696,7 @@ If “Run a Deep Route” is chosen: Roll a 6-sided die. Success on 5 or 6.
 > Expansion design — Blood Oath.
 
 Resolves when revealed in play order.
-If your alliance is still active, allied players each gain 55 gold.
+You and the player you target each gain 55 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Mob Contract — *Alliance* · Common
@@ -704,7 +704,7 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 > Strength in numbers — for a price.
 
 Resolves when revealed in play order.
-If your alliance is still active, allied players each gain 55 gold.
+You and the player you target each gain 55 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Neighborhood Pact — *Alliance* · Common
@@ -712,7 +712,7 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 > Your neighbors watch your back — for a share.
 
 Resolves when revealed in play order.
-If your alliance is still active, allied players each gain 30 gold.
+You and the player you target each gain 30 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Secret Compact — *Alliance* · Common
@@ -720,7 +720,7 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 > Expansion design — Secret Compact.
 
 Resolves when revealed in play order.
-If your alliance is still active, allied players each gain 65 gold.
+You and the player you target each gain 65 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
 Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 #### Back-Alley Stab — *Betrayal* · Common
@@ -831,7 +831,7 @@ Your chosen opponent chooses 1 card(s) to discard.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
 While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 80 gold.
@@ -842,8 +842,8 @@ If the guess misses:
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals.
-While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
 
@@ -853,7 +853,7 @@ If the guess misses:
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 100 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals (gold theft).
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
 While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
@@ -864,8 +864,8 @@ If the guess misses:
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
 When this card is revealed, a shield for up to 85 gold goes up immediately and stays up through the rest of the reveals.
-The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round's reveals.
-While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
+While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
 If the guess misses:
   - you lose 80 gold.
 

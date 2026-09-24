@@ -175,6 +175,9 @@ def _card_public_summary(card: dict[str, Any]) -> dict[str, Any]:
         "category": card.get("category"),
         "rarity": card.get("rarity"),
         "effect": card.get("effect"),
+        "timing": card.get("timing"),
+        "on_whiff_penalty": card.get("on_whiff_penalty"),
+        "requires_state": card.get("requires_state"),
         "flavor_text": card.get("flavor_text"),
     }
 
@@ -329,11 +332,20 @@ def alliance_bonus(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
         a = _resolve_target(state, members[0], ctx)
         b = _resolve_target(state, members[1], ctx)
         if not state.has_alliance_between(a, b):
+            card = ctx.get("card") or {}
+            state.seats[a].hand = [c for c in state.seats[a].hand if c is not card]
             state.log_event(
                 "alliance_failed",
                 seat=a,
                 target_seat=b,
                 card_id=ctx.get("card_id"),
+                name=card.get("name"),
+            )
+            state.log_event(
+                "card_fizzled",
+                seat=a,
+                card_id=card.get("id"),
+                name=card.get("name"),
             )
             return
         for seat in (a, b):

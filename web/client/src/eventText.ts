@@ -90,7 +90,16 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
     case "card_precondition_failed":
       return `${e.name ? `${e.name}: ` : ""}It fizzles — the requirement was not met`;
     case "alliance_failed":
-      return `${seatName(e.seat)} has no alliance with ${seatName(e.target_seat)} — the pact does nothing`;
+      return `${e.name ? `${e.name}: ` : ""}${seatName(e.seat)} has no alliance with ${seatName(e.target_seat)} — the card is discarded`;
+    case "card_fizzled":
+      return `${e.name ?? "Card"} fizzles and is discarded`;
+    case "alliance_ended": {
+      const seats = Array.isArray(e.seats) ? e.seats : [];
+      const names = seats.map((s) => seatName(s)).join(" and ");
+      return e.reason && e.reason !== "not renewed"
+        ? `${names} — alliance ends (${e.reason})`
+        : `${names} do not renew their alliance`;
+    }
     case "succession":
     case "seat_swap":
       return `Succession: ${seatName(e.new_king_seat ?? e.ascending_seat)} takes the crown`;

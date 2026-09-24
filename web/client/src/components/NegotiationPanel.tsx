@@ -257,7 +257,10 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
   if (mode === "alliance") {
     return (
       <div className="panel-parchment p-4">
-        <h4 className="font-display text-sm mb-3">Propose Alliance</h4>
+        <h4 className="font-display text-sm mb-1">Propose Alliance</h4>
+        <p className="text-xs text-royal-dark/65 mb-3">
+          You can keep one alliance. Accepting this ends any other alliance you or they already have.
+        </p>
         <select
           value={targetSeat}
           onChange={(e) => setTargetSeat(Number(e.target.value))}

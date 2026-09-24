@@ -48,6 +48,21 @@ function describeDie(sides: number, targetMin: number): string {
   return `Roll a ${sides}-sided die. Success on ${successFaces(sides, targetMin)}.`;
 }
 
+function shieldBlurb(p: Record<string, unknown>): [string, string] {
+  const blocks = String(p.blocks ?? "gold_theft");
+  if (blocks === "force_discard") {
+    return [
+      "a shield against a forced discard",
+      "While it is up, it stops a forced discard revealed after this card. It does not protect gold, and it does not undo a discard revealed before it. A hit keeps the shield. A miss removes it.",
+    ];
+  }
+  const label = blocks.replace(/_/g, " ");
+  return [
+    `a shield for up to ${p.amount ?? "?"} gold`,
+    `While it is up, it can stop a ${label} revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.`,
+  ];
+}
+
 function deferredProtectionLines(what: string, hitWhen: string, outcome: string): string[] {
   return [
     `When this card is revealed, ${what} goes up immediately and stays up through the rest of the reveals.`,
@@ -59,8 +74,10 @@ function deferredProtectionLines(what: string, hitWhen: string, outcome: string)
 function describeTrigger(trigger: Record<string, unknown>): string {
   const t = trigger.type as string;
   if (t === "attacked_this_phase") {
-    const atk = trigger.attack_type ? ` (${String(trigger.attack_type).replace(/_/g, " ")})` : "";
-    return `you were attacked during this round's reveals${atk}`;
+    const atk = trigger.attack_type ? String(trigger.attack_type).replace(/_/g, " ") : "";
+    return atk
+      ? `you suffered a ${atk} during this round's reveals`
+      : `you were attacked in any way during this round's reveals`;
   }
   if (t === "attacker_is") return `that attacker targeted you during this round's reveals`;
   if (t === "succession_imminent") return `a Noble has more gold than the King`;
@@ -160,14 +177,8 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       break;
     case "protect_gold":
       if (p.trigger) {
-        const blocks = String(p.blocks ?? "gold_theft").replace(/_/g, " ");
-        lines.push(
-          ...deferredProtectionLines(
-            `a shield for up to ${p.amount ?? "?"} gold`,
-            describeTrigger(p.trigger as Record<string, unknown>),
-            `While it is up, it can stop a ${blocks} revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.`
-          )
-        );
+        const [what, outcome] = shieldBlurb(p);
+        lines.push(...deferredProtectionLines(what, describeTrigger(p.trigger as Record<string, unknown>), outcome));
       } else {
         lines.push(`Protect up to ${p.amount ?? "?"} gold for ${roundNoun(p.duration_rounds ?? 1)}.`);
       }
@@ -181,7 +192,7 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
     }
     case "alliance_bonus":
       lines.push(
-        `If your alliance is still active, allied players each gain ${p.amount ?? 50} gold.`
+        `You and the player you target each gain ${p.amount ?? 50} gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.`
       );
       break;
     case "skip_next_play": {

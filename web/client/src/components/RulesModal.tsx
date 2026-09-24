@@ -52,13 +52,44 @@ export default function RulesModal({ onClose }: Props) {
               crown. Decks and hands swap; gold stays with the person.
             </li>
             <li>
-              <strong>Play cards</strong> — King plays 3, each Noble plays 2, face-down. Cards then
-              reveal one at a time. Everyone sees what each card does and clicks Continue.
+              <strong>Play cards</strong> — the King may play up to <strong>3</strong>, each Noble
+              up to <strong>2</strong>, face-down. Playing fewer, or none, is allowed. Cards then
+              reveal one at a time. The King reveals first.
             </li>
             <li>
-              <strong>Succession again</strong>, then the next round.
+              After every card has resolved, each player draws again (King 3, Noble 2). If anyone
+              then holds <strong>more than 7 cards</strong>, they choose which extras to discard
+              until they have 7.
+            </li>
+            <li>
+              <strong>Succession again</strong>. Then each allied player is asked whether to keep
+              that one alliance. It continues only if both members agree. Then the next round.
             </li>
           </ol>
+        </section>
+
+        <section className="mb-5">
+          <h3 className="font-display text-lg mb-1">Protection cards</h3>
+          <p className="text-sm leading-relaxed mb-2">
+            A protection card arms the moment it is revealed and stays up through the rest of that
+            reveal. The guess is scored only after every card has been revealed, before succession.
+            A hit keeps the shield. A miss removes it, and then you pay the miss cost printed on
+            the card (often 60 or 80 gold; succession guesses cost half your gold).
+          </p>
+          <p className="text-sm leading-relaxed">
+            Every protection card except the succession blocks (Diplomatic Immunity and Loyal Guard)
+            stops a <strong>gold theft</strong> revealed after it, up to the amount on the card. A
+            theft revealed earlier in the round still counts and is not undone. Succession cards
+            stop a crown change, not a theft.
+          </p>
+        </section>
+
+        <section className="mb-5">
+          <h3 className="font-display text-lg mb-1">The die</h3>
+          <p className="text-sm leading-relaxed">
+            Some cards roll a die. The face is shown to the table before the result is applied.
+            Read the card for which faces help you.
+          </p>
         </section>
 
         <section className="mb-5">
@@ -115,11 +146,22 @@ export default function RulesModal({ onClose }: Props) {
           </p>
         </section>
 
-        <section>
-          <h3 className="font-display text-lg mb-1">Alliances</h3>
+        <section className="mb-5">
+          <h3 className="font-display text-lg mb-1">Alliances and betrayal</h3>
           <p className="text-sm leading-relaxed">
-            A declared alliance is public. Some cards only pay out if you still have one with your
-            target. Betrayal cards often need an alliance first.
+            A declared alliance is public. Each player can be in only one at a time. Forming a new
+            pact ends any other alliance either player already has. Some cards pay only if you are
+            still allied with the target. Playing a betrayal card against your ally ends that
+            alliance immediately, even if a shield later stops the theft. An alliance or betrayal
+            card that cannot legally resolve is discarded, not returned to your hand.
+          </p>
+        </section>
+
+        <section>
+          <h3 className="font-display text-lg mb-1">The ledger</h3>
+          <p className="text-sm leading-relaxed">
+            The Ledger button lists every gold change for one player at a time: the amount, the
+            round, and why (a card, a trade, corrupt upkeep, a protection miss, and so on).
           </p>
         </section>
       </div>

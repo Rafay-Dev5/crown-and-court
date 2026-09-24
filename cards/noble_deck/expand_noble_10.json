@@ -13,10 +13,11 @@
       "amount": 85,
       "duration_rounds": 1,
       "specificity": "targeted",
-      "blocks": "force_discard",
+      "blocks": "gold_theft",
       "trigger": {
         "type": "attacked_this_phase",
-        "target": "self"
+        "target": "self",
+        "attack_type": "gold_theft"
       }
     }
   },

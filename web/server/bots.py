@@ -186,6 +186,9 @@ def decide_bot_action(bot_key: str, session: GameSession, dec: PendingDecision) 
                     break
         return HumanAction(action_type="play", payload={"card_indices": cleaned[:n]})
 
+    if dec.dtype == DecisionType.ALLIANCE:
+        return HumanAction(action_type="alliance_review", payload={"keep_index": 0})
+
     if dec.dtype == DecisionType.CHOICE:
         options = dec.context.get("options") or []
         if options:

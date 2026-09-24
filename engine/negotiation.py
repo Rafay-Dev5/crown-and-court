@@ -28,6 +28,9 @@ def _trade_card_summary(card: dict[str, Any]) -> dict[str, Any]:
         "category": card.get("category"),
         "rarity": card.get("rarity"),
         "effect": card.get("effect"),
+        "timing": card.get("timing"),
+        "on_whiff_penalty": card.get("on_whiff_penalty"),
+        "requires_state": card.get("requires_state"),
         "flavor_text": card.get("flavor_text"),
     }
 
@@ -308,11 +311,20 @@ def accept_proposal(
         targets = proposal.get("targets") or []
         if accepter not in targets:
             return False
-        members = frozenset([proposal["proposer"], *targets])
-        state.alliances.append(
-            Alliance(members=members, declared_round=state.current_round, terms=proposal.get("terms", ""))
-        )
-        state.log_event("alliance_formed", members=list(members))
+        proposer = int(proposal["proposer"])
+        pair = frozenset([proposer, int(accepter)])
+        # One alliance per player. A new pact replaces any other pact either side already has.
+        for alliance in list(state.alliances):
+            if alliance.members == pair or not (alliance.members & pair):
+                continue
+            members = list(alliance.members)
+            if len(members) == 2:
+                state.end_alliance(members[0], members[1], "replaced by a new alliance")
+        if not state.has_alliance_between(proposer, accepter):
+            state.alliances.append(
+                Alliance(members=pair, declared_round=state.current_round, terms=proposal.get("terms", ""))
+            )
+            state.log_event("alliance_formed", members=list(pair))
     else:
         return False
 

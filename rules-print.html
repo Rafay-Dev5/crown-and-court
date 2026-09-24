@@ -462,7 +462,7 @@
       <!-- BEGIN CARD CATALOG -->
 <section class="card-catalog page-break">
 <h2>Card catalog</h2>
-<p>Play-deck cards used in the standard rules (<strong>42 King</strong> / <strong>40 Noble</strong>). Card set version: <code>a05b194deedede8f</code>.</p>
+<p>Play-deck cards used in the standard rules (<strong>42 King</strong> / <strong>40 Noble</strong>). Card set version: <code>5014d381c568dd41</code>.</p>
 <p>This list matches the simulation play decks (<code>king_deck_size</code> / <code>noble_deck_size</code>). Numbers and wording may change between playtest printings. Statuses named on cards (e.g. <em>oathbreaker</em>, <em>marked</em>, <em>corrupt</em>, <em>discredited</em>) are temporary tags from effects.</p>
 <h3>King deck</h3>
 <article class="card-entry">
@@ -493,27 +493,27 @@
 <article class="card-entry">
 <h4>Alliance Summit <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">The crown rewards loyalty — when it suits the crown.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Can only be played if:</li><li>You have a declared alliance with your target.</li><li>If your alliance is still active, allied players each gain 41 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>Can only be played if:</li><li>You have a declared alliance with your target.</li><li>You and the player you target each gain 41 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Crown Patronage <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">Favor flows to those who stand beside the throne.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 54 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You and the player you target each gain 54 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Royal Alliance Pact <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">Loyalty rewarded — if it holds.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 58 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You and the player you target each gain 58 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Royal Pact <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">Expansion design — Royal Pact.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 72 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You and the player you target each gain 72 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Summit Oath <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">Expansion design — Summit Oath.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 58 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You and the player you target each gain 58 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Crown Gambit <span class="meta">— Betrayal · Common</span></h4>
@@ -573,12 +573,12 @@
 <article class="card-entry">
 <h4>Bastion Wall <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">Expansion design — Bastion Wall.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 90 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals.</li><li>While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 80 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 90 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 80 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Customs Seal <span class="meta">— Protection · Rare</span></h4>
 <p class="flavor">Wrong thief, wrong day — or wrong guess.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 200 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals (gold theft).</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 200 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Diplomatic Immunity <span class="meta">— Protection · Rare</span></h4>
@@ -588,12 +588,12 @@
 <article class="card-entry">
 <h4>Iron Curtain <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">The treasury closes its gates.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals (gold theft).</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Iron Gate <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">Expansion design — Iron Gate.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals (gold theft).</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 80 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 80 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Loyal Guard <span class="meta">— Protection · Supercard</span></h4>
@@ -603,7 +603,7 @@
 <article class="card-entry">
 <h4>Vault Seal <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">The seal holds — if thieves come knocking.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 110 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals (gold theft).</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 110 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Decree Haste <span class="meta">— Tempo · Common</span></h4>
@@ -724,22 +724,22 @@
 <article class="card-entry">
 <h4>Blood Oath <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">Expansion design — Blood Oath.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 55 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You and the player you target each gain 55 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Mob Contract <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">Strength in numbers — for a price.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 55 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You and the player you target each gain 55 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Neighborhood Pact <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">Your neighbors watch your back — for a share.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 30 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You and the player you target each gain 30 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Secret Compact <span class="meta">— Alliance · Common</span></h4>
 <p class="flavor">Expansion design — Secret Compact.</p>
-<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>If your alliance is still active, allied players each gain 65 gold.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
+<ul class="card-effect"><li>Resolves when revealed in play order.</li><li>You and the player you target each gain 65 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.</li><li>Warning: this needs an alliance with your target. Otherwise it does nothing.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Back-Alley Stab <span class="meta">— Betrayal · Common</span></h4>
@@ -804,22 +804,22 @@
 <article class="card-entry">
 <h4>Body Double <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">Expansion design — Body Double.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals (gold theft).</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 80 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 80 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Bodyguard <span class="meta">— Protection · Rare</span></h4>
 <p class="flavor">You hired him to stop the wrong kind of theft.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals.</li><li>While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Hidden Cache <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">Coins buried where thieves won&#x27;t look.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 100 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals (gold theft).</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 100 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 60 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Hidden Cache II <span class="meta">— Protection · Common</span></h4>
 <p class="flavor">Expansion design — Hidden Cache II.</p>
-<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 85 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you were attacked during this round&#x27;s reveals.</li><li>While it is up, it can stop a force discard revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 80 gold.</li></ul>
+<ul class="card-effect"><li>Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.</li><li>When this card is revealed, a shield for up to 85 gold goes up immediately and stays up through the rest of the reveals.</li><li>The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round&#x27;s reveals.</li><li>While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.</li><li>If the guess misses:</li><li class="sub">you lose 80 gold.</li></ul>
 </article>
 <article class="card-entry">
 <h4>Courier Swap <span class="meta">— Tempo · Common</span></h4>

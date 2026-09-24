@@ -113,6 +113,7 @@ export default function GamePage() {
   const isChoice = decision?.dtype === "choice";
   const isTarget = decision?.dtype === "target";
   const isDiscard = decision?.dtype === "discard";
+  const isAllianceReview = decision?.dtype === "alliance_review";
   const isMyTurn = !isReveal && decision?.seat === yourSeat;
   const discardCount =
     typeof decision?.context?.count === "number" ? (decision.context.count as number) : 1;
@@ -152,6 +153,8 @@ export default function GamePage() {
         sendAction("discard", {
           card_indices: Array.from({ length: count }, (_, i) => i),
         });
+      } else if (decision.dtype === "alliance_review") {
+        sendAction("alliance_review", { keep_index: 0 });
       }
     }, 500);
     return () => clearTimeout(t);
@@ -232,6 +235,9 @@ export default function GamePage() {
         category: typeof card.category === "string" ? card.category : undefined,
         rarity: typeof card.rarity === "string" ? card.rarity : undefined,
         effect: (card.effect as CardData["effect"]) ?? undefined,
+        timing: typeof card.timing === "string" ? card.timing : undefined,
+        on_whiff_penalty: (card.on_whiff_penalty as CardData["on_whiff_penalty"]) ?? undefined,
+        requires_state: (card.requires_state as CardData["requires_state"]) ?? undefined,
         flavor_text: typeof card.flavor_text === "string" ? card.flavor_text : undefined,
       });
     }
@@ -757,14 +763,42 @@ export default function GamePage() {
         </div>
       )}
 
+      {isMyTurn && isAllianceReview && (
+        <div className="max-w-xl mx-auto mb-3 w-[calc(100%-1rem)] panel-parchment p-4">
+          <p className="font-display text-lg text-royal-dark mb-1">Continue an alliance?</p>
+          <p className="text-sm text-royal-dark/70 mb-3">
+            Pick one alliance to keep. It continues only if that player keeps you as well. Otherwise it ends.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {((decision?.context.partners as number[]) ?? []).map((seat, i) => (
+              <button
+                key={seat}
+                className="btn-royal text-sm"
+                onClick={() => sendAction("alliance_review", { keep_index: i })}
+              >
+                Keep {seatName(seat)}
+              </button>
+            ))}
+            <button className="btn-outline text-sm" onClick={() => sendAction("alliance_review", { keep_index: -1 })}>
+              End them
+            </button>
+          </div>
+        </div>
+      )}
+
       {isMyTurn && isDiscard && (
         <div className="max-w-4xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
           <PlayPanel
             hand={discardHand}
             nPlay={Math.min(discardCount, discardHand.length)}
             title={`Choose ${discardCount} card${discardCount > 1 ? "s" : ""} to discard`}
-            hint="You pick which card(s) leave your hand. Everyone will see what you discarded when the reveal continues."
+            hint={
+              decision?.context.reason === "hand_limit"
+                ? "Your hand is over 7. Choose which cards to discard. Everyone will see them."
+                : "You pick which card(s) leave your hand. Everyone will see what you discarded when the reveal continues."
+            }
             submitLabel="Discard"
+            exact
             onSubmit={(indices) => sendAction("discard", { card_indices: indices })}
           />
         </div>

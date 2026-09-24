@@ -181,6 +181,13 @@ def run_playing_phase(
     for seat in range(state.num_players):
         redraw = king_redraw if seat == state.king_seat else noble_redraw
         draw_to_hand(state, seat, redraw, rng, hand_size)
+        extra = len(state.seats[seat].hand) - 7
+        if extra > 0:
+            drop = list(range(len(state.seats[seat].hand)))
+            rng.shuffle(drop)
+            for idx in sorted(drop[:extra], reverse=True):
+                card = state.seats[seat].hand.pop(idx)
+                state.seats[seat].discard.append(card)
 
     apply_status_tick_effects(state, rng)
     state.tick_statuses()

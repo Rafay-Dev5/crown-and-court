@@ -194,6 +194,15 @@ class GameState:
         pair = frozenset({a, b})
         return any(alliance.members == pair for alliance in self.alliances)
 
+    def end_alliance(self, a: int, b: int, reason: str) -> bool:
+        pair = frozenset({a, b})
+        kept = [al for al in self.alliances if al.members != pair]
+        if len(kept) == len(self.alliances):
+            return False
+        self.alliances = kept
+        self.log_event("alliance_ended", seats=[a, b], reason=reason)
+        return True
+
     def has_status(self, seat: int, status_name: str) -> bool:
         return any(s.name == status_name for s in self.seats[seat].statuses)
 

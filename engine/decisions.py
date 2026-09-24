@@ -28,6 +28,7 @@ class DecisionType(str, Enum):
     DISCARD = "discard"
     CHOICE = "choice"
     REVEAL = "reveal"
+    ALLIANCE = "alliance_review"
     DONE = "done"
 
 
@@ -52,6 +53,7 @@ class DecisionEngine:
         self._play_reveal_idx = 0
         self._phase_stage = "negotiation"
         self._deferred_reveal: dict[str, Any] | None = None
+        self._alliance_votes: dict[int, int | None] = {}
 
     def reset(self) -> GameState:
         self.state = setup_game(self.config, self.rng)
@@ -61,6 +63,7 @@ class DecisionEngine:
         self._play_reveal_idx = 0
         self._phase_stage = "negotiation"
         self._deferred_reveal = None
+        self._alliance_votes = {}
         self._reset_negotiation_tracking()
         self._build_negotiation_queue()
         return self.state
@@ -166,13 +169,18 @@ class DecisionEngine:
                 self._queue_next_discard()
             elif self._deferred_reveal:
                 self._emit_deferred_reveal()
-            else:
+            elif self._phase_stage != "hand_trim":
                 self._resolve_next_reveal()
         elif dec.dtype == DecisionType.REVEAL:
             self.queue.pop(0)
             if self.state:
                 self.state.private_peeks.clear()
             self._resolve_next_reveal()
+        elif dec.dtype == DecisionType.ALLIANCE:
+            partners = [int(s) for s in (dec.context.get("partners") or [])]
+            keep = partners[action] if 0 <= action < len(partners) else None
+            self._alliance_votes[dec.seat] = keep
+            self.queue.pop(0)
 
         if not self.queue and not self.done:
             self._advance_phase()
@@ -253,6 +261,10 @@ class DecisionEngine:
             finalize_protection_bets(self.state, self.rng)
             apply_status_tick_effects(self.state, self.rng)
             self.state.tick_statuses()
+            self._queue_hand_trim()
+            if self.queue:
+                self._phase_stage = "hand_trim"
+                return
             self.queue = []
             return
 
@@ -394,13 +406,9 @@ class DecisionEngine:
         for idx in sorted(cleaned, reverse=True):
             card = self.state.seats[seat].hand.pop(idx)
             self.state.seats[seat].discard.append(card)
-            discarded.append(
-                {
-                    "id": card.get("id"),
-                    "name": card.get("name"),
-                    "category": card.get("category"),
-                }
-            )
+            from engine.effects.primitives import _card_public_summary
+
+            discarded.append(_card_public_summary(card))
         if self.state.pending_discards:
             self.state.pending_discards.pop(0)
         self.state.log_event(
@@ -443,6 +451,59 @@ class DecisionEngine:
         self.state.private_peeks.clear()
         self._resolve_next_reveal()
 
+    def _queue_hand_trim(self) -> None:
+        """If a hand is over 7 after the redraw, that player discards down to 7."""
+        assert self.state
+        cap = 7
+        self.queue = []
+        for seat in range(self.state.num_players):
+            extra = len(self.state.seats[seat].hand) - cap
+            if extra > 0:
+                self.queue.append(
+                    PendingDecision(
+                        seat=seat,
+                        dtype=DecisionType.DISCARD,
+                        context={"count": extra, "reason": "hand_limit"},
+                    )
+                )
+
+    def _queue_alliance_review(self) -> None:
+        """Ask each allied player which one alliance to keep. Both sides must agree."""
+        assert self.state
+        self._alliance_votes = {}
+        partners: dict[int, list[int]] = {}
+        for alliance in self.state.alliances:
+            members = list(alliance.members)
+            if len(members) != 2:
+                continue
+            a, b = members
+            partners.setdefault(a, []).append(b)
+            partners.setdefault(b, []).append(a)
+        self.queue = [
+            PendingDecision(
+                seat=seat,
+                dtype=DecisionType.ALLIANCE,
+                context={"partners": others},
+            )
+            for seat, others in partners.items()
+        ]
+
+    def _apply_alliance_votes(self) -> None:
+        assert self.state
+        kept = []
+        for alliance in self.state.alliances:
+            members = list(alliance.members)
+            if len(members) != 2:
+                kept.append(alliance)
+                continue
+            a, b = members
+            if self._alliance_votes.get(a) == b and self._alliance_votes.get(b) == a:
+                kept.append(alliance)
+            else:
+                self.state.log_event("alliance_ended", seats=[a, b], reason="not renewed")
+        self.state.alliances = kept
+        self._alliance_votes = {}
+
     def _advance_phase(self) -> None:
         assert self.state
         if self._phase_stage == "negotiation":
@@ -453,8 +514,15 @@ class DecisionEngine:
             if not self.queue:
                 run_succession_check(self.state)
                 self._next_round_or_end()
-        elif self._phase_stage in ("playing_commit", "playing_reveal"):
+        elif self._phase_stage in ("playing_commit", "playing_reveal", "hand_trim"):
             run_succession_check(self.state)
+            self._queue_alliance_review()
+            if self.queue:
+                self._phase_stage = "alliance_review"
+                return
+            self._next_round_or_end()
+        elif self._phase_stage == "alliance_review":
+            self._apply_alliance_votes()
             self._next_round_or_end()
 
     def _next_round_or_end(self) -> None:
