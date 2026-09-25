@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import MusicButton from "../components/MusicButton";
 import { RulesButton } from "../components/RulesModal";
 import { useGameSocket } from "../hooks/useGameSocket";
 import { useGameStore } from "../store";
@@ -99,6 +100,7 @@ export default function HomePage() {
               Join with Code
             </button>
             <div className="text-center mt-1">
+              <MusicButton />
               <RulesButton />
             </div>
           </div>

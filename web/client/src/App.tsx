@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { unlockAudio } from "./audio";
 import { useGameSocket } from "./hooks/useGameSocket";
 import { useGameStore } from "./store";
 import HomePage from "./pages/HomePage";
@@ -18,6 +19,16 @@ export default function App() {
   useEffect(() => {
     if (playerName) localStorage.setItem("cc_player_name", playerName);
   }, [playerName]);
+
+  useEffect(() => {
+    const arm = () => unlockAudio();
+    window.addEventListener("pointerdown", arm, { once: true });
+    window.addEventListener("keydown", arm, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", arm);
+      window.removeEventListener("keydown", arm);
+    };
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

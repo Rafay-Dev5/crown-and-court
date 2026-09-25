@@ -8,6 +8,8 @@ import PlayerSeat from "../components/PlayerSeat";
 import DieRollOverlay from "../components/DieRollOverlay";
 import { LedgerButton } from "../components/LedgerPanel";
 import RevealOverlay from "../components/RevealOverlay";
+import { playTurnBuzz } from "../audio";
+import MusicButton from "../components/MusicButton";
 import { RulesButton } from "../components/RulesModal";
 import SuccessionOverlay from "../components/SuccessionOverlay";
 import WhisperPanel from "../components/WhisperPanel";
@@ -159,6 +161,12 @@ export default function GamePage() {
     }, 500);
     return () => clearTimeout(t);
   }, [autoPlay, isMyTurn, decision, nPlay, sendAction]);
+
+  const turnId = isMyTurn && decision ? decision.decision_id : null;
+  useEffect(() => {
+    if (!turnId || autoPlay) return;
+    playTurnBuzz();
+  }, [turnId, autoPlay]);
 
   useEffect(() => {
     if (!autoPlay || !isReveal || !decision) return;
@@ -429,6 +437,7 @@ export default function GamePage() {
               ledger={publicState.ledger ?? []}
               yourSeat={yourSeat}
             />
+            <MusicButton />
             <RulesButton />
           </div>
         </div>
