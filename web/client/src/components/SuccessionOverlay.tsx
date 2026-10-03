@@ -25,13 +25,13 @@ export default function SuccessionOverlay({ event, onDismiss }: Props) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-0 md:p-4"
         onClick={onDismiss}
       >
         <motion.div
           initial={{ scale: 0.8, y: 20 }}
           animate={{ scale: 1, y: 0 }}
-          className="panel-parchment p-8 text-center max-w-md mx-4"
+          className="panel-parchment p-6 md:p-8 text-center w-full max-w-md rounded-t-2xl md:rounded-xl"
           onClick={(e) => e.stopPropagation()}
         >
           <p className="font-display text-xl text-royal-dark tracking-widest mb-4">

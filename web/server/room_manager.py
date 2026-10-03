@@ -11,7 +11,7 @@ from typing import Any
 
 from fastapi import WebSocket
 
-from web.server.bots import bot_should_accept, decide_bot_action, unused_bot_profiles
+from web.server.bots import bot_should_accept, choose_bot_profiles, decide_bot_action
 from web.server.game_session import GameSession, HumanAction
 from web.server.meta_game import MetaGameManager, TOTAL_MATCHES
 from web.server.protocol import PlayerInfo, ServerMessage, ServerMessageType
@@ -209,7 +209,7 @@ class RoomManager:
         n = empty if count is None else min(int(count), empty)
         used = {p.bot_key for p in room.players.values() if p.bot_key}
         added: list[ConnectedPlayer] = []
-        for key, name, _blurb in unused_bot_profiles(used):
+        for key, name, _blurb in choose_bot_profiles(used, n, random.Random()):
             if n <= 0:
                 break
             pid = f"bot-{key}-{uuid.uuid4().hex[:6]}"

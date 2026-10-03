@@ -98,6 +98,9 @@ export default function GamePage() {
 
   const vsBots = players.filter((p) => p.is_bot).length >= 2;
   const [autoPlay, setAutoPlay] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [showRace, setShowRace] = useState(false);
+  const [showLog, setShowLog] = useState(false);
   const [showSuccession, setShowSuccession] = useState(false);
   const [acceptingProposalId, setAcceptingProposalId] = useState<string | null>(null);
   const [fulfillmentTokens, setFulfillmentTokens] = useState<string[]>([]);
@@ -384,7 +387,82 @@ export default function GamePage() {
 
   return (
     <div className="min-h-screen min-h-[100dvh] flex flex-col pb-[env(safe-area-inset-bottom,0)]">
-      <header className="hud-bar px-3 sm:px-4 py-2 sm:py-2.5 sticky top-0 z-30">
+      <header className="hud-bar px-3 py-2 sticky top-0 z-30 md:hidden">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs text-parchment/80 truncate">
+            Match {matchNumber}/4 · R{publicState.current_round}/{publicState.n_rounds}
+            {meta ? ` · ${meta.total_points[playerId ?? ""] ?? 0} pts` : ""}
+          </p>
+          <button type="button" className="btn-outline text-xs py-1 px-3 shrink-0" onClick={() => setMoreOpen(true)}>
+            More
+          </button>
+        </div>
+        <button
+          type="button"
+          className="mt-1 w-full text-left text-xs text-parchment/80"
+          onClick={() => setShowRace((v) => !v)}
+        >
+          {(() => {
+            const you = publicState.seats.find((s) => s.seat_id === yourSeat);
+            const king = publicState.seats.find((s) => s.seat_id === publicState.king_seat);
+            if (!you || !king) return "Gold";
+            if (you.seat_id === king.seat_id) return `You ${you.gold} · you hold the crown`;
+            const gap = king.gold - you.gold;
+            const place = gap > 0 ? `${gap} behind` : gap < 0 ? `${-gap} ahead` : "tied";
+            return `You ${you.gold} · King ${king.gold} · ${place}`;
+          })()}
+          <span className="text-parchment/40"> · {showRace ? "hide" : "race"}</span>
+        </button>
+        {showRace && (
+          <div className="mt-2">
+            <GoldRace
+              seats={publicState.seats}
+              kingSeat={publicState.king_seat}
+              activeSeat={isReveal ? Number(decision?.context.card_seat ?? decision?.seat) : decision?.seat}
+            />
+          </div>
+        )}
+      </header>
+
+      {moreOpen && (
+        <div className="fixed inset-0 z-[80] flex items-end justify-center bg-black/70 md:hidden" onClick={() => setMoreOpen(false)}>
+          <div className="panel-parchment w-full rounded-t-2xl p-5 max-h-[80dvh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-display text-lg">Table</h2>
+              <button type="button" className="btn-outline text-sm py-1 px-3" onClick={() => setMoreOpen(false)}>Close</button>
+            </div>
+            <p className="text-sm mb-3">
+              {allianceLines.length > 0 ? allianceLines.join(" · ") : "No alliances yet."}
+            </p>
+            {vsBots && (
+              <label className="text-sm flex items-center gap-2 mb-3">
+                <input type="checkbox" className="accent-royal-gold" checked={autoPlay} onChange={(e) => setAutoPlay(e.target.checked)} />
+                Bots play my turns
+              </label>
+            )}
+            <button
+              type="button"
+              className="btn-outline text-sm mb-3"
+              onClick={() => {
+                setShowLog((v) => !v);
+                setMoreOpen(false);
+              }}
+            >
+              {showLog ? "Hide log" : "Show log"}
+            </button>
+            <div className="flex flex-wrap gap-2">
+              {playerId && (
+                <WhisperPanel seats={publicState.seats} yourId={playerId} whispers={whispers} onSend={sendWhisper} />
+              )}
+              <LedgerButton seats={publicState.seats} ledger={publicState.ledger ?? []} yourSeat={yourSeat} />
+              <MusicButton />
+              <RulesButton />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <header className="hud-bar px-3 sm:px-4 py-2 sm:py-2.5 sticky top-0 z-30 hidden md:block">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <span className="font-display text-royal-gold text-sm sm:text-base shrink-0">
@@ -457,7 +535,7 @@ export default function GamePage() {
       )}
 
       <div
-        className={`border-b text-center text-xs sm:text-sm py-1.5 px-3 ${
+        className={`hidden md:block border-b text-center text-xs sm:text-sm py-1.5 px-3 ${
           allianceLines.length > 0
             ? "bg-sky-950/50 border-sky-500/30 text-sky-100"
             : "bg-royal-darker/60 border-parchment/10 text-parchment/55"
@@ -472,58 +550,54 @@ export default function GamePage() {
 
       {/* Mobile table: opponents strip → felt → you */}
       <div className="flex-1 max-w-6xl mx-auto w-full px-2 sm:px-3 py-2 sm:py-3 flex flex-col gap-2 sm:gap-3 md:hidden">
-        <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-          {renderSeat(byPos.left, true, true)}
-          {renderSeat(byPos.top, true, true)}
-          {renderSeat(byPos.right, true, true)}
+        <div className="grid grid-cols-3 gap-1.5">
+          {[byPos.left, byPos.top, byPos.right].map((seat, i) =>
+            seat ? (
+              <div
+                key={seat.seat_id}
+                className={`rounded-lg px-2 py-1.5 text-center min-w-0 ${
+                  (isReveal
+                    ? seat.seat_id === Number(decision?.context.card_seat ?? decision?.seat)
+                    : decision?.seat === seat.seat_id)
+                    ? "ring-1 ring-emerald-400/80"
+                    : "bg-black/20"
+                }`}
+              >
+                <p className="text-xs truncate text-parchment">
+                  {seat.role === "king" ? "👑 " : ""}
+                  {seat.player_name}
+                </p>
+                <p className="gold-chip text-sm font-bold">{seat.gold}</p>
+              </div>
+            ) : (
+              <div key={`empty-${i}`} />
+            )
+          )}
         </div>
 
-        <div className="felt-table flex flex-col items-center justify-center px-3 py-3 min-h-[160px]">
-          <p className="font-display text-xs sm:text-sm text-center text-parchment mb-2 px-1">
+        <div className="felt-table flex flex-col items-center justify-center px-3 py-4 min-h-[120px]">
+          <p className="font-display text-sm text-center text-parchment px-1">
             {isReveal && revealCard
               ? `${seatName(decision.context.card_seat ?? decision.seat)} reveals ${revealCard.name}`
               : isMyTurn && decision?.dtype === "negotiation"
-                ? "Your turn — trade, ally, or pass"
+                ? "Your turn. Trade, ally, or pass."
                 : isMyTurn && decision?.dtype === "play"
-                  ? `Lock in ${nPlay} face-down cards`
+                  ? `Play up to ${nPlay} cards.`
                   : isMyTurn && isChoice
-                    ? "Choose a path for this card"
-                    : actorName
-                      ? `Waiting for ${actorName}`
-                      : "The court waits"}
+                    ? "Choose a path."
+                    : isMyTurn && isDiscard
+                      ? "Choose cards to discard."
+                      : isMyTurn && isTarget
+                        ? "Choose who this card hits."
+                        : actorName
+                          ? `Waiting for ${actorName}`
+                          : "The court waits"}
           </p>
-          {publicState.phase === "playing" && !isReveal && (
-            <div className="flex justify-center gap-2 sm:gap-3 mb-2 flex-wrap">
-              {publicState.seats.map((s) => {
-                const n = s.role === "king" ? 3 : 2;
-                const locked = (publicState.locked_seats ?? []).includes(s.seat_id);
-                return (
-                  <div key={s.seat_id} className="text-center">
-                    <div className="flex -space-x-1.5 justify-center">
-                      {Array.from({ length: n }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={`w-5 h-7 rounded-sm border ${
-                            locked
-                              ? "card-back"
-                              : "border-dashed border-parchment/25 bg-black/20"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-[8px] text-parchment/55 mt-0.5 truncate max-w-[3.5rem]">
-                      {s.player_name.replace(/^The\s+/i, "")}
-                      {locked ? " · in" : ""}
-                    </p>
-                  </div>
-                );
-              })}
+          {showLog && (
+            <div className="w-full max-w-md mt-3 bg-royal-dark/55 rounded-xl px-3 py-2">
+              <EventLog events={events} />
             </div>
           )}
-          <img src="/assets/crown.svg" alt="" className="w-6 h-6 mb-2 opacity-35" />
-          <div className="w-full max-w-md bg-royal-dark/55 rounded-xl px-3 py-2 border border-royal-gold/25">
-            <EventLog events={events} />
-          </div>
         </div>
 
         <div>{renderSeat(byPos.bottom, false)}</div>
@@ -542,7 +616,7 @@ export default function GamePage() {
                 : isMyTurn && decision?.dtype === "negotiation"
                   ? "Your turn — trade, ally, or pass"
                   : isMyTurn && decision?.dtype === "play"
-                    ? `Lock in ${nPlay} face-down cards`
+                    ? `Play up to ${nPlay} cards`
                     : isMyTurn && isChoice
                       ? "Choose a path for this card"
                       : actorName
@@ -589,7 +663,7 @@ export default function GamePage() {
       </div>
 
       {pendingForMe.length > 0 && publicState.phase === "negotiation" && (
-        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
+        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] max-md:sticky max-md:bottom-0 max-md:z-20">
           <p className="font-display text-sm mb-2">Incoming proposals</p>
           {pendingForMe.map((p) => {
             const pid = p.id as string;
@@ -689,7 +763,7 @@ export default function GamePage() {
       )}
 
       {isMyTurn && decision?.dtype === "negotiation" && (
-        <div className="max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
+        <div className="max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] max-md:sticky max-md:bottom-0 max-md:z-20">
           <NegotiationPanel
             onPass={() => sendAction("pass")}
             onTrade={(proposal) =>
@@ -707,7 +781,7 @@ export default function GamePage() {
       )}
 
       {isMyTurn && decision?.dtype === "play" && privateState && (
-        <div className="max-w-4xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
+        <div className="max-w-4xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] max-md:sticky max-md:bottom-0 max-md:z-20">
           <PlayPanel
             hand={privateState.hand}
             nPlay={nPlay}
@@ -718,7 +792,7 @@ export default function GamePage() {
       )}
 
       {isMyTurn && isTarget && (
-        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
+        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] max-md:sticky max-md:bottom-0 max-md:z-20">
           <p className="font-display text-sm mb-1">
             {choiceCard?.name ? `${choiceCard.name} — choose your target` : "Choose your target"}
           </p>
@@ -745,7 +819,7 @@ export default function GamePage() {
       )}
 
       {isMyTurn && isChoice && (
-        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
+        <div className="panel-parchment p-3 sm:p-4 max-w-3xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] max-md:sticky max-md:bottom-0 max-md:z-20">
           <p className="font-display text-sm mb-1">
             {isTargetedChoice
               ? `${cardOwnerName} played ${choiceCard?.name ?? "a card"} — you must choose a path`
@@ -797,7 +871,7 @@ export default function GamePage() {
       )}
 
       {isMyTurn && isDiscard && (
-        <div className="max-w-4xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)]">
+        <div className="max-w-4xl mx-auto mb-3 w-[calc(100%-1rem)] sm:w-[calc(100%-1.5rem)] max-md:sticky max-md:bottom-0 max-md:z-20">
           <PlayPanel
             hand={discardHand}
             nPlay={Math.min(discardCount, discardHand.length)}

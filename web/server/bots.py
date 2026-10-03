@@ -28,8 +28,20 @@ _PLAY_PREF: dict[str, tuple[str, ...]] = {
 }
 
 
+_CORE_BOT_KEYS = ("hoard", "aggressive", "ally_neighbor")
+
+
 def unused_bot_profiles(used_keys: set[str]) -> list[tuple[str, str, str]]:
     return [p for p in BOT_PROFILES if p[0] not in used_keys]
+
+
+def choose_bot_profiles(used_keys: set[str], n: int, rng) -> list[tuple[str, str, str]]:
+    """Pick up to n bots. Hoarder, Aggressor, and Diplomat are shuffled first."""
+    core = [p for p in BOT_PROFILES if p[0] in _CORE_BOT_KEYS and p[0] not in used_keys]
+    rest = [p for p in BOT_PROFILES if p[0] not in _CORE_BOT_KEYS and p[0] not in used_keys]
+    rng.shuffle(core)
+    rng.shuffle(rest)
+    return (core + rest)[:n]
 
 
 def _other_seats(session: GameSession, seat: int) -> list[int]:

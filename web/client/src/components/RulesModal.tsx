@@ -8,11 +8,11 @@ type Props = {
 export default function RulesModal({ onClose }: Props) {
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center bg-black/70 p-0 sm:p-4"
+      className="fixed inset-0 z-[80] flex items-end md:items-center justify-center bg-black/70 p-0 md:p-4"
       onClick={onClose}
     >
       <div
-        className="panel-parchment w-full max-w-2xl max-h-[88dvh] sm:max-h-[88vh] overflow-y-auto scrollbar-thin p-5 sm:p-6 rounded-t-2xl sm:rounded-xl"
+        className="panel-parchment w-full max-w-2xl max-h-[88dvh] overflow-y-auto scrollbar-thin p-5 md:p-6 rounded-t-2xl md:rounded-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4 mb-4">

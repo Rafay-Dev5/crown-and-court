@@ -41,8 +41,8 @@ export default function DieRollOverlay({ roll, sides, targetMin, success, roller
   }, [onDone, roll, sides]);
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/55 pointer-events-none">
-      <div className="text-center">
+    <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center bg-black/55 p-0 md:p-4 pointer-events-none">
+      <div className="panel-parchment w-full max-w-md rounded-t-2xl md:rounded-xl p-6 text-center">
         <motion.div
           className="mx-auto w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-4 border-royal-gold bg-parchment text-royal-dark flex items-center justify-center font-display text-5xl shadow-2xl"
           animate={
@@ -54,12 +54,12 @@ export default function DieRollOverlay({ roll, sides, targetMin, success, roller
         >
           {face}
         </motion.div>
-        <p className="mt-3 font-display text-parchment text-lg">
+        <p className="mt-3 font-display text-royal-dark text-lg">
           {landed
             ? `${rollerName} rolled ${roll} — ${success ? "success" : "miss"}`
             : `${rollerName} rolls the die…`}
         </p>
-        <p className="text-xs text-parchment/70 mt-1">Needed {facesNeeded(sides, targetMin)}</p>
+        <p className="text-sm text-royal-dark/70 mt-1">Needed {facesNeeded(sides, targetMin)}</p>
       </div>
     </div>
   );

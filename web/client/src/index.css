@@ -103,7 +103,12 @@ h1, h2, h3, h4 {
 @media (max-width: 767px) {
   .felt-table {
     border-radius: 18px;
-    border-width: 2px;
+    border-width: 1px;
+    border-color: rgba(244, 232, 208, 0.28);
+  }
+  .card-face {
+    border-width: 1px;
+    border-color: #c4b49a;
   }
 }
 

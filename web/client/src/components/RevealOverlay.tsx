@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import CardComponent from "./CardComponent";
-import { describeCardFull } from "../cardText";
 import { describeResolveEvent } from "../eventText";
 import type { CardData } from "../store/gameStore";
 
@@ -19,10 +18,6 @@ type Props = {
   waitingNames: string[];
   onContinue: () => void;
 };
-
-function cardDetailLines(card: CardData): string[] {
-  return describeCardFull(card).sections.flatMap((section) => section.lines);
-}
 
 function asCardData(raw: unknown): CardData | null {
   if (!raw || typeof raw !== "object") return null;
@@ -134,9 +129,11 @@ export default function RevealOverlay({
               {results.length ? "What happened" : "What this card does"}
             </p>
             <ul className="text-sm space-y-1.5 text-royal-dark/90">
-              {(results.length ? results : effectLines.length ? effectLines : ["See the card text."]).map((line) => (
-                <li key={line} className="whitespace-pre-wrap leading-snug">• {line}</li>
-              ))}
+              {(results.length ? results : effectLines.length ? effectLines : ["See the card text."])
+                .slice(0, 3)
+                .map((line) => (
+                  <li key={line} className="whitespace-pre-wrap leading-snug">• {line}</li>
+                ))}
             </ul>
           </div>
         </div>
@@ -149,11 +146,7 @@ export default function RevealOverlay({
             <div className="flex justify-center">
               <CardComponent card={privatePeek.card} previewable />
             </div>
-            <ul className="mt-3 space-y-1 text-sm text-royal-dark/85">
-              {cardDetailLines(privatePeek.card).map((line, i) => (
-                <li key={i}>{line}</li>
-              ))}
-            </ul>
+            <p className="mt-2 text-center text-xs text-royal-dark/60">Tap the card to read it.</p>
           </div>
         )}
 
@@ -164,14 +157,7 @@ export default function RevealOverlay({
             </p>
             <div className="card-row">
               {pile.cards.map((c, i) => (
-                <div key={`${c.id}-d-${i}`} className="max-w-[16rem]">
-                  <CardComponent card={c} previewable />
-                  <ul className="mt-1 space-y-0.5 text-[11px] text-royal-dark/80">
-                    {cardDetailLines(c).map((line, n) => (
-                      <li key={n}>{line}</li>
-                    ))}
-                  </ul>
-                </div>
+                <CardComponent key={`${c.id}-d-${i}`} card={c} previewable />
               ))}
             </div>
           </div>

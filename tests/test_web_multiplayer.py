@@ -110,6 +110,21 @@ def test_websocket_create_and_join():
             assert len(msg2["payload"]["players"]) == 2
 
 
+def test_two_bots_are_not_always_hoarder_and_aggressor():
+    import random
+
+    from web.server.bots import choose_bot_profiles
+
+    seen = set()
+    for seed in range(24):
+        picked = choose_bot_profiles(set(), 2, random.Random(seed))
+        seen.add(tuple(sorted(p[0] for p in picked)))
+    assert ("aggressive", "hoard") in seen
+    assert len(seen) > 1
+    three = choose_bot_profiles(set(), 3, random.Random(1))
+    assert {p[0] for p in three} == {"hoard", "aggressive", "ally_neighbor"}
+
+
 def test_practice_lobby_fills_three_named_bots():
     client = TestClient(app)
     with client.websocket_connect("/ws") as ws:
