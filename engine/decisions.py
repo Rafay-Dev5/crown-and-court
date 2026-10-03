@@ -127,11 +127,7 @@ class DecisionEngine:
                     if i >= len(hand):
                         continue
                     card = hand[i]
-                    if card.get("category") == "betrayal" and not any(
-                        self.state.has_alliance_between(dec.seat, other)
-                        for other in range(self.state.num_players)
-                        if other != dec.seat
-                    ):
+                    if card.get("category") in ("alliance", "betrayal") and self.state.allied_partner(dec.seat) is None:
                         continue
                     selected_indices.append(i)
                 selected = [hand[i] for i in selected_indices]

@@ -11,7 +11,7 @@ type Props = {
   hint?: string;
   submitLabel?: string;
   exact?: boolean;
-  betrayalLocked?: boolean;
+  needsAlly?: boolean;
 };
 
 export default function PlayPanel({
@@ -22,7 +22,7 @@ export default function PlayPanel({
   hint = "You may play fewer than the maximum, including none. Cards stay hidden until everyone has locked in. Then they reveal one by one.",
   submitLabel = "Lock In",
   exact = false,
-  betrayalLocked = false,
+  needsAlly = false,
 }: Props) {
   const [selected, setSelected] = useState<number[]>([]);
 
@@ -31,7 +31,7 @@ export default function PlayPanel({
   }, [hand, nPlay]);
 
   const toggle = (idx: number) => {
-    if (betrayalLocked && hand[idx]?.category === "betrayal") return;
+    if (needsAlly && (hand[idx]?.category === "betrayal" || hand[idx]?.category === "alliance")) return;
     setSelected((prev) => {
       if (prev.includes(idx)) return prev.filter((i) => i !== idx);
       if (prev.length >= nPlay) return prev;
@@ -67,7 +67,8 @@ export default function PlayPanel({
             card={card}
             selected={selected.includes(i)}
             onClick={() => toggle(i)}
-            locked={betrayalLocked && card.category === "betrayal"}
+            locked={needsAlly && (card.category === "betrayal" || card.category === "alliance")}
+            lockedReason="No alliance this round — this card cannot be played."
           />
         ))}
       </div>

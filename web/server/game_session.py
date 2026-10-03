@@ -274,11 +274,7 @@ class GameSession:
             if i >= len(hand):
                 continue
             card = hand[i]
-            if card.get("category") == "betrayal" and not any(
-                state.has_alliance_between(seat, other)
-                for other in range(state.num_players)
-                if other != seat
-            ):
+            if card.get("category") in ("alliance", "betrayal") and state.allied_partner(seat) is None:
                 continue
             playable.append(i)
         selected_indices = playable

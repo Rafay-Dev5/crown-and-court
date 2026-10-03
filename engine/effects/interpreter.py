@@ -111,6 +111,10 @@ def resolve_card(
 ) -> bool:
     """Resolve a card's effect. Returns False if waiting on player choice."""
     category = card.get("category", "")
+    if category in ("alliance", "betrayal"):
+        partner = state.allied_partner(seat)
+        if partner is not None:
+            target_seat = partner
     if not card_preconditions_met(state, card, seat, target_seat):
         state.log_event("card_precondition_failed", card_id=card.get("id"), name=card.get("name"), seat=seat)
         if category in ("alliance", "betrayal"):

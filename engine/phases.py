@@ -233,8 +233,15 @@ def _effect_references_chosen_target(effect: dict | None) -> bool:
     return False
 
 
+def card_aims_at_ally(card: dict) -> bool:
+    """Alliance and betrayal cards always hit the player's current ally."""
+    return card.get("category") in ("alliance", "betrayal")
+
+
 def card_requires_chosen_target(card: dict) -> bool:
     """Whether the card player must pick an opposing seat before resolve."""
+    if card_aims_at_ally(card):
+        return False
     requires = card.get("requires_state") or {}
     if "target_seat" in requires:
         return False

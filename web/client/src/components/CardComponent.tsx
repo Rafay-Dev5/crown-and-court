@@ -13,6 +13,7 @@ type Props = {
   /** When false, no hover/tap preview (e.g. decorative backs). Default true for face-up. */
   previewable?: boolean;
   locked?: boolean;
+  lockedReason?: string;
 };
 
 const categoryColors: Record<string, string> = {
@@ -38,6 +39,7 @@ export default function CardComponent({
   large,
   previewable = true,
   locked = false,
+  lockedReason,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -177,7 +179,7 @@ export default function CardComponent({
         type="button"
         onClick={handleClick}
         aria-label={`${card.category ?? "Card"}: ${card.name}`}
-        title={locked ? "Betrayal cards can only be played against your ally" : undefined}
+        title={locked ? lockedReason ?? "This card cannot be played" : undefined}
         className={`card-face flex-shrink-0 text-left transition-all duration-200 ${
           locked ? "opacity-40 cursor-not-allowed " : ""
         }${
@@ -199,7 +201,12 @@ export default function CardComponent({
             {describeCardSummary(card)}
           </p>
         )}
-        {!faceDown && cardWarnings(card).length > 0 && (
+        {!faceDown && locked && lockedReason && (
+          <p className={`mt-1 text-red-800 font-semibold leading-tight ${small ? "text-[7px] line-clamp-3" : "text-[8px] sm:text-[10px] line-clamp-4"}`}>
+            {lockedReason}
+          </p>
+        )}
+        {!faceDown && !locked && cardWarnings(card).length > 0 && (
           <p className={`mt-1 text-red-800 font-semibold leading-tight ${small ? "text-[7px] line-clamp-2" : "text-[8px] sm:text-[10px] line-clamp-3"}`}>
             {card.category === "betrayal" ? "Betrayal" : "Needs an alliance"}
           </p>

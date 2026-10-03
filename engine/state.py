@@ -193,6 +193,16 @@ class GameState:
     def noble_play_order(self) -> list[int]:
         return [s for s in self.seat_order_from_king()[1:] if self.seats[s].role == Role.NOBLE]
 
+    def allied_partner(self, seat: int) -> int | None:
+        """The one other member of this seat's alliance, if any."""
+        for alliance in self.alliances:
+            if seat not in alliance.members:
+                continue
+            others = [s for s in alliance.members if s != seat]
+            if others:
+                return others[0]
+        return None
+
     def has_alliance_between(self, a: int, b: int) -> bool:
         pair = frozenset({a, b})
         return any(alliance.members == pair for alliance in self.alliances)

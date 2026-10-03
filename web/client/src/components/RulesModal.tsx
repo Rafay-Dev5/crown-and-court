@@ -164,8 +164,9 @@ export default function RulesModal({ onClose }: Props) {
           <p className="text-sm leading-relaxed">
             A declared alliance is public. Each player can be in only one at a time. Forming a new
             pact ends any other alliance either player already has. Some cards pay only if you are
-            still allied with the target. A betrayal card can be played only while you have an
-            alliance, and only against that ally. If both allies play a betrayal in the same round,
+            still allied with the target. Alliance and betrayal cards do not ask you to pick a
+            target. They always hit the player you are allied with. With no alliance, those cards
+            stay locked for the round. If both allies play a betrayal in the same round,
             both cards resolve, because the alliance stays up until every card has been revealed.
             It then ends once, before succession and before the renewal question. A shield stops a
             theft only for the player who played that shield. The card’s extra cost — shown when
@@ -236,8 +237,9 @@ export default function RulesModal({ onClose }: Props) {
             <div>
               <dt className="font-semibold">When can I play a betrayal card?</dt>
               <dd>
-                Only while you have an alliance, and only against that ally. If you have no ally,
-                those cards stay locked. A betrayal that cannot legally resolve is discarded, not
+                Only while you have an alliance. You do not choose a target: it hits that ally.
+                Alliance cards work the same way. If you have no ally, those cards stay locked and
+                cannot be played that round. A card that cannot legally resolve is discarded, not
                 returned to your hand.
               </dd>
             </div>
