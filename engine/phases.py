@@ -12,6 +12,13 @@ from engine.status_ticks import apply_status_tick_effects
 from engine.succession import perform_seat_swap, resolve_succession
 
 
+def hand_cap(state: GameState, seat: int) -> int:
+    """King may hold 8 cards. Nobles discard down to 7."""
+    if seat == state.king_seat:
+        return int(state.config.get("hand_size", 8))
+    return int(state.config.get("noble_hand_size", 7))
+
+
 def draw_to_hand(
     state: GameState, seat: int, count: int, rng: GameRNG, hand_size: int = 8
 ) -> None:
@@ -87,8 +94,10 @@ def setup_game(config: dict[str, Any], rng: GameRNG) -> GameState:
     )
 
     hand_size = int(config.get("hand_size", 8))
+    noble_hand = int(config.get("noble_hand_size", 7))
     for seat in range(num_players):
-        draw_to_hand(state, seat, hand_size, rng, hand_size)
+        deal = hand_size if seat == king_seat else noble_hand
+        draw_to_hand(state, seat, deal, rng, deal)
 
     state.current_round = 1
     state.phase = Phase.NEGOTIATION
@@ -181,7 +190,7 @@ def run_playing_phase(
     for seat in range(state.num_players):
         redraw = king_redraw if seat == state.king_seat else noble_redraw
         draw_to_hand(state, seat, redraw, rng, hand_size)
-        extra = len(state.seats[seat].hand) - 7
+        extra = len(state.seats[seat].hand) - hand_cap(state, seat)
         if extra > 0:
             drop = list(range(len(state.seats[seat].hand)))
             rng.shuffle(drop)
@@ -191,6 +200,7 @@ def run_playing_phase(
 
     apply_status_tick_effects(state, rng)
     state.tick_statuses()
+    state.apply_pending_betrayals()
 
 
 _TARGET_PARAM_KEYS = ("target", "from", "to", "choice_seat", "new_target")

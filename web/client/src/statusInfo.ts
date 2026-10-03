@@ -11,7 +11,7 @@ export const STATUS_HELP: Record<string, { label: string; description: string }>
   },
   marked: {
     label: "Marked",
-    description: "Some cards steal extra gold from marked players.",
+    description: "Any gold theft against you takes 20% more. A shield that is already up stops the whole amount, including the extra.",
   },
   corrupt: {
     label: "Corrupt",
@@ -20,7 +20,7 @@ export const STATUS_HELP: Record<string, { label: string; description: string }>
   },
   discredited: {
     label: "Discredited",
-    description: "Some cards force you to discard or reveal your hand.",
+    description: "Any card that forces you to discard makes you discard one extra card. If you do not have that many cards, you discard what you hold.",
   },
   block_succession: {
     label: "Loyal Hold",

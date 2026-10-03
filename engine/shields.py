@@ -38,7 +38,8 @@ def check_and_consume_shield(
         covered = amount
         if covered <= 0:
             continue
-        if single_use_default and shield.single_use:
+        shield.charges = max(0, int(shield.charges) - 1)
+        if single_use_default and shield.single_use and shield.charges <= 0:
             shield.consumed = True
         state.log_event(
             "shield_blocked",

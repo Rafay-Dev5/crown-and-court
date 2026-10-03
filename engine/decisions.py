@@ -13,6 +13,7 @@ from engine.phases import (
     _default_target,
     card_requires_chosen_target,
     draw_to_hand,
+    hand_cap,
     legal_card_targets,
     run_succession_check,
     setup_game,
@@ -464,18 +465,18 @@ class DecisionEngine:
         self._resolve_next_reveal()
 
     def _queue_hand_trim(self) -> None:
-        """If a hand is over 7 after the redraw, that player discards down to 7."""
+        """After the redraw, discard down to the seat's hand cap (King 8, Noble 7)."""
         assert self.state
-        cap = 7
         self.queue = []
         for seat in range(self.state.num_players):
+            cap = hand_cap(self.state, seat)
             extra = len(self.state.seats[seat].hand) - cap
             if extra > 0:
                 self.queue.append(
                     PendingDecision(
                         seat=seat,
                         dtype=DecisionType.DISCARD,
-                        context={"count": extra, "reason": "hand_limit"},
+                        context={"count": extra, "reason": "hand_limit", "cap": cap},
                     )
                 )
 
@@ -527,6 +528,7 @@ class DecisionEngine:
                 run_succession_check(self.state)
                 self._next_round_or_end()
         elif self._phase_stage in ("playing_commit", "playing_reveal", "hand_trim"):
+            self.state.apply_pending_betrayals()
             run_succession_check(self.state)
             self._queue_alliance_review()
             if self.queue:

@@ -58,7 +58,7 @@ function shieldBlurb(p: Record<string, unknown>): [string, string] {
   }
   return [
     `a shield against gold theft`,
-    `While it is up, it stops a gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit keeps any unused shield. A miss removes it.`,
+    `While it is up, it stops the next two gold thefts revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit keeps any unused charge. A miss removes it.`,
   ];
 }
 
@@ -133,6 +133,9 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       lines.push(
         `${Number(p.amount) || 0} gold moves from ${targetLabel(p.from ?? "target")} to ${targetLabel(p.to ?? "self")}.`
       );
+      if (p.as_theft) {
+        lines.push("If that player is Marked, this takes 20% more gold.");
+      }
       break;
     case "steal_card": {
       const thief = targetLabel(p.to ?? "self");
@@ -146,6 +149,7 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       lines.push(
         `${who} ${thirdPerson(who) ? "chooses" : "choose"} ${cardNoun(p.count ?? 1)} to discard.`
       );
+      lines.push("If that player is Discredited, they discard one extra card.");
       break;
     }
     case "draw_extra": {
@@ -408,8 +412,8 @@ export function cardWarnings(card: {
       : "";
     lines.push(
       extra
-        ? `Only while you are allied, and only against that ally. Betrayal cost (paid even if a shield stops the theft): ${extra}`
-        : "Only while you are allied, and only against that ally."
+        ? `Only while you are allied, and only against that ally. The alliance ends after every card this phase is revealed. Betrayal cost (paid even if a shield stops the theft): ${extra}`
+        : "Only while you are allied, and only against that ally. The alliance ends after every card this phase is revealed."
     );
   }
   if (needsAlliance) {

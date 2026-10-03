@@ -18,6 +18,7 @@ def test_setup_creates_valid_state():
     assert state.king_seat == 0
     assert state.seats[0].role == Role.KING
     assert len(state.seats[0].hand) == 8
+    assert all(len(state.seats[s].hand) == 7 for s in state.noble_seats())
     assert state.person_at_seat(0).gold == 1000
 
 

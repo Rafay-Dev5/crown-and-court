@@ -804,7 +804,7 @@ export default function GamePage() {
             title={`Choose ${discardCount} card${discardCount > 1 ? "s" : ""} to discard`}
             hint={
               decision?.context.reason === "hand_limit"
-                ? "Your hand is over 7. Choose which cards to discard. Everyone will see them."
+                ? `Your hand is over ${Number(decision?.context.cap ?? 7)}. Choose which cards to discard. Everyone will see them.`
                 : "You pick which card(s) leave your hand. Everyone will see what you discarded when the reveal continues."
             }
             submitLabel="Discard"

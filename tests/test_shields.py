@@ -135,4 +135,18 @@ def test_shield_stops_a_theft_larger_than_its_printed_amount():
     )
     assert state.person_at_seat(king).gold == king_gold
     assert state.person_at_seat(noble).gold == noble_gold
+    assert state.active_shields and not state.active_shields[0].consumed
+    assert state.active_shields[0].charges == 1
+
+    gold_transfer(
+        state,
+        {
+            "seat": noble,
+            "target_seat": king,
+            "card": {"category": "disruption", "name": "Second Theft"},
+            "params": {"from": "king", "to": "self", "amount": 40, "as_theft": True},
+        },
+        GameRNG(seed=3),
+    )
+    assert state.person_at_seat(king).gold == king_gold
     assert all(s.consumed for s in state.active_shields)

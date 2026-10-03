@@ -33,8 +33,8 @@ def test_sealed_warrant_gets_marked_bonus():
 
     assert base_state.person_at_seat(base_king).gold == base_king_before + 80
     assert base_state.person_at_seat(base_target).gold == base_target_before - 80
-    assert marked_state.person_at_seat(marked_king).gold == marked_king_before + 100
-    assert marked_state.person_at_seat(marked_target).gold == marked_target_before - 100
+    assert marked_state.person_at_seat(marked_king).gold == marked_king_before + 96
+    assert marked_state.person_at_seat(marked_target).gold == marked_target_before - 96
 
 
 def test_oathbreaker_blocks_negotiation_gifts():
@@ -152,7 +152,7 @@ def test_cards_for_cards_imbalance_brands_receiver():
     assert not state.has_status(b, "oathbreaker")
 
 
-def test_royal_census_forces_discredited_target_to_discard():
+def test_royal_census_only_reveals_the_hand():
     cards = _cards_by_id()
     card = cards["king_royal_edict_28_028"]
     state = setup_game(load_config(), GameRNG(seed=6))
@@ -165,9 +165,26 @@ def test_royal_census_forces_discredited_target_to_discard():
 
     resolve_card(state, card, king, GameRNG(seed=7), target_seat=target)
 
-    assert len(state.seats[target].hand) == hand_before - 1
+    assert len(state.seats[target].hand) == hand_before
     assert any(event["type"] == "reveal_hand" and event["seat"] == target for event in state.event_log)
-    assert any(event["type"] == "force_discard" and event["seat"] == target for event in state.event_log)
+    assert not any(event["type"] == "force_discard" for event in state.event_log)
+
+
+def test_discredited_discards_one_extra_card():
+    state = setup_game(load_config(), GameRNG(seed=21))
+    target = state.noble_seats()[0]
+    state.seats[target].statuses.append(
+        StatusTag(name="discredited", expires_after_round=state.current_round + 2)
+    )
+    hand_before = len(state.seats[target].hand)
+    from engine.effects.primitives import force_discard
+
+    force_discard(
+        state,
+        {"seat": state.king_seat, "params": {"target": "target", "count": 1}, "target_seat": target},
+        GameRNG(seed=22),
+    )
+    assert len(state.seats[target].hand) == hand_before - 2
 
 
 def test_development_fund_two_cook_the_books_skips_die_and_marks_corrupt():

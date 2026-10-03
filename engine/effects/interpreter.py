@@ -111,19 +111,19 @@ def resolve_card(
 ) -> bool:
     """Resolve a card's effect. Returns False if waiting on player choice."""
     category = card.get("category", "")
+    if not card_preconditions_met(state, card, seat, target_seat):
+        state.log_event("card_precondition_failed", card_id=card.get("id"), name=card.get("name"), seat=seat)
+        if category in ("alliance", "betrayal"):
+            _note_fizzled_card(state, seat, card)
+        return True
+
     if (
         category == "betrayal"
         and target_seat is not None
         and target_seat != seat
         and state.has_alliance_between(seat, target_seat)
     ):
-        state.end_alliance(seat, target_seat, card.get("name") or "betrayal")
-
-    if not card_preconditions_met(state, card, seat, target_seat):
-        state.log_event("card_precondition_failed", card_id=card.get("id"), name=card.get("name"), seat=seat)
-        if category in ("alliance", "betrayal"):
-            _note_fizzled_card(state, seat, card)
-        return True
+        state.note_betrayal(seat, target_seat, card.get("name") or "betrayal")
 
     ctx: dict[str, Any] = {
         "seat": seat,

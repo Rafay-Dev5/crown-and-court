@@ -85,6 +85,7 @@ def load_config(path: Path | str | None = None) -> dict[str, Any]:
         "num_players": 6,
         "n_rounds": 5,
         "hand_size": 8,
+        "noble_hand_size": 7,
         "king_start_gold": 1000,
         "noble_start_gold": 600,
         "negotiation_ticks": 4,

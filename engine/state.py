@@ -35,6 +35,7 @@ class ActiveShield:
     single_use: bool = True
     expires_after_round: int = 0
     consumed: bool = False
+    charges: int = 2
 
 
 @dataclass
@@ -153,6 +154,8 @@ class GameState:
     # Interactive table: victim picks discards; peeker-only card views.
     pending_discards: list[dict[str, Any]] = field(default_factory=list)
     private_peeks: dict[int, dict[str, Any]] = field(default_factory=dict)
+    # Betrayals played this phase. Applied once every card has resolved.
+    pending_betrayals: list[tuple[int, int, str]] = field(default_factory=list)
 
     def log_event(self, event_type: str, **payload: Any) -> None:
         self.event_log.append(
@@ -193,6 +196,21 @@ class GameState:
     def has_alliance_between(self, a: int, b: int) -> bool:
         pair = frozenset({a, b})
         return any(alliance.members == pair for alliance in self.alliances)
+
+    def note_betrayal(self, a: int, b: int, reason: str) -> None:
+        """Remember a betrayal. The alliance stays up until the playing phase ends."""
+        if not self.has_alliance_between(a, b):
+            return
+        pair = frozenset({a, b})
+        if any(frozenset({x, y}) == pair for x, y, _reason in self.pending_betrayals):
+            return
+        self.pending_betrayals.append((a, b, reason))
+
+    def apply_pending_betrayals(self) -> None:
+        pending = self.pending_betrayals
+        self.pending_betrayals = []
+        for a, b, reason in pending:
+            self.end_alliance(a, b, reason)
 
     def end_alliance(self, a: int, b: int, reason: str) -> bool:
         pair = frozenset({a, b})

@@ -76,6 +76,13 @@ def _evaluate_trigger(state: GameState, trigger: dict, ctx: EffectContext) -> bo
     return False
 
 
+def _marked_theft_amount(state: GameState, seat: int, amount: int) -> int:
+    """Marked victims lose 20% more on a gold theft."""
+    if amount > 0 and state.has_status(seat, "marked"):
+        return amount + amount // 5
+    return amount
+
+
 def gold_loss(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = _resolve_target(state, ctx["params"].get("target", "self"), ctx)
     person = state.person_at_seat(seat)
@@ -86,6 +93,7 @@ def gold_loss(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
         amount = int(ctx["params"]["amount"])
     attacker = ctx.get("seat", seat)
     if seat != attacker:
+        amount = _marked_theft_amount(state, seat, amount)
         covered = check_and_consume_shield(state, seat, "gold_theft", attacker, amount)
         if covered:
             log_attack(state, attacker, seat, "gold_theft", covered, blocked=True)
@@ -112,6 +120,7 @@ def gold_transfer(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     amount = int(params["amount"])
     is_theft = params.get("as_theft", from_seat != to_seat and to_seat == ctx.get("seat"))
     if is_theft and from_seat != to_seat:
+        amount = _marked_theft_amount(state, from_seat, amount)
         covered = check_and_consume_shield(state, from_seat, "gold_theft", to_seat, amount)
         if covered:
             log_attack(state, to_seat, from_seat, "gold_theft", covered, blocked=True)
@@ -191,6 +200,8 @@ def _card_public_summary(card: dict[str, Any]) -> dict[str, Any]:
 def force_discard(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
     seat = _resolve_target(state, ctx["params"].get("target", "target"), ctx)
     count = int(ctx["params"].get("count", 1))
+    if state.has_status(seat, "discredited"):
+        count += 1
     attacker = ctx.get("seat", seat)
     if seat != attacker:
         if check_and_consume_shield(state, seat, "force_discard", attacker, count):
@@ -317,6 +328,7 @@ def protect_gold(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
             specificity=specificity,
             single_use=state.config.get("shield_single_use", True),
             expires_after_round=state.current_round + duration,
+            charges=2 if blocks == "gold_theft" else 1,
         ),
     )
     state.log_event("protect_gold", seat=seat, params=ctx["params"])

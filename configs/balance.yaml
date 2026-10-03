@@ -1,6 +1,7 @@
 alternate_turn_direction: true
 games_per_cell: 100
 hand_size: 8
+noble_hand_size: 7
 king_deck_size: 42
 king_plays_per_round: 3
 king_redraw: 3

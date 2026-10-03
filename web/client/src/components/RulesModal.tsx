@@ -57,9 +57,10 @@ export default function RulesModal({ onClose }: Props) {
               reveal one at a time. The King reveals first.
             </li>
             <li>
-              After every card has resolved, each player draws again (King 3, Noble 2). If anyone
-              then holds <strong>more than 7 cards</strong>, they choose which extras to discard
-              until they have 7.
+              The King starts with <strong>8</strong> cards. Each Noble starts with <strong>7</strong>.
+              After every card has resolved, each player draws again (King 3, Noble 2). Then anyone
+              over their limit chooses cards to discard. The King may keep <strong>8</strong>. Each
+              Noble discards down to <strong>7</strong>.
             </li>
             <li>
               <strong>Succession again</strong>. Then each allied player is asked whether to keep
@@ -76,11 +77,18 @@ export default function RulesModal({ onClose }: Props) {
             A hit keeps the shield. A miss removes it, and then you pay the miss cost printed on
             the card (often 60 or 80 gold; succession guesses cost half your gold).
           </p>
+          <p className="text-sm leading-relaxed mb-2">
+            You do not pick a target. A gold shield protects only you. It stops the next two gold
+            thefts revealed after it, then it is used up. A third theft in the same round gets
+            through. A theft revealed before the shield still stands, and the gold is not returned.
+            That earlier theft still counts as a hit, so you do not pay the miss cost.
+          </p>
           <p className="text-sm leading-relaxed">
-            Every protection card except the succession blocks (Diplomatic Immunity and Loyal Guard)
-            stops a <strong>gold theft</strong> revealed after it. The shield is used up when it
-            stops that theft. A theft revealed earlier in the round still counts and is not undone.
-            Succession cards stop a crown change, not a theft.
+            Diplomatic Immunity and Loyal Guard are the succession blocks. Their guess is whether
+            any Noble has more gold than the King when the guess is scored. A hit keeps the block,
+            so the following succession check does not change the crown. A miss removes the block
+            and costs half your gold. They do not stop theft. Every other protection card stops
+            gold theft, not a crown change.
           </p>
         </section>
 
@@ -105,6 +113,8 @@ export default function RulesModal({ onClose }: Props) {
               <strong>Gold ↔ cards:</strong> each card counts as <strong>40 gold</strong>. Compare
               what each side receives. Whoever gets the <strong>higher</strong> value becomes
               Oathbreaker if the other side got <strong>half or less</strong> of that higher value.
+              For one card, a price from <strong>21 to 79</strong> gold brands nobody.{" "}
+              <strong>20</strong> brands the buyer. <strong>80</strong> brands the seller.
             </li>
             <li>
               <strong>Cards for cards:</strong> if someone receives more than 3 cards per card they
@@ -132,17 +142,20 @@ export default function RulesModal({ onClose }: Props) {
             ))}
           </ul>
           <p className="text-sm leading-relaxed mt-3">
-            <strong>Corrupt</strong> specifically: <strong>100 gold</strong> moves from you to the
-            current King at the end of each round (or less if you cannot pay).
+            You can hold several different statuses at once. A second copy of the same status does
+            not stack; it keeps the longer time remaining. <strong>Corrupt</strong> moves{" "}
+            <strong>100 gold</strong> from you to the current King at the end of each round, or
+            whatever you have left.
           </p>
         </section>
 
         <section className="mb-5">
           <h3 className="font-display text-lg mb-1">Targets, peeks, and discards</h3>
           <p className="text-sm leading-relaxed">
-            When a card needs an opponent, the player who played it chooses the target. If a card
-            forces a discard, that player chooses which card(s) to lose. A peek shows one card only
-            to the peeker — not the whole table.
+            When a card needs an opponent, the player who played it chooses the target. Protection
+            cards do not. If a card forces a discard, that player chooses which cards to lose. If
+            they are asked for more cards than they hold, they discard what they have and play
+            continues. A peek shows one card only to the peeker — not the whole table.
           </p>
         </section>
 
@@ -152,18 +165,122 @@ export default function RulesModal({ onClose }: Props) {
             A declared alliance is public. Each player can be in only one at a time. Forming a new
             pact ends any other alliance either player already has. Some cards pay only if you are
             still allied with the target. A betrayal card can be played only while you have an
-            alliance, and only against that ally. Playing it ends the alliance immediately. The
-            card’s extra cost — shown when you hover it — is still paid if a shield stops the
-            theft. An alliance or betrayal card that cannot legally resolve is discarded.
+            alliance, and only against that ally. If both allies play a betrayal in the same round,
+            both cards resolve, because the alliance stays up until every card has been revealed.
+            It then ends once, before succession and before the renewal question. A shield stops a
+            theft only for the player who played that shield. The card’s extra cost — shown when
+            you hover it — is still paid if a shield stops the theft. An alliance or betrayal card
+            that cannot legally resolve is discarded.
           </p>
         </section>
 
-        <section>
+        <section className="mb-5">
           <h3 className="font-display text-lg mb-1">The ledger</h3>
           <p className="text-sm leading-relaxed">
             The Ledger button lists every gold change for one player at a time: the amount, the
             round, and why (a card, a trade, corrupt upkeep, a protection miss, and so on).
           </p>
+        </section>
+
+        <section>
+          <h3 className="font-display text-lg mb-2">FAQ</h3>
+          <dl className="text-sm space-y-3 leading-relaxed">
+            <div>
+              <dt className="font-semibold">My shield was up. Why was gold still stolen?</dt>
+              <dd>
+                A shield stops only a theft revealed after it, and only the next two. Anything
+                revealed earlier is not undone. A third theft after the shield is used also gets
+                through. Your own shield does not protect the player you are stealing from.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">Do I aim a protection card at someone?</dt>
+              <dd>
+                No. Gold shields and succession blocks protect you. You do not name an attacker.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">What is the succession-block guess?</dt>
+              <dd>
+                It is not “was I attacked.” Diplomatic Immunity and Loyal Guard guess that a Noble
+                has more gold than the King. That is checked after the reveals and the redraw,
+                before the crown can change. A hit keeps the block. A miss removes it and costs
+                half your gold.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">What is the gold-shield guess?</dt>
+              <dd>
+                That you suffered a gold theft this phase. The miss cost is paid only at the end,
+                and only if nothing stole from you. A theft the shield stopped still counts as a
+                hit, so you pay no miss cost. Each theft it stops uses one charge, and the shield
+                is gone after the second. A theft from before the shield also counts as a hit, and
+                that unused shield is not removed for a miss.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">Two people stole from me and I had one shield. What happens?</dt>
+              <dd>
+                If both thefts are revealed after the shield, both are stopped. The shield is used
+                up after the second. A third theft gets through.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">We are allied and we both play a betrayal. Do both work?</dt>
+              <dd>
+                Yes. The alliance stays through the whole playing phase, so each betrayal still
+                sees an ally and resolves. The alliance ends once, after every card is revealed.
+                If you play two betrayals yourself against that same ally, both resolve as well.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">When can I play a betrayal card?</dt>
+              <dd>
+                Only while you have an alliance, and only against that ally. If you have no ally,
+                those cards stay locked. A betrayal that cannot legally resolve is discarded, not
+                returned to your hand.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">Can I play fewer cards than my maximum?</dt>
+              <dd>
+                Yes, including none. The King may play up to 3. Each Noble may play up to 2.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">How many cards can I hold?</dt>
+              <dd>
+                The King starts with 8 and may keep 8 after the redraw. Each Noble starts with 7
+                and discards down to 7. If a discard asks for more cards than you hold, you discard
+                the cards you have.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">What price can I sell one card for without becoming Oathbreaker?</dt>
+              <dd>
+                21 to 79 gold. A card counts as 40 gold. At 20 the buyer is Oathbreaker. At 80 the
+                seller is. The person who received more becomes Oathbreaker only when the other
+                side got half or less of that higher value.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">What do Marked and Discredited do?</dt>
+              <dd>
+                Marked: every gold theft against you takes 20% more. A shield that is already up
+                stops the whole amount. Discredited: every forced discard against you asks for one
+                extra card. You can have both at once. The same status does not stack; it keeps
+                the longer duration. Sealed Warrant and Royal Census are ordinary cards. They do
+                not have a private bonus on top of these rules.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">Where do I see why my gold changed?</dt>
+              <dd>
+                Open the Ledger and pick one player. Each row is one gold change, the round, and
+                the reason.
+              </dd>
+            </div>
+          </dl>
         </section>
       </div>
     </div>

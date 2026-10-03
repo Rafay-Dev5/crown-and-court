@@ -44,9 +44,9 @@ def _shield_blurb(params: dict[str, Any]) -> tuple[str, str]:
         )
     return (
         "a shield against gold theft",
-        "While it is up, it stops a gold theft revealed after this card, then it is used up. "
+        "While it is up, it stops the next two gold thefts revealed after this card, then it is used up. "
         "It does not undo a theft revealed before it. "
-        "A hit keeps any unused shield. A miss removes it.",
+        "A hit keeps any unused charge. A miss removes it.",
     )
 
 
@@ -131,6 +131,8 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
             f"{int(p.get('amount') or 0)} gold moves from "
             f"{target_label(p.get('from', 'target'))} to {target_label(p.get('to', 'self'))}."
         )
+        if p.get("as_theft"):
+            lines.append("If that player is Marked, this takes 20% more gold.")
     elif primitive == "steal_card":
         lines.append(
             f"{target_label(p.get('to', 'self'))} steal {p.get('count', 1)} card(s) from "
@@ -138,7 +140,8 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
         )
     elif primitive == "force_discard":
         lines.append(
-            f"{target_label(p.get('target', 'target'))} chooses {p.get('count', 1)} card(s) to discard."
+            f"{target_label(p.get('target', 'target'))} chooses {p.get('count', 1)} card(s) to discard. "
+            "If that player is Discredited, they discard one extra card."
         )
     elif primitive == "draw_extra":
         lines.append(f"{target_label(p.get('target', 'self'))} draw {p.get('count', 1)} extra card(s).")
@@ -345,11 +348,13 @@ def _card_warnings(card: dict[str, Any]) -> list[str]:
         if extra:
             warnings.append(
                 "Warning: only playable while you are allied, and only against that ally. "
+                "The alliance ends after every card this phase is revealed. "
                 f"Betrayal cost (paid even if a shield stops the theft): {extra}"
             )
         else:
             warnings.append(
-                "Warning: only playable while you are allied, and only against that ally."
+                "Warning: only playable while you are allied, and only against that ally. "
+                "The alliance ends after every card this phase is revealed."
             )
     if needs_alliance:
         warnings.append(

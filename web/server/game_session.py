@@ -41,6 +41,7 @@ def default_web_config() -> dict[str, Any]:
             "num_players": 4,
             "n_rounds": 4,
             "hand_size": 8,
+            "noble_hand_size": 7,
             "negotiation_ticks": 4,
             "max_negotiation_gift": 120,
             "max_negotiation_gift_per_phase": 120,
