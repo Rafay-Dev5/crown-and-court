@@ -88,12 +88,35 @@ def describe_condition(cond: dict[str, Any]) -> str:
         return f'your target previously chose “{choice}”{within}'
     if cond.get("dice_failed"):
         within = f" in the last {cond['within_rounds']} rounds" if cond.get("within_rounds") else ""
-        return f"they failed a dice roll on a prior card{within}"
+        card = _card_id_label(str(cond["card_id"])) if cond.get("card_id") else "a prior card"
+        return f"they failed a die roll on {card}{within}"
     if cond.get("has_status"):
         return f'they have the “{cond["has_status"]}” status'
     if cond.get("alliance_declared_with_target"):
         return "you have a declared alliance with your target"
+    if cond.get("highest_gold_among_nobles"):
+        return "you have more gold than every other Noble. A tie does not count"
     return "a special condition is met"
+
+
+def _card_id_label(card_id: str) -> str:
+    name = card_id
+    for prefix in ("king_", "noble_"):
+        if name.startswith(prefix):
+            name = name[len(prefix):]
+            break
+    parts = name.split("_")
+    if parts and parts[-1].isdigit():
+        parts = parts[:-1]
+    return " ".join(part.capitalize() for part in parts) or card_id
+
+
+def _transfer_counts_as_theft(params: dict[str, Any]) -> bool:
+    if "as_theft" in params:
+        return bool(params.get("as_theft"))
+    source = params.get("from", "target")
+    dest = params.get("to", "self")
+    return source != dest and dest == "self"
 
 
 def _success_faces(sides: int, target_min: int) -> str:
@@ -131,7 +154,7 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
             f"{int(p.get('amount') or 0)} gold moves from "
             f"{target_label(p.get('from', 'target'))} to {target_label(p.get('to', 'self'))}."
         )
-        if p.get("as_theft"):
+        if _transfer_counts_as_theft(p):
             lines.append("If that player is Marked, this takes 20% more gold.")
     elif primitive == "steal_card":
         lines.append(
@@ -177,8 +200,8 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
         )
     elif primitive == "alliance_bonus":
         lines.append(
-            f"You and the player you target each gain {p.get('amount', 50)} gold, "
-            "but only if you are allied with them when this resolves. If you are not, the card does nothing."
+            f"You and your ally each gain {p.get('amount', 50)} gold. "
+            "This only works while you are allied. If you are not, the card does nothing."
         )
     elif primitive == "skip_next_play":
         lines.append(f"{target_label(p.get('target', 'target'))} play one fewer card next round.")
@@ -216,8 +239,10 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
                 lines.append(f"  Failure: {' '.join(describe_effect_block(branch['on_failure']))}")
             if branch.get("on_failure_status"):
                 st = branch["on_failure_status"]
+                who = target_label(st.get("target", "self"))
+                verb = "get" if who == "you" else "gets"
                 lines.append(
-                    f"  On failure they also get “{st.get('status_name')}” for "
+                    f"  On failure {who} also {verb} “{st.get('status_name')}” for "
                     f"{st.get('duration_rounds', 2)} round(s)."
                 )
     elif primitive == "conditional_swing":
@@ -358,6 +383,6 @@ def _card_warnings(card: dict[str, Any]) -> list[str]:
             )
     if needs_alliance:
         warnings.append(
-            "Warning: this needs an alliance with your target. Otherwise it does nothing."
+            "Warning: this needs an alliance with your ally. Otherwise it does nothing."
         )
     return warnings

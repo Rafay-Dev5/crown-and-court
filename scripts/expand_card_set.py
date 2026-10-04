@@ -577,7 +577,7 @@ NEW_NOBLE = [
         "effect": {
             "primitive": "conditional_swing",
             "params": {
-                "condition": {"gold_gt_king": True},
+                "condition": {"highest_gold_among_nobles": True},
                 "effect_if_true": {
                     "primitive": "gold_gain",
                     "params": {"target": "self", "amount": 200},

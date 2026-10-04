@@ -591,9 +591,13 @@ def _evaluate_condition(state: GameState, condition: dict, ctx: EffectContext) -
         card_id = condition.get("card_id", ctx.get("card_id", ""))
         within = int(condition.get("within_rounds", 2))
         return state.failed_dice_for_card(seat, card_id, within)
-    if "gold_gt_king" in condition:
+    if "highest_gold_among_nobles" in condition:
         seat = ctx["seat"]
-        return state.person_at_seat(seat).gold > state.king_gold()
+        mine = state.person_at_seat(seat).gold
+        others = [s for s in state.noble_seats() if s != seat]
+        if not others:
+            return False
+        return mine > max(state.person_at_seat(s).gold for s in others)
     return False
 
 

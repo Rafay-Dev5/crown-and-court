@@ -97,11 +97,32 @@ function describeCondition(cond: Record<string, unknown>): string {
   }
   if (cond.dice_failed) {
     const within = cond.within_rounds ? ` in the last ${cond.within_rounds} rounds` : "";
-    return `they failed a dice roll on a prior card${within}`;
+    const card = cond.card_id ? cardIdLabel(String(cond.card_id)) : "a prior card";
+    return `they failed a die roll on ${card}${within}`;
   }
   if (cond.has_status) return `they have the “${cond.has_status}” status`;
   if (cond.alliance_declared_with_target) return `you have a declared alliance with your target`;
+  if (cond.highest_gold_among_nobles) {
+    return "you have more gold than every other Noble. A tie does not count";
+  }
   return "a special condition is met";
+}
+
+function cardIdLabel(id: string): string {
+  let name = id.replace(/^(king|noble)_/, "");
+  name = name.replace(/_\d+$/, "");
+  return name
+    .split("_")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function transferCountsAsTheft(p: Record<string, unknown>): boolean {
+  if ("as_theft" in p) return Boolean(p.as_theft);
+  const source = String(p.from ?? "target");
+  const dest = String(p.to ?? "self");
+  return source !== dest && dest === "self";
 }
 
 function humanizeChoiceId(id: string): string {
@@ -133,7 +154,7 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       lines.push(
         `${Number(p.amount) || 0} gold moves from ${targetLabel(p.from ?? "target")} to ${targetLabel(p.to ?? "self")}.`
       );
-      if (p.as_theft) {
+      if (transferCountsAsTheft(p)) {
         lines.push("If that player is Marked, this takes 20% more gold.");
       }
       break;
@@ -195,7 +216,7 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
     }
     case "alliance_bonus":
       lines.push(
-        `You and the player you target each gain ${p.amount ?? 50} gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.`
+        `You and your ally each gain ${p.amount ?? 50} gold. This only works while you are allied. If you are not, the card does nothing.`
       );
       break;
     case "skip_next_play": {
@@ -215,9 +236,11 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       lines.push("Two players swap hands.");
       break;
     case "dice_swing": {
+      const choiceSeat = String(p.choice_seat ?? "self");
+      const chooser = choiceSeat === "target" ? "Your chosen opponent chooses" : "Choose";
       const choices = (p.choices as ChoiceOption[]) ?? [];
       if (choices.length) {
-        lines.push("When revealed, choose one path:");
+        lines.push(`${chooser} one path:`);
         for (const c of choices) {
           lines.push(`  • ${c.label}`);
         }
@@ -229,9 +252,9 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
         if (die) {
           const sides = die.sides ?? 6;
           const need = die.target_min ?? 4;
-          lines.push(`If you chose “${label}”: ${describeDie(sides, need)}`);
+          lines.push(`If “${label}” is chosen: ${describeDie(sides, need)}`);
         } else {
-          lines.push(`If you chose “${label}”:`);
+          lines.push(`If “${label}” is chosen:`);
         }
         if (branch.on_success) {
           lines.push(`  Success: ${describeEffectBlock(branch.on_success as EffectBlock).join(" ")}`);
@@ -241,8 +264,10 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
         }
         if (branch.on_failure_status) {
           const st = branch.on_failure_status as Record<string, unknown>;
+          const who = targetLabel(st.target ?? "self");
+          const verb = who === "you" ? "get" : "gets";
           lines.push(
-            `  On failure you also get “${st.status_name}” for ${roundNoun(st.duration_rounds ?? 2)}.`
+            `  On failure ${who} also ${verb} “${st.status_name}” for ${roundNoun(st.duration_rounds ?? 2)}.`
           );
         }
       }
@@ -418,7 +443,7 @@ export function cardWarnings(card: {
   }
   if (needsAlliance) {
     lines.push(
-      "Needs an alliance with your target. Otherwise this card does nothing."
+      "Needs an alliance with your ally. Otherwise this card does nothing."
     );
   }
   return lines;

@@ -10,7 +10,7 @@
     "primitive": "conditional_swing",
     "params": {
       "condition": {
-        "gold_gt_king": true
+        "highest_gold_among_nobles": true
       },
       "effect_if_true": {
         "primitive": "gold_gain",
