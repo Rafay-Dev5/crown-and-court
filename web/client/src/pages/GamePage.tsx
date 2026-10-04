@@ -939,10 +939,10 @@ export default function GamePage() {
               : null
           }
           privatePeek={
-            privateState?.peek?.card
+            privateState?.peek?.cards?.length
               ? {
                   fromSeat: Number(privateState.peek.from_seat),
-                  card: privateState.peek.card,
+                  cards: privateState.peek.cards,
                 }
               : null
           }

@@ -82,8 +82,8 @@ export default function RulesModal({ onClose }: Props) {
             the card (often 60 or 80 gold; succession guesses cost half your gold).
           </p>
           <p className="text-sm leading-relaxed mb-2">
-            You do not pick a target. A gold shield protects only you. It stops the next two gold
-            thefts revealed after it, then it is used up. A third theft in the same round gets
+            You do not pick a target. A gold shield protects only you. It stops the next gold
+            theft revealed after it, then it is used up. A second theft in the same round gets
             through. A theft revealed before the shield still stands, and the gold is not returned.
             That earlier theft still counts as a hit, so you do not pay the miss cost.
           </p>
@@ -159,7 +159,8 @@ export default function RulesModal({ onClose }: Props) {
             When a card needs an opponent, the player who played it chooses the target. Protection
             cards do not. If a card forces a discard, that player chooses which cards to lose. If
             they are asked for more cards than they hold, they discard what they have and play
-            continues. A peek shows one card only to the peeker — not the whole table.
+            continues. A peek shows that player's whole hand only to you, not the table. A card
+            that reveals a hand to everyone also makes that player discard one card.
           </p>
         </section>
 
@@ -196,9 +197,9 @@ export default function RulesModal({ onClose }: Props) {
             <div>
               <dt className="font-semibold">My shield was up. Why was gold still stolen?</dt>
               <dd>
-                A shield stops only a theft revealed after it, and only the next two. Anything
-                revealed earlier is not undone. A third theft after the shield is used also gets
-                through. Your own shield does not protect the player you are stealing from.
+                A shield stops only the next theft revealed after it. Anything revealed earlier is
+                not undone. A second theft after the shield is used also gets through. Your own
+                shield does not protect the player you are stealing from.
               </dd>
             </div>
             <div>
@@ -221,16 +222,16 @@ export default function RulesModal({ onClose }: Props) {
               <dd>
                 That you suffered a gold theft this phase. The miss cost is paid only at the end,
                 and only if nothing stole from you. A theft the shield stopped still counts as a
-                hit, so you pay no miss cost. Each theft it stops uses one charge, and the shield
-                is gone after the second. A theft from before the shield also counts as a hit, and
-                that unused shield is not removed for a miss.
+                hit, so you pay no miss cost. The shield is gone after that one theft. A theft from
+                before the shield also counts as a hit, and that unused shield is not removed for a
+                miss.
               </dd>
             </div>
             <div>
               <dt className="font-semibold">Two people stole from me and I had one shield. What happens?</dt>
               <dd>
-                If both thefts are revealed after the shield, both are stopped. The shield is used
-                up after the second. A third theft gets through.
+                The first theft revealed after the shield is stopped, and the shield is used up.
+                The second theft gets through.
               </dd>
             </div>
             <div>

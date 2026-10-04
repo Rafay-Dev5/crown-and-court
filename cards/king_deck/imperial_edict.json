@@ -15,7 +15,7 @@
     "secondary_effect": {
       "primitive": "gold_loss",
       "params": {
-        "target": "self",
+        "target": "target",
         "amount": 110
       }
     }
@@ -25,5 +25,5 @@
     "economy"
   ],
   "flavor_text": "Absolute power extracts absolute cost.",
-  "designer_notes": "High upside with built-in drawback on same reveal."
+  "designer_notes": "You gain 170. The chosen opponent pays the 110 cost."
 }

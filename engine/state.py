@@ -35,7 +35,7 @@ class ActiveShield:
     single_use: bool = True
     expires_after_round: int = 0
     consumed: bool = False
-    charges: int = 2
+    charges: int = 1
 
 
 @dataclass

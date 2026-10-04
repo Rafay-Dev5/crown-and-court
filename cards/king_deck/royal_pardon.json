@@ -15,7 +15,7 @@
     "secondary_effect": {
       "primitive": "gold_loss",
       "params": {
-        "target": "self",
+        "target": "target",
         "amount": 90
       }
     }
@@ -28,5 +28,5 @@
     "king_economy"
   ],
   "flavor_text": "Mercy has its price \u2014 paid by others.",
-  "designer_notes": "Nerfed from 300 flat gain; supercard now has built-in cost on reveal."
+  "designer_notes": "You gain 120. The chosen opponent pays the 90 cost."
 }

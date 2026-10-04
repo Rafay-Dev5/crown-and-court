@@ -152,22 +152,19 @@ def test_cards_for_cards_imbalance_brands_receiver():
     assert not state.has_status(b, "oathbreaker")
 
 
-def test_royal_census_only_reveals_the_hand():
+def test_royal_census_reveals_the_hand_and_discards_one():
     cards = _cards_by_id()
     card = cards["king_royal_edict_28_028"]
     state = setup_game(load_config(), GameRNG(seed=6))
     king = state.king_seat
     target = state.noble_seats()[0]
     hand_before = len(state.seats[target].hand)
-    state.seats[target].statuses.append(
-        StatusTag(name="discredited", expires_after_round=state.current_round + 2)
-    )
 
     resolve_card(state, card, king, GameRNG(seed=7), target_seat=target)
 
-    assert len(state.seats[target].hand) == hand_before
+    assert len(state.seats[target].hand) == hand_before - 1
     assert any(event["type"] == "reveal_hand" and event["seat"] == target for event in state.event_log)
-    assert not any(event["type"] == "force_discard" for event in state.event_log)
+    assert any(event["type"] == "force_discard" and event.get("count") == 1 for event in state.event_log)
 
 
 def test_discredited_discards_one_extra_card():

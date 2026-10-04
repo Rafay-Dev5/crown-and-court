@@ -13,7 +13,7 @@ type Props = {
   effects: Record<string, unknown>[];
   seatName: (seat: unknown) => string;
   selectedChoice?: string | null;
-  privatePeek?: { fromSeat: number; card: CardData } | null;
+  privatePeek?: { fromSeat: number; cards: CardData[] } | null;
   youAcked: boolean;
   waitingNames: string[];
   onContinue: () => void;
@@ -138,15 +138,17 @@ export default function RevealOverlay({
           </div>
         </div>
 
-        {privatePeek && (
+        {privatePeek && privatePeek.cards.length > 0 && (
           <div className="mt-5 rounded-lg border border-royal-gold/50 bg-royal-dark/6 px-3 py-3">
             <p className="font-display text-[11px] uppercase tracking-wide text-royal-dark/55 mb-2 text-center">
-              Only you see this — peeked from {seatName(privatePeek.fromSeat)}&apos;s hand
+              Only you see this — {seatName(privatePeek.fromSeat)}&apos;s hand
             </p>
-            <div className="flex justify-center">
-              <CardComponent card={privatePeek.card} previewable />
+            <div className="card-row">
+              {privatePeek.cards.map((c, i) => (
+                <CardComponent key={`${c.id}-peek-${i}`} card={c} previewable />
+              ))}
             </div>
-            <p className="mt-2 text-center text-xs text-royal-dark/60">Tap the card to read it.</p>
+            <p className="mt-2 text-center text-xs text-royal-dark/60">Tap a card to read it.</p>
           </div>
         )}
 

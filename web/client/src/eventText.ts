@@ -116,7 +116,7 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
       return "Negotiation ends";
     case "peek_card":
       if (e.empty) return `${seatName(e.seat)} peeks, but the hand is empty`;
-      return `${seatName(e.seat)} peeks at a card from ${seatName(e.target_seat)}'s hand`;
+      return `${seatName(e.seat)} privately sees ${seatName(e.target_seat)}'s hand`;
     case "status_tick":
       if (e.status === "corrupt") {
         return `${seatName(e.seat)} pays ${e.amount ?? 100}g corrupt tax to ${seatName(e.to_seat)}`;

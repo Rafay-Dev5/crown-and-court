@@ -10,11 +10,18 @@
     "primitive": "reveal_hand",
     "params": {
       "target": "target"
+    },
+    "secondary_effect": {
+      "primitive": "force_discard",
+      "params": {
+        "target": "target",
+        "count": 1
+      }
     }
   },
   "tags": [
     "information"
   ],
   "flavor_text": "Clerks count heads — and hands.",
-  "designer_notes": "Reveals a target hand. Extra discards come from the Discredited status, not from this card."
+  "designer_notes": "Reveals a target hand to everyone, then that player discards one card."
 }

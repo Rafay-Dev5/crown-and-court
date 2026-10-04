@@ -58,7 +58,7 @@ function shieldBlurb(p: Record<string, unknown>): [string, string] {
   }
   return [
     `a shield against gold theft`,
-    `While it is up, it stops the next two gold thefts revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit keeps any unused charge. A miss removes it.`,
+    `While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.`,
   ];
 }
 
@@ -147,7 +147,11 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
         const possessive = who === "you" ? "your" : "their";
         lines.push(`${who} ${thirdPerson(who) ? "loses" : "lose"} ${pct}% of ${possessive} current gold.`);
       } else {
-        lines.push(goldPhrase(p.amount, p.target ?? "self", "lose") + ".");
+        const who = p.target ?? "self";
+        lines.push(goldPhrase(p.amount, who, "lose") + ".");
+        if (who !== "self") {
+          lines.push("If that player is Marked, this takes 20% more gold.");
+        }
       }
       break;
     case "gold_transfer":
@@ -180,7 +184,8 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
     }
     case "peek_card": {
       const who = targetLabel(p.target ?? "target");
-      lines.push(`You peek at one card in ${who === "you" ? "your" : who + "'s"} hand.`);
+      const hand = who === "you" ? "your hand" : `${who}'s hand`;
+      lines.push(`You see every card in ${hand}. Only you see them.`);
       break;
     }
     case "reveal_hand":

@@ -10,6 +10,13 @@
     "primitive": "reveal_hand",
     "params": {
       "target": "target"
+    },
+    "secondary_effect": {
+      "primitive": "force_discard",
+      "params": {
+        "target": "target",
+        "count": 1
+      }
     }
   },
   "tags": [

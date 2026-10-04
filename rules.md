@@ -518,44 +518,42 @@ You draw 1 extra card(s).
 > Secrets travel faster than armies.
 
 Resolves when revealed in play order.
-You peek at one card in your chosen opponent's hand (only you see it).
+You see every card in your chosen opponent's hand. Only you see them.
 
 #### Court Scribe — *Information* · Common
 
 > Expansion design — Court Scribe.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone.
+Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
 
 #### Ledger Audit — *Information* · Common
 
 > Expansion design — Ledger Audit.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone.
+Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
 
 #### Royal Audit — *Information* · Common
 
 > Transparency, demanded from everyone but the crown.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone.
+Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
 
 #### Royal Census — *Information* · Common
 
 > Clerks count heads — and hands.
 
 Resolves when revealed in play order.
-If your chosen opponent has the “discredited” status:
-  - Then: your chosen opponent's hand is revealed to everyone. Then: your chosen opponent chooses 1 card(s) to discard.
-  - Otherwise: your chosen opponent's hand is revealed to everyone.
+Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
 
 #### Spy Master — *Information* · Rare
 
 > Eyes everywhere, even in your hand.
 
 Resolves when revealed in play order.
-You peek at one card in your chosen opponent's hand (only you see it).
+You see every card in your chosen opponent's hand. Only you see them.
 
 #### Imperial Edict — *Supercard* · Supercard
 
@@ -563,7 +561,7 @@ You peek at one card in your chosen opponent's hand (only you see it).
 
 Resolves when revealed in play order.
 You gain 170 gold.
-Then: you lose 110 gold.
+Then: your chosen opponent loses 110 gold.
 
 #### Imperial Mandate — *Supercard* · Supercard
 
@@ -584,7 +582,7 @@ If “Squeeze the Court” is chosen:
 
 Resolves when revealed in play order.
 You gain 120 gold.
-Then: you lose 90 gold.
+Then: your chosen opponent loses 90 gold.
 
 ### Noble deck
 
@@ -909,28 +907,28 @@ You draw 1 extra card(s).
 > Even kings leave a paper trail.
 
 Resolves when revealed in play order.
-You peek at one card in the King's hand (only you see it).
+You see every card in the King's hand. Only you see them.
 
 #### Spy Network — *Information* · Common
 
 > Expansion design — Spy Network.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone.
+Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
 
 #### Stolen Ledger — *Information* · Common
 
 > Their secrets are yours for a night.
 
 Resolves when revealed in play order.
-You peek at one card in your chosen opponent's hand (only you see it).
+You see every card in your chosen opponent's hand. Only you see them.
 
 #### Whisper Ring — *Information* · Common
 
 > Expansion design — Whisper Ring.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone.
+Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
 
 #### Assassin's Blade — *Supercard* · Supercard
 

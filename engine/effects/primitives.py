@@ -254,19 +254,13 @@ def peek_card(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
         state.log_event("peek_card", seat=peeker, target_seat=target, empty=True)
         return
 
-    raw_idx = ctx["params"].get("card_index")
-    if raw_idx is None or not (0 <= int(raw_idx) < len(hand)):
-        idx = rng.randint(0, len(hand) - 1)
-    else:
-        idx = int(raw_idx)
-    seen = _card_public_summary(hand[idx])
-    # Only the peeker learns the card identity (via private_peeks / private state).
+    seen = [_card_public_summary(card) for card in hand]
+    # Only the peeker learns the cards (via private_peeks / private state).
     state.private_peeks[peeker] = {
         "from_seat": target,
-        "card": seen,
-        "card_index": idx,
+        "cards": seen,
     }
-    state.log_event("peek_card", seat=peeker, target_seat=target)
+    state.log_event("peek_card", seat=peeker, target_seat=target, count=len(seen))
 
 
 def reveal_hand(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
@@ -328,7 +322,7 @@ def protect_gold(state: GameState, ctx: EffectContext, rng: GameRNG) -> None:
             specificity=specificity,
             single_use=state.config.get("shield_single_use", True),
             expires_after_round=state.current_round + duration,
-            charges=2 if blocks == "gold_theft" else 1,
+            charges=1,
         ),
     )
     state.log_event("protect_gold", seat=seat, params=ctx["params"])

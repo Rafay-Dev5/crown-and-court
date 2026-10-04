@@ -144,7 +144,12 @@ def test_peek_is_private_to_peeker():
         "id": "secret_card",
         "name": "Secret Ledger",
     }
-    session.state.seats[target].hand = [secret]
+    other = {
+        **cards["noble_development_fund_001"],
+        "id": "other_secret",
+        "name": "Other Secret",
+    }
+    session.state.seats[target].hand = [secret, other]
 
     session.apply_action(
         HumanAction(action_type="choose_target", payload={"target_seat": target})
@@ -161,6 +166,7 @@ def test_peek_is_private_to_peeker():
     peeker_private = session.build_private_state("a")
     other_private = session.build_private_state("b")
     assert peeker_private.peek is not None
-    assert peeker_private.peek["card"]["id"] == "secret_card"
+    assert [c["id"] for c in peeker_private.peek["cards"]] == ["secret_card", "other_secret"]
     assert peeker_private.peek["from_seat"] == target
+    assert "cards" not in peek_events[-1]
     assert other_private.peek is None

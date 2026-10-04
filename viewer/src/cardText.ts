@@ -137,7 +137,7 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
       lines.push(`${targetLabel(p.target ?? "self")} draw ${p.count ?? 1} extra card(s).`);
       break;
     case "peek_card":
-      lines.push(`${targetLabel(p.target ?? "self")} peek at a hidden card.`);
+      lines.push(`You see every card in ${targetLabel(p.target ?? "target")}'s hand. Only you see them.`);
       break;
     case "reveal_hand":
       lines.push(`${targetLabel(p.target ?? "target")}'s hand is revealed to everyone.`);

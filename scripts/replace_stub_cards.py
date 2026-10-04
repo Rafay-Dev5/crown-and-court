@@ -60,7 +60,11 @@ STUBS: dict[str, dict] = {
         "rarity": "common",
         "copies_in_deck": 1,
         "timing": "on_reveal",
-        "effect": {"primitive": "reveal_hand", "params": {"target": "target"}},
+        "effect": {
+            "primitive": "reveal_hand",
+            "params": {"target": "target"},
+            "secondary_effect": {"primitive": "force_discard", "params": {"target": "target", "count": 1}},
+        },
         "tags": ["information"],
         "flavor_text": "Clerks count heads — and hands.",
         "designer_notes": "Replaced resize stub; King information (PRD §10).",

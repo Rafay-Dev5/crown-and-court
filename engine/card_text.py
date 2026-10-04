@@ -44,9 +44,9 @@ def _shield_blurb(params: dict[str, Any]) -> tuple[str, str]:
         )
     return (
         "a shield against gold theft",
-        "While it is up, it stops the next two gold thefts revealed after this card, then it is used up. "
+        "While it is up, it stops the next gold theft revealed after this card, then it is used up. "
         "It does not undo a theft revealed before it. "
-        "A hit keeps any unused charge. A miss removes it.",
+        "A hit means you do not pay the miss cost. A miss removes the unused shield.",
     )
 
 
@@ -148,7 +148,10 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
             pct = int(round(float(p["fraction_of_wealth"]) * 100))
             lines.append(f"{target_label(p.get('target', 'self'))} lose {pct}% of your current gold.")
         else:
-            lines.append(_gold_phrase(p.get("amount"), p.get("target", "self"), "lose") + ".")
+            who = p.get("target", "self")
+            lines.append(_gold_phrase(p.get("amount"), who, "lose") + ".")
+            if who not in (None, "self"):
+                lines.append("If that player is Marked, this takes 20% more gold.")
     elif primitive == "gold_transfer":
         lines.append(
             f"{int(p.get('amount') or 0)} gold moves from "
@@ -170,7 +173,7 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
         lines.append(f"{target_label(p.get('target', 'self'))} draw {p.get('count', 1)} extra card(s).")
     elif primitive == "peek_card":
         who = target_label(p.get("target", "target"))
-        lines.append(f"You peek at one card in {who}'s hand (only you see it).")
+        lines.append(f"You see every card in {who}'s hand. Only you see them.")
     elif primitive == "reveal_hand":
         lines.append(f"{target_label(p.get('target', 'target'))}'s hand is revealed to everyone.")
     elif primitive == "block_succession":

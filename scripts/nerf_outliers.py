@@ -15,10 +15,10 @@ NERFS: dict[str, dict] = {
             "params": {"target": "self", "amount": 120},
             "secondary_effect": {
                 "primitive": "gold_loss",
-                "params": {"target": "self", "amount": 90},
+                "params": {"target": "target", "amount": 90},
             },
         },
-        "designer_notes": "Nerfed from 300 flat gain; supercard now has built-in cost on reveal.",
+        "designer_notes": "You gain 120. The chosen opponent pays the 90 cost.",
     },
     "king_imperial_edict_001": {
         "effect": {
@@ -26,7 +26,7 @@ NERFS: dict[str, dict] = {
             "params": {"target": "self", "amount": 170},
             "secondary_effect": {
                 "primitive": "gold_loss",
-                "params": {"target": "self", "amount": 110},
+                "params": {"target": "target", "amount": 110},
             },
         },
     },

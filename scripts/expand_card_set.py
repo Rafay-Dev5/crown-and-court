@@ -278,10 +278,10 @@ NEW_KING = [
         "timing": "on_reveal",
         "effect": {
             "primitive": "gold_gain",
-            "params": {"target": "self", "amount": 250},
+            "params": {"target": "self", "amount": 170},
             "secondary_effect": {
                 "primitive": "gold_loss",
-                "params": {"target": "self", "amount": 100},
+                "params": {"target": "target", "amount": 110},
             },
         },
         "tags": ["supercard", "economy"],
@@ -528,7 +528,11 @@ NEW_NOBLE = [
         "rarity": "common",
         "copies_in_deck": 3,
         "timing": "on_reveal",
-        "effect": {"primitive": "reveal_hand", "params": {"target": "target"}},
+        "effect": {
+            "primitive": "reveal_hand",
+            "params": {"target": "target"},
+            "secondary_effect": {"primitive": "force_discard", "params": {"target": "target", "count": 1}},
+        },
         "tags": ["information"],
         "flavor_text": "Truth optional, damage guaranteed.",
     },

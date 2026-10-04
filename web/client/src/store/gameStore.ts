@@ -63,8 +63,7 @@ export type PrivateGameState = {
   person_id: number;
   peek?: {
     from_seat: number;
-    card: CardData;
-    card_index?: number;
+    cards: CardData[];
   } | null;
   discard_choice?: {
     count: number;
