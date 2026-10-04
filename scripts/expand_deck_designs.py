@@ -39,7 +39,7 @@ KING_EXPANSION: list[dict] = [
     {"file": "expand_king_13.json", "id": "king_expand_muster_call_013", "name": "Muster Call", "category": "tempo",
      "effect": {"primitive": "draw_extra", "params": {"target": "self", "count": 2}}},
     {"file": "expand_king_14.json", "id": "king_expand_crown_gambit_014", "name": "Crown Gambit", "category": "betrayal",
-     "effect": {"primitive": "gold_transfer", "params": {"from": "target", "to": "self", "amount": 88, "as_theft": True}}},
+     "effect": {"primitive": "gold_transfer", "params": {"from": "target", "to": "self", "amount": 90, "as_theft": True}}},
     {"file": "expand_king_15.json", "id": "king_expand_imperial_mandate_015", "name": "Imperial Mandate", "category": "supercard",
      "rarity": "supercard", "flavor_text": "Mark them for the warrant, or take the coin and sit out a card.",
      "effect": {"primitive": "dice_swing", "params": {

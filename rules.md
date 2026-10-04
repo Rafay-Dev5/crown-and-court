@@ -312,7 +312,7 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 > Expansion design — Crown Gambit.
 
 Resolves when revealed in play order.
-88 gold moves from your chosen opponent to you.
+90 gold moves from your chosen opponent to you.
 Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
 
 #### False Summons — *Betrayal* · Common
@@ -320,7 +320,7 @@ Warning: this is a betrayal. You still suffer its extra cost if a shield blocks 
 > Come to court — and leave your purse.
 
 Resolves when revealed in play order.
-10 gold moves from your chosen opponent to you.
+80 gold moves from your chosen opponent to you.
 Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
 
 #### Broken Crown — *Disruption* · Rare

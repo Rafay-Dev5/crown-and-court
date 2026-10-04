@@ -111,6 +111,33 @@ def setup_game(config: dict[str, Any], rng: GameRNG) -> GameState:
     return state
 
 
+def pay_alliance_stipend(state: GameState) -> None:
+    """Pay allies before the end-of-round succession check.
+
+    Two Nobles each gain 100. If the current King is in the alliance, each member gains 150.
+    An alliance already ended by betrayal is not paid.
+    """
+    king = state.king_seat
+    for alliance in state.alliances:
+        members = list(alliance.members)
+        if len(members) < 2:
+            continue
+        with_king = king in alliance.members
+        amount = 150 if with_king else 100
+        reason = "Alliance with the King" if with_king else "Alliance stipend"
+        for seat in members:
+            person = state.person_at_seat(seat)
+            person.gold += amount
+            person.earned_gold += amount
+            state.log_event(
+                "gold_gain",
+                seat=seat,
+                amount=amount,
+                person=person.person_id,
+                reason=reason,
+            )
+
+
 def run_succession_check(state: GameState, checker_name: str | None = None) -> None:
     state.phase = Phase.SUCCESSION
     checker = checker_name or state.config.get("succession_checker", "gold_only")
@@ -288,6 +315,7 @@ def run_round(
 
     run_succession_check(state)
     run_playing_phase(state, rng, play_policy, choice_policy)
+    pay_alliance_stipend(state)
     run_succession_check(state)
 
 

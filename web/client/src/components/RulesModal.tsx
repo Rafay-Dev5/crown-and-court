@@ -63,8 +63,12 @@ export default function RulesModal({ onClose }: Props) {
               Noble discards down to <strong>7</strong>.
             </li>
             <li>
-              <strong>Succession again</strong>. Then each allied player is asked whether to keep
-              that one alliance. It continues only if both members agree. Then the next round.
+              Each alliance is paid, then <strong>succession</strong> is checked. Two Nobles each
+              gain <strong>100</strong> gold. If the King is in the alliance, each member gains
+              <strong>150</strong> gold. This uses the crown before that check, so a Noble who is
+              about to take the throne is still paid as a Noble. An alliance already ended by
+              betrayal is not paid. Then each allied player is asked whether to keep that one
+              alliance. It continues only if both members agree. Then the next round.
             </li>
           </ol>
         </section>
@@ -168,7 +172,10 @@ export default function RulesModal({ onClose }: Props) {
             target. They always hit the player you are allied with. With no alliance, those cards
             stay locked for the round. If both allies play a betrayal in the same round,
             both cards resolve, because the alliance stays up until every card has been revealed.
-            It then ends once, before succession and before the renewal question. A shield stops a
+            It then ends once, before the alliance payment and before succession. A surviving
+            alliance then pays each member 100 gold, or 150 gold each if the King is one of them.
+            Succession is checked after that payment, and the renewal question comes after
+            succession. A shield stops a
             theft only for the player who played that shield. The card’s extra cost — shown when
             you hover it — is still paid if a shield stops the theft. An alliance or betrayal card
             that cannot legally resolve is discarded.
@@ -232,6 +239,16 @@ export default function RulesModal({ onClose }: Props) {
                 Yes. The alliance stays through the whole playing phase, so each betrayal still
                 sees an ally and resolves. The alliance ends once, after every card is revealed.
                 If you play two betrayals yourself against that same ally, both resolve as well.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold">When do allies get paid just for being allied?</dt>
+              <dd>
+                Before the end-of-round succession check, and before you are asked whether to keep
+                the alliance. Two Nobles each gain 100 gold. If the King is in the alliance, both
+                members gain 150 gold. That uses the crown before succession, so a Noble who is
+                about to take the throne is still paid as a Noble. A betrayal that already ended
+                the alliance pays nothing.
               </dd>
             </div>
             <div>

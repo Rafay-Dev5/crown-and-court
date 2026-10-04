@@ -15,6 +15,7 @@ from engine.phases import (
     draw_to_hand,
     hand_cap,
     legal_card_targets,
+    pay_alliance_stipend,
     run_succession_check,
     setup_game,
 )
@@ -521,10 +522,12 @@ class DecisionEngine:
             run_succession_check(self.state)
             self._build_play_queue()
             if not self.queue:
+                pay_alliance_stipend(self.state)
                 run_succession_check(self.state)
                 self._next_round_or_end()
         elif self._phase_stage in ("playing_commit", "playing_reveal", "hand_trim"):
             self.state.apply_pending_betrayals()
+            pay_alliance_stipend(self.state)
             run_succession_check(self.state)
             self._queue_alliance_review()
             if self.queue:

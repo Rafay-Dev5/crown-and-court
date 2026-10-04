@@ -95,7 +95,7 @@ NEW_KING = [
         "timing": "on_reveal",
         "effect": {
             "primitive": "gold_transfer",
-            "params": {"from": "target", "to": "self", "amount": 75, "as_theft": True},
+            "params": {"from": "target", "to": "self", "amount": 80, "as_theft": True},
         },
         "tags": ["betrayal"],
         "flavor_text": "Come to court — and leave your purse.",

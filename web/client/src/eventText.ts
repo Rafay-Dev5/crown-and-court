@@ -6,6 +6,9 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
   const type = e.type as string;
   switch (type) {
     case "gold_gain":
+      if (typeof e.reason === "string" && e.reason.startsWith("Alliance")) {
+        return `${seatName(e.seat)} gains ${e.amount} gold — ${e.reason}`;
+      }
       return `${seatName(e.seat)} gains ${e.amount} gold`;
     case "gold_loss":
       return `${seatName(e.seat)} loses ${e.amount} gold`;
