@@ -14,6 +14,13 @@ export function describeResolveEvent(e: Record<string, unknown>, seatName: SeatN
       return `${seatName(e.seat)} loses ${e.amount} gold`;
     case "gold_transfer":
       return `${e.amount}g moves from ${seatName(e.from_seat)} to ${seatName(e.to_seat)}`;
+    case "shield_blocked":
+      if (e.attack_type === "gold_theft") {
+        return e.used_up
+          ? "Gold theft attempt prevented. Shield used up."
+          : "Gold theft attempt prevented.";
+      }
+      return null;
     case "gold_gifted":
       return `${seatName(e.from_seat)} gives ${e.amount}g to ${seatName(e.to_seat)}`;
     case "card_gifted":

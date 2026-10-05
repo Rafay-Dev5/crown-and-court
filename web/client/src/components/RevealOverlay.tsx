@@ -59,6 +59,13 @@ export default function RevealOverlay({
     if (e.type === "gold_gain") return [`+${e.amount}g  ${seatName(e.seat)}`];
     if (e.type === "gold_loss") return [`−${e.amount}g  ${seatName(e.seat)}`];
     if (e.type === "gold_transfer") return [`${e.amount}g  ${seatName(e.from_seat)} → ${seatName(e.to_seat)}`];
+    if (e.type === "shield_blocked" && e.attack_type === "gold_theft") {
+      return [
+        e.used_up
+          ? "Gold theft attempt prevented. Shield used up."
+          : "Gold theft attempt prevented.",
+      ];
+    }
     return [];
   });
 

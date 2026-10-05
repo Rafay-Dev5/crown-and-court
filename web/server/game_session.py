@@ -264,10 +264,19 @@ class GameSession:
             # Bots / missing payload — play the first n_play cards.
             selected_indices = list(range(min(n_play, len(hand))))
         else:
-            # Never pad a partial human selection — that plays unintended cards.
-            selected_indices = sorted(
-                set(int(i) for i in raw_indices if 0 <= int(i) < len(hand))
-            )[:n_play]
+            # Keep the order the player locked the cards in. Sorting by hand
+            # position lets a later pick be revealed first and miss the shield.
+            selected_indices = []
+            seen: set[int] = set()
+            for raw in raw_indices:
+                try:
+                    i = int(raw)
+                except (TypeError, ValueError):
+                    continue
+                if 0 <= i < len(hand) and i not in seen:
+                    seen.add(i)
+                    selected_indices.append(i)
+            selected_indices = selected_indices[:n_play]
 
         playable = []
         for i in selected_indices:

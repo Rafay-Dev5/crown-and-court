@@ -48,6 +48,7 @@ def check_and_consume_shield(
             attack_type=attack_type,
             card_id=shield.card_id,
             amount=covered,
+            used_up=shield.consumed,
         )
         return covered
     return 0

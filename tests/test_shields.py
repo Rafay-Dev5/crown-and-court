@@ -151,3 +151,89 @@ def test_shield_stops_a_theft_larger_than_its_printed_amount():
     assert state.person_at_seat(king).gold == king_gold - 40
     assert state.person_at_seat(noble).gold == noble_gold + 40
     assert all(s.consumed for s in state.active_shields)
+    blocked = [e for e in state.event_log if e["type"] == "shield_blocked"]
+    assert blocked[0]["used_up"] is True
+    assert blocked[0]["attack_type"] == "gold_theft"
+
+
+def test_lock_order_is_reveal_order_so_the_first_theft_hits_the_shield():
+    """A later click must not jump ahead just because it sits earlier in the hand."""
+    from web.server.game_session import GameSession, HumanAction
+
+    def theft(card_id: str, amount: int) -> dict:
+        return {
+            "id": card_id,
+            "name": card_id,
+            "category": "disruption",
+            "effect": {
+                "primitive": "gold_transfer",
+                "params": {"from": "king", "to": "self", "amount": amount, "as_theft": True},
+            },
+        }
+
+    shield = {
+        "id": "test_shield",
+        "name": "Shield",
+        "category": "protection",
+        "effect": {
+            "primitive": "protect_gold",
+            "params": {
+                "target": "self",
+                "amount": 100,
+                "duration_rounds": 1,
+                "blocks": "gold_theft",
+            },
+        },
+    }
+    quiet = {
+        "id": "test_quiet",
+        "name": "Quiet",
+        "category": "economy",
+        "effect": {"primitive": "gold_gain", "params": {"target": "self", "amount": 1}},
+    }
+
+    session = GameSession(["a", "b", "c", "d"], ["A", "B", "C", "D"], starting_king_seat=0, seed=1)
+    while session.current_decision() and session.current_decision().dtype.value == "negotiation":
+        session.apply_action(HumanAction(action_type="pass"))
+
+    king_turn = session.current_decision()
+    assert king_turn is not None and king_turn.dtype.value == "play"
+    king = king_turn.seat
+    session.state.seats[king].hand = [shield, quiet, quiet]
+    session.apply_action(HumanAction(action_type="play", payload={"card_indices": [0]}))
+
+    thief_turn = session.current_decision()
+    assert thief_turn is not None and thief_turn.dtype.value == "play"
+    thief = thief_turn.seat
+    # 138 sits earlier in the hand, but 120 is locked first.
+    session.state.seats[thief].hand = [quiet, theft("steal_138", 138), theft("steal_120", 120)]
+    session.apply_action(HumanAction(action_type="play", payload={"card_indices": [2, 1]}))
+
+    assert [card["id"] for _seat, card in session.engine._played_buffer] == [
+        "test_shield",
+        "steal_120",
+        "steal_138",
+    ]
+
+    while session.current_decision() and session.current_decision().dtype.value == "play":
+        seat = session.current_decision().seat
+        session.state.seats[seat].hand = [quiet]
+        session.apply_action(HumanAction(action_type="play", payload={"card_indices": [0]}))
+
+    blocked = None
+    moved = []
+    for _ in range(12):
+        dec = session.current_decision()
+        if dec is None or dec.dtype.value != "reveal":
+            break
+        for event in dec.context.get("effects") or []:
+            if event.get("type") == "shield_blocked" and event.get("attack_type") == "gold_theft":
+                blocked = event
+            if event.get("type") == "gold_transfer":
+                moved.append(event.get("amount"))
+        session.apply_action(HumanAction(action_type="continue_reveal"))
+
+    assert blocked is not None
+    assert blocked["amount"] == 120
+    assert blocked["used_up"] is True
+    assert moved == [138]
