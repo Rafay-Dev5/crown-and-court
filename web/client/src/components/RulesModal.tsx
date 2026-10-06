@@ -58,9 +58,10 @@ export default function RulesModal({ onClose }: Props) {
             </li>
             <li>
               The King starts with <strong>8</strong> cards. Each Noble starts with <strong>7</strong>.
-              After every card has resolved, each player draws again (King 3, Noble 2). Then anyone
-              over their limit chooses cards to discard. The King may keep <strong>8</strong>. Each
-              Noble discards down to <strong>7</strong>.
+              After every card has resolved, anyone over that limit discards down first. The King
+              discards down to <strong>8</strong>. Each Noble discards down to <strong>7</strong>.
+              Then each player draws again (King <strong>2</strong>, Noble <strong>1</strong>). That
+              draw can put a hand over the limit until the next round.
             </li>
             <li>
               Each alliance is paid, then <strong>succession</strong> is checked. Two Nobles each
@@ -270,9 +271,11 @@ export default function RulesModal({ onClose }: Props) {
             <div>
               <dt className="font-semibold">How many cards can I hold?</dt>
               <dd>
-                The King starts with 8 and may keep 8 after the redraw. Each Noble starts with 7
-                and discards down to 7. If a discard asks for more cards than you hold, you discard
-                the cards you have.
+                The King starts with 8. Each Noble starts with 7. When the round's cards are finished,
+                a hand over that limit is discarded down to it before anyone draws. The King then
+                draws 2 and each Noble draws 1. That draw can leave you over the limit until the
+                next round. If a discard asks for more cards than you hold, you discard the cards
+                you have.
               </dd>
             </div>
             <div>

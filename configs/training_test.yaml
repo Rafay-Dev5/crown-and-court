@@ -6,8 +6,8 @@ noble_start_gold: 600
 random_starting_king_seat: true
 king_plays_per_round: 3
 noble_plays_per_round: 2
-king_redraw: 3
-noble_redraw: 2
+king_redraw: 2
+noble_redraw: 1
 negotiation_ticks: 4
 succession_checker: gold_only
 alternate_turn_direction: true

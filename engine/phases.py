@@ -19,6 +19,13 @@ def hand_cap(state: GameState, seat: int) -> int:
     return int(state.config.get("noble_hand_size", 7))
 
 
+def redraw_count(state: GameState, seat: int) -> int:
+    """Cards drawn after the hand is trimmed. King draws 2, Nobles draw 1."""
+    if seat == state.king_seat:
+        return int(state.config.get("king_redraw", 2))
+    return int(state.config.get("noble_redraw", 1))
+
+
 def draw_to_hand(
     state: GameState, seat: int, count: int, rng: GameRNG, hand_size: int = 8
 ) -> None:
@@ -167,7 +174,6 @@ def run_playing_phase(
 ) -> None:
     state.phase = Phase.PLAYING
     state.phase_attacks = []
-    hand_size = int(state.config.get("hand_size", 8))
     play_order = [state.king_seat] + state.noble_play_order()
 
     played: list[tuple[int, dict[str, Any], int]] = []
@@ -212,11 +218,7 @@ def run_playing_phase(
 
     finalize_protection_bets(state, rng)
 
-    king_redraw = int(state.config.get("king_redraw", 3))
-    noble_redraw = int(state.config.get("noble_redraw", 2))
     for seat in range(state.num_players):
-        redraw = king_redraw if seat == state.king_seat else noble_redraw
-        draw_to_hand(state, seat, redraw, rng, hand_size)
         extra = len(state.seats[seat].hand) - hand_cap(state, seat)
         if extra > 0:
             drop = list(range(len(state.seats[seat].hand)))
@@ -224,6 +226,8 @@ def run_playing_phase(
             for idx in sorted(drop[:extra], reverse=True):
                 card = state.seats[seat].hand.pop(idx)
                 state.seats[seat].discard.append(card)
+        # Draw the full redraw even when the hand is already at the cap.
+        draw_to_hand(state, seat, redraw_count(state, seat), rng, len(state.seats[seat].hand))
 
     apply_status_tick_effects(state, rng)
     state.tick_statuses()

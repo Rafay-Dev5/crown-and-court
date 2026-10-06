@@ -14,6 +14,7 @@ from engine.phases import (
     card_requires_chosen_target,
     draw_to_hand,
     hand_cap,
+    redraw_count,
     legal_card_targets,
     pay_alliance_stipend,
     run_succession_check,
@@ -179,7 +180,7 @@ class DecisionEngine:
                 self._queue_next_discard()
             elif self._deferred_reveal:
                 self._emit_deferred_reveal()
-            elif self._phase_stage != "hand_trim":
+            elif self._phase_stage not in ("hand_trim", "pre_redraw_trim"):
                 self._resolve_next_reveal()
         elif dec.dtype == DecisionType.REVEAL:
             self.queue.pop(0)
@@ -261,21 +262,12 @@ class DecisionEngine:
     def _resolve_next_reveal(self) -> None:
         assert self.state
         if self._play_reveal_idx >= len(self._played_buffer):
-            hand_size = int(self.state.config.get("hand_size", 8))
-            for seat in range(self.state.num_players):
-                redraw = 3 if seat == self.state.king_seat else 2
-                draw_to_hand(self.state, seat, redraw, self.rng, hand_size)
-            from engine.protection import finalize_protection_bets
-            from engine.status_ticks import apply_status_tick_effects
-
-            finalize_protection_bets(self.state, self.rng)
-            apply_status_tick_effects(self.state, self.rng)
-            self.state.tick_statuses()
+            # Trim an over-cap hand before anyone draws. The redraw can put them over again.
             self._queue_hand_trim()
             if self.queue:
-                self._phase_stage = "hand_trim"
+                self._phase_stage = "pre_redraw_trim"
                 return
-            self.queue = []
+            self._redraw_after_trim()
             return
 
         seat, card = self._played_buffer[self._play_reveal_idx]
@@ -461,8 +453,21 @@ class DecisionEngine:
         self.state.private_peeks.clear()
         self._resolve_next_reveal()
 
+    def _redraw_after_trim(self) -> None:
+        """Draw after the cap discard. King draws 2, each Noble draws 1."""
+        assert self.state
+        from engine.protection import finalize_protection_bets
+        from engine.status_ticks import apply_status_tick_effects
+
+        for seat in range(self.state.num_players):
+            hand = self.state.seats[seat].hand
+            draw_to_hand(self.state, seat, redraw_count(self.state, seat), self.rng, len(hand))
+        finalize_protection_bets(self.state, self.rng)
+        apply_status_tick_effects(self.state, self.rng)
+        self.state.tick_statuses()
+
     def _queue_hand_trim(self) -> None:
-        """After the redraw, discard down to the seat's hand cap (King 8, Noble 7)."""
+        """Before the redraw, discard down to the seat's hand cap (King 8, Noble 7)."""
         assert self.state
         self.queue = []
         for seat in range(self.state.num_players):
@@ -525,6 +530,10 @@ class DecisionEngine:
                 pay_alliance_stipend(self.state)
                 run_succession_check(self.state)
                 self._next_round_or_end()
+        elif self._phase_stage == "pre_redraw_trim":
+            self._redraw_after_trim()
+            self._phase_stage = "playing_reveal"
+            self._advance_phase()
         elif self._phase_stage in ("playing_commit", "playing_reveal", "hand_trim"):
             self.state.apply_pending_betrayals()
             pay_alliance_stipend(self.state)
