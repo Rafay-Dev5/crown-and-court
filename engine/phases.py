@@ -216,8 +216,17 @@ def run_playing_phase(
             break
         state.seats[seat].discard.append(card)
 
+    # Close the round: betrayals, stipend, status upkeep, protection, succession, then hands.
+    state.apply_pending_betrayals()
+    pay_alliance_stipend(state)
+    apply_status_tick_effects(state, rng)
+    state.tick_statuses()
     finalize_protection_bets(state, rng)
+    run_succession_check(state)
 
+    # The last round of a match keeps the hands: no cap discard and no redraw.
+    if state.current_round >= state.n_rounds:
+        return
     for seat in range(state.num_players):
         extra = len(state.seats[seat].hand) - hand_cap(state, seat)
         if extra > 0:
@@ -228,10 +237,6 @@ def run_playing_phase(
                 state.seats[seat].discard.append(card)
         # Draw the full redraw even when the hand is already at the cap.
         draw_to_hand(state, seat, redraw_count(state, seat), rng, len(state.seats[seat].hand))
-
-    apply_status_tick_effects(state, rng)
-    state.tick_statuses()
-    state.apply_pending_betrayals()
 
 
 _TARGET_PARAM_KEYS = ("target", "from", "to", "choice_seat", "new_target")
@@ -319,8 +324,6 @@ def run_round(
 
     run_succession_check(state)
     run_playing_phase(state, rng, play_policy, choice_policy)
-    pay_alliance_stipend(state)
-    run_succession_check(state)
 
 
 def run_game(

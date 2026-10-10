@@ -530,7 +530,7 @@ export default function GamePage() {
 
       {youAreOathbreaker && publicState.phase === "negotiation" && (
         <div className="bg-red-950/70 border-b border-red-500/40 text-center text-xs sm:text-sm py-1.5 px-3">
-          You are <strong>{getStatusInfo("oathbreaker").label}</strong> — others cannot gift you gold or cards.
+          You are <strong>{getStatusInfo("oathbreaker").label}</strong> — you cannot trade, and no one can offer you a trade.
         </div>
       )}
 

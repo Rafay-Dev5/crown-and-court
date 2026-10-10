@@ -111,6 +111,10 @@ def propose_trade(
         raise ValueError("Cannot propose a trade with yourself")
     if not (0 <= target < state.num_players):
         raise ValueError("Invalid trade target")
+    if state.has_status(proposer, "oathbreaker"):
+        raise ValueError("Oathbreaker cannot trade")
+    if state.has_status(target, "oathbreaker"):
+        raise ValueError("Cannot trade with an Oathbreaker")
 
     offer = {
         "gold": _gold_amount(offer),

@@ -57,6 +57,7 @@ class DecisionEngine:
         self._phase_stage = "negotiation"
         self._deferred_reveal: dict[str, Any] | None = None
         self._alliance_votes: dict[int, int | None] = {}
+        self._end_of_round_started = False
 
     def reset(self) -> GameState:
         self.state = setup_game(self.config, self.rng)
@@ -67,6 +68,7 @@ class DecisionEngine:
         self._phase_stage = "negotiation"
         self._deferred_reveal = None
         self._alliance_votes = {}
+        self._end_of_round_started = False
         self._reset_negotiation_tracking()
         self._build_negotiation_queue()
         return self.state
@@ -262,12 +264,7 @@ class DecisionEngine:
     def _resolve_next_reveal(self) -> None:
         assert self.state
         if self._play_reveal_idx >= len(self._played_buffer):
-            # Trim an over-cap hand before anyone draws. The redraw can put them over again.
-            self._queue_hand_trim()
-            if self.queue:
-                self._phase_stage = "pre_redraw_trim"
-                return
-            self._redraw_after_trim()
+            self._begin_end_of_round()
             return
 
         seat, card = self._played_buffer[self._play_reveal_idx]
@@ -453,23 +450,59 @@ class DecisionEngine:
         self.state.private_peeks.clear()
         self._resolve_next_reveal()
 
-    def _redraw_after_trim(self) -> None:
-        """Draw after the cap discard. King draws 3, each Noble draws 2."""
+    def _settle_before_hands(self) -> None:
+        """Betrayals, stipend, status upkeep, protection bets, then succession."""
         assert self.state
         from engine.protection import finalize_protection_bets
         from engine.status_ticks import apply_status_tick_effects
 
+        self.state.apply_pending_betrayals()
+        pay_alliance_stipend(self.state)
+        apply_status_tick_effects(self.state, self.rng)
+        self.state.tick_statuses()
+        finalize_protection_bets(self.state, self.rng)
+        run_succession_check(self.state)
+
+    def _begin_end_of_round(self) -> None:
+        assert self.state
+        if self._end_of_round_started:
+            return
+        self._end_of_round_started = True
+        self._settle_before_hands()
+        self._queue_hand_trim()
+        if self.queue:
+            self._phase_stage = "pre_redraw_trim"
+            return
+        self._redraw_after_trim()
+        self._finish_after_redraw()
+
+    def _final_round(self) -> bool:
+        assert self.state
+        return self.state.current_round >= self.state.n_rounds
+
+    def _redraw_after_trim(self) -> None:
+        """Draw after succession and the cap discard. King draws 3, each Noble draws 2."""
+        assert self.state
+        if self._final_round():
+            return
         for seat in range(self.state.num_players):
             hand = self.state.seats[seat].hand
             draw_to_hand(self.state, seat, redraw_count(self.state, seat), self.rng, len(hand))
-        finalize_protection_bets(self.state, self.rng)
-        apply_status_tick_effects(self.state, self.rng)
-        self.state.tick_statuses()
+
+    def _finish_after_redraw(self) -> None:
+        assert self.state
+        self._queue_alliance_review()
+        if self.queue:
+            self._phase_stage = "alliance_review"
+            return
+        self._next_round_or_end()
 
     def _queue_hand_trim(self) -> None:
         """Before the redraw, discard down to the seat's hand cap (King 8, Noble 7)."""
         assert self.state
         self.queue = []
+        if self._final_round():
+            return
         for seat in range(self.state.num_players):
             cap = hand_cap(self.state, seat)
             extra = len(self.state.seats[seat].hand) - cap
@@ -486,6 +519,9 @@ class DecisionEngine:
         """Ask each allied player which one alliance to keep. Both sides must agree."""
         assert self.state
         self._alliance_votes = {}
+        if self._final_round():
+            self.queue = []
+            return
         partners: dict[int, list[int]] = {}
         for alliance in self.state.alliances:
             members = list(alliance.members)
@@ -527,22 +563,12 @@ class DecisionEngine:
             run_succession_check(self.state)
             self._build_play_queue()
             if not self.queue:
-                pay_alliance_stipend(self.state)
-                run_succession_check(self.state)
-                self._next_round_or_end()
+                self._begin_end_of_round()
         elif self._phase_stage == "pre_redraw_trim":
             self._redraw_after_trim()
-            self._phase_stage = "playing_reveal"
-            self._advance_phase()
+            self._finish_after_redraw()
         elif self._phase_stage in ("playing_commit", "playing_reveal", "hand_trim"):
-            self.state.apply_pending_betrayals()
-            pay_alliance_stipend(self.state)
-            run_succession_check(self.state)
-            self._queue_alliance_review()
-            if self.queue:
-                self._phase_stage = "alliance_review"
-                return
-            self._next_round_or_end()
+            self._begin_end_of_round()
         elif self._phase_stage == "alliance_review":
             self._apply_alliance_votes()
             self._next_round_or_end()
@@ -558,6 +584,7 @@ class DecisionEngine:
             )
             self.queue = []
             return
+        self._end_of_round_started = False
         self.state.current_round += 1
         if self.state.config.get("alternate_turn_direction", True):
             self.state.turn_direction = 1 if self.state.current_round % 2 == 1 else -1

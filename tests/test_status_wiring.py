@@ -1,3 +1,5 @@
+import pytest
+
 from engine.cards import load_all_cards, load_config
 from engine.effects.interpreter import resolve_card
 from engine.negotiation import accept_proposal, propose_trade
@@ -37,25 +39,32 @@ def test_sealed_warrant_gets_marked_bonus():
     assert marked_state.person_at_seat(marked_target).gold == marked_target_before - 96
 
 
-def test_oathbreaker_blocks_negotiation_gifts():
+def test_oathbreaker_cannot_propose_a_trade():
+    state = setup_game(load_config(), GameRNG(seed=6))
+    giver = state.king_seat
+    receiver = state.noble_seats()[0]
+    state.seats[giver].statuses.append(
+        StatusTag(name="oathbreaker", expires_after_round=state.current_round + 2)
+    )
+    with pytest.raises(ValueError, match="Oathbreaker"):
+        propose_trade(
+            state, giver, receiver, {"gold": 40, "cards": []}, {"gold": 0, "card_count": 1}
+        )
+    assert state.pending_proposals == []
+
+
+def test_cannot_propose_a_trade_to_an_oathbreaker():
     state = setup_game(load_config(), GameRNG(seed=5))
     giver = state.king_seat
     receiver = state.noble_seats()[0]
     state.seats[receiver].statuses.append(
         StatusTag(name="oathbreaker", expires_after_round=state.current_round + 2)
     )
-    card = state.seats[receiver].hand[0]
-    gold_before = state.person_at_seat(receiver).gold
-    proposal_id = propose_trade(
-        state, giver, receiver, {"gold": 100, "cards": []}, {"gold": 0, "card_count": 1}
-    )
-    accept_proposal(state, receiver, proposal_id, fulfillment_cards=[card["id"]])
-
-    assert state.person_at_seat(receiver).gold == gold_before
-    assert any(
-        event["type"] == "gift_blocked_by_status" and event["status"] == "oathbreaker"
-        for event in state.event_log
-    )
+    with pytest.raises(ValueError, match="Oathbreaker"):
+        propose_trade(
+            state, giver, receiver, {"gold": 100, "cards": []}, {"gold": 0, "card_count": 1}
+        )
+    assert state.pending_proposals == []
 
 
 def test_unbalanced_gold_for_cards_applies_oathbreaker():

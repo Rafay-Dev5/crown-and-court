@@ -49,8 +49,22 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
   const targetIsOathbreaker = (target?.statuses ?? []).some(
     (s) => (typeof s === "string" ? s : s.name) === "oathbreaker"
   );
+
+  useEffect(() => {
+    if (mode !== "trade" || !targetIsOathbreaker) return;
+    const next = others.find(
+      (s) =>
+        !(s.statuses ?? []).some(
+          (st) => (typeof st === "string" ? st : st.name) === "oathbreaker"
+        )
+    );
+    if (next) setTargetSeat(next.seat_id);
+  }, [mode, others, targetIsOathbreaker]);
   const maxGift = publicState?.max_negotiation_gift_per_phase ?? 120;
   const you = publicState?.seats.find((s) => s.seat_id === yourSeat);
+  const youAreOathbreaker = (you?.statuses ?? []).some(
+    (s) => (typeof s === "string" ? s : s.name) === "oathbreaker"
+  );
   const giftLeft = Math.max(0, maxGift - (you?.gift_sent ?? 0));
   const cardsGiftLeft = Math.max(0, MAX_CARD_GIFTS - (you?.cards_sent ?? 0));
 
@@ -99,7 +113,7 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
   }, [kind, goldAmount, cardCount, selectedIds.length]);
 
   const canSend = (() => {
-    if (targetSeat < 0 || targetSeat === yourSeat) return false;
+    if (targetSeat < 0 || targetSeat === yourSeat || targetIsOathbreaker) return false;
     if (kind === "gold_for_cards") {
       return goldAmount > 0 && cardCount > 0 && goldAmount <= giftLeft;
     }
@@ -172,11 +186,17 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
               onChange={(e) => setTargetSeat(Number(e.target.value))}
               className="block mt-1 px-2 py-1 rounded border"
             >
-              {others.map((s) => (
-                <option key={s.seat_id} value={s.seat_id}>
-                  {s.player_name}
-                </option>
-              ))}
+              {others.map((s) => {
+                const locked = (s.statuses ?? []).some(
+                  (st) => (typeof st === "string" ? st : st.name) === "oathbreaker"
+                );
+                return (
+                  <option key={s.seat_id} value={s.seat_id} disabled={locked}>
+                    {s.player_name}
+                    {locked ? " (Oathbreaker)" : ""}
+                  </option>
+                );
+              })}
             </select>
           </label>
 
@@ -234,8 +254,7 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
         <p className="text-xs text-amber-900 mb-2">{imbalanceHint}</p>
         {targetIsOathbreaker && (
           <p className="text-xs text-red-800 mb-2">
-            {target?.player_name} is Oathbreaker — they cannot receive gold or cards. This trade
-            will not go through to them.
+            {target?.player_name} is Oathbreaker — no one can propose a trade with them.
           </p>
         )}
 
@@ -292,7 +311,12 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
   return (
     <div className="panel-parchment p-4 flex flex-wrap gap-2 items-center">
       <span className="font-display text-sm mr-2">Your turn — Negotiate:</span>
-      <button className="btn-royal text-sm py-2" onClick={() => setMode("trade")}>
+      <button
+        className="btn-royal text-sm py-2 disabled:opacity-40 disabled:cursor-not-allowed"
+        disabled={youAreOathbreaker}
+        title={youAreOathbreaker ? "Oathbreaker — you cannot trade" : undefined}
+        onClick={() => setMode("trade")}
+      >
         Trade
       </button>
       <button className="btn-royal text-sm py-2" onClick={() => setMode("alliance")}>
@@ -302,8 +326,9 @@ export default function NegotiationPanel({ onPass, onTrade, onAlliance }: Props)
         Pass
       </button>
       <p className="basis-full text-xs text-royal-dark/60 mt-1">
-        Gold budget {giftLeft}g · Card-for-card gifts left {cardsGiftLeft}. Total gold races for
-        the crown.
+        {youAreOathbreaker
+          ? "Oathbreaker — your trade button is locked."
+          : `Gold budget ${giftLeft}g · Card-for-card gifts left ${cardsGiftLeft}. Total gold races for the crown.`}
       </p>
     </div>
   );

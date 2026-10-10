@@ -55,8 +55,9 @@ export default function RulesModal({ onClose }: Props) {
               or pass. Gold gifts: max <strong>120g</strong> per phase.
             </li>
             <li>
-              <strong>Succession</strong> — if a Noble has more gold than the King, they take the
-              crown. Decks and hands swap; gold stays with the person.
+              <strong>Succession</strong> — checked when negotiation ends. If a Noble has more gold
+              than the King, they take the crown. Decks and hands swap; gold stays with the person.
+              The same check runs again at the end of the playing phase.
             </li>
             <li>
               <strong>Play cards</strong> — the King may play up to <strong>3</strong>, each Noble
@@ -64,19 +65,37 @@ export default function RulesModal({ onClose }: Props) {
               reveal one at a time. The King reveals first.
             </li>
             <li>
-              The King starts with <strong>8</strong> cards. Each Noble starts with <strong>7</strong>.
-              After every card has resolved, anyone over that limit discards down first. The King
-              discards down to <strong>8</strong>. Each Noble discards down to <strong>7</strong>.
-              Then each player draws again (King <strong>3</strong>, Noble <strong>2</strong>). That
-              draw can put a hand over the limit until the next round.
-            </li>
-            <li>
-              Each alliance is paid, then <strong>succession</strong> is checked. Two Nobles each
-              gain <strong>100</strong> gold. If the King is in the alliance, each member gains
-              <strong>150</strong> gold. This uses the crown before that check, so a Noble who is
-              about to take the throne is still paid as a Noble. An alliance already ended by
-              betrayal is not paid. Then each allied player is asked whether to keep that one
-              alliance. It continues only if both members agree. Then the next round.
+              <strong>End of round</strong>, in this order:
+              <ol className="list-decimal pl-5 mt-1 space-y-1">
+                <li>Betrayals end alliances.</li>
+                <li>
+                  Alliance stipend. Two Nobles each gain <strong>100</strong> gold. If the King is
+                  in the alliance, each member gains <strong>150</strong>. This uses the crown
+                  before the next succession check, so a Noble who is about to take the throne is
+                  still paid as a Noble. An alliance already ended by betrayal is not paid.
+                </li>
+                <li>Status upkeep. Corrupt pays the current King, then statuses tick down.</li>
+                <li>Protection bets are scored. A miss is paid before the crown can change.</li>
+                <li>
+                  Succession, again. This is the check at the end of the playing phase.
+                </li>
+                <li>
+                  Hand-size discard. The King discards down to <strong>8</strong>. Each Noble,
+                  including a King who just lost the crown, discards down to <strong>7</strong>.
+                  Hands swap with the crown, so this uses the crown after succession. Skipped on
+                  the last round of a match.
+                </li>
+                <li>
+                  Redraw. The King draws <strong>3</strong>. Each Noble draws <strong>2</strong>.
+                  That draw can leave a hand over the limit until the next round. Skipped on the
+                  last round of a match.
+                </li>
+                <li>
+                  Alliance review. Each ally is asked whether to keep that one alliance. It
+                  continues only if both members agree. Skipped on the last round of a match.
+                </li>
+                <li>The next round begins. On the last round, the match ends instead.</li>
+              </ol>
             </li>
           </ol>
         </section>
@@ -85,7 +104,7 @@ export default function RulesModal({ onClose }: Props) {
           <h3 className="font-display text-lg mb-1">Protection cards</h3>
           <p className="text-sm leading-relaxed mb-2">
             A protection card arms the moment it is revealed and stays up through the rest of that
-            reveal. The guess is scored only after every card has been revealed, before succession.
+            reveal. The guess is scored after status upkeep and before succession.
             A hit keeps the shield. A miss removes it, and then you pay the miss cost printed on
             the card (often 60 or 80 gold; succession guesses cost half your gold).
           </p>
@@ -138,9 +157,10 @@ export default function RulesModal({ onClose }: Props) {
         <section className="mb-5">
           <h3 className="font-display text-lg mb-1">Oathbreaker</h3>
           <p className="text-sm leading-relaxed">
-            While Oathbreaker, you cannot be gifted <strong>gold or cards</strong> in negotiation.
-            It lasts 2 rounds from an unbalanced trade (or longer from some cards). Hover the badge
-            any time to reread this.
+            While Oathbreaker, you cannot propose a trade, and no one can propose a trade with you.
+            The Trade button stays locked, and you are locked out of other players' trade lists.
+            You also cannot be gifted <strong>gold or cards</strong>. It lasts 2 rounds from an
+            unbalanced trade (or longer from some cards). Hover the badge any time to reread this.
           </p>
         </section>
 
@@ -181,11 +201,13 @@ export default function RulesModal({ onClose }: Props) {
             target. They always hit the player you are allied with. With no alliance, those cards
             stay locked for the round. If both allies play a betrayal in the same round,
             both cards resolve, because the alliance stays up until every card has been revealed.
-            It then ends once, before the alliance payment and before succession. A surviving
-            alliance then pays each member 100 gold, or 150 gold each if the King is one of them.
-            Succession is checked after that payment, and the renewal question comes after
-            succession. A shield stops a
-            theft only for the player who played that shield. The card’s extra cost — shown when
+            It then ends once, before the alliance payment. A surviving alliance is paid next.
+            Each member gains 100 gold, or 150 gold each if the King is one of them. Status
+            upkeep and protection bets come next, then the playing-phase succession check. Hands
+            are discarded and redrawn after that, and only then is each ally asked whether to keep
+            the alliance. The last round of a match skips the discard, the redraw, and that
+            question. A shield
+            stops a theft only for the player who played that shield. The card’s extra cost — shown when
             you hover it — is still paid if a shield stops the theft. An alliance or betrayal card
             that cannot legally resolve is discarded.
           </p>
@@ -220,9 +242,9 @@ export default function RulesModal({ onClose }: Props) {
               <dt className="font-semibold">What is the succession-block guess?</dt>
               <dd>
                 It is not “was I attacked.” Diplomatic Immunity and Loyal Guard guess that a Noble
-                has more gold than the King. That is checked after the reveals and the redraw,
-                before the crown can change. A hit keeps the block. A miss removes it and costs
-                half your gold.
+                has more gold than the King. That is checked after status upkeep and before
+                succession, so the miss cost counts toward the crown. A hit keeps the block. A
+                miss removes it and costs half your gold.
               </dd>
             </div>
             <div>
@@ -253,11 +275,12 @@ export default function RulesModal({ onClose }: Props) {
             <div>
               <dt className="font-semibold">When do allies get paid just for being allied?</dt>
               <dd>
-                Before the end-of-round succession check, and before you are asked whether to keep
-                the alliance. Two Nobles each gain 100 gold. If the King is in the alliance, both
-                members gain 150 gold. That uses the crown before succession, so a Noble who is
-                about to take the throne is still paid as a Noble. A betrayal that already ended
-                the alliance pays nothing.
+                After betrayals, and before status upkeep, protection bets, and succession. Two
+                Nobles each gain 100 gold. If the King is in the alliance, both members gain 150
+                gold. That uses the crown before succession, so a Noble who is about to take the
+                throne is still paid as a Noble. A betrayal that already ended the alliance pays
+                nothing. On any earlier round, the question of whether to keep the alliance comes
+                after the redraw. The last round of a match skips the redraw and does not ask.
               </dd>
             </div>
             <div>
@@ -278,11 +301,12 @@ export default function RulesModal({ onClose }: Props) {
             <div>
               <dt className="font-semibold">How many cards can I hold?</dt>
               <dd>
-                The King starts with 8. Each Noble starts with 7. When the round's cards are finished,
-                a hand over that limit is discarded down to it before anyone draws. The King then
-                draws 3 and each Noble draws 2. That draw can leave you over the limit until the
-                next round. If a discard asks for more cards than you hold, you discard the cards
-                you have.
+                The King starts with 8. Each Noble starts with 7. After the playing-phase succession
+                check, a hand over that limit is discarded down before anyone draws. The King
+                discards to 8. A King who just became a Noble discards to 7. The King then draws 3
+                and each Noble draws 2. That draw can leave you over the limit until the next round.
+                The last round of a match does not discard, redraw, or review alliances. If a discard
+                asks for more cards than you hold, you discard the cards you have.
               </dd>
             </div>
             <div>
