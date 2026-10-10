@@ -4,7 +4,7 @@ hand_size: 8
 noble_hand_size: 7
 king_deck_size: 42
 king_plays_per_round: 3
-king_redraw: 2
+king_redraw: 3
 king_start_gold: 1000
 max_negotiation_gift: 130
 max_negotiation_gift_per_phase: 130
@@ -14,7 +14,7 @@ n_rounds: 4
 negotiation_ticks: 3
 noble_deck_size: 40
 noble_plays_per_round: 2
-noble_redraw: 1
+noble_redraw: 2
 noble_start_gold: 600
 num_players: 6
 random_starting_king_seat: true

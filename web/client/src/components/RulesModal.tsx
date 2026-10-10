@@ -29,6 +29,13 @@ export default function RulesModal({ onClose }: Props) {
             Whoever sits as King when a match ends scores. First to <strong>10 points</strong> wins
             the table. Everyone starts as King once.
           </p>
+          <p className="text-sm leading-relaxed mt-2">
+            If two players both reach 10 in the same match, the higher total wins. A score of 12
+            beats 10. When the totals are equal, the player with more wins as the starting King
+            wins. If that is also equal, the player with more points earned as a Noble wins. Those
+            Noble points are the 5 for taking the crown, plus 3, 2, or 1 for finishing behind on
+            gold. If all three numbers match, they share the win and the table shows Shared Victory.
+          </p>
         </section>
 
         <section className="mb-5">
@@ -60,7 +67,7 @@ export default function RulesModal({ onClose }: Props) {
               The King starts with <strong>8</strong> cards. Each Noble starts with <strong>7</strong>.
               After every card has resolved, anyone over that limit discards down first. The King
               discards down to <strong>8</strong>. Each Noble discards down to <strong>7</strong>.
-              Then each player draws again (King <strong>2</strong>, Noble <strong>1</strong>). That
+              Then each player draws again (King <strong>3</strong>, Noble <strong>2</strong>). That
               draw can put a hand over the limit until the next round.
             </li>
             <li>
@@ -273,7 +280,7 @@ export default function RulesModal({ onClose }: Props) {
               <dd>
                 The King starts with 8. Each Noble starts with 7. When the round's cards are finished,
                 a hand over that limit is discarded down to it before anyone draws. The King then
-                draws 2 and each Noble draws 1. That draw can leave you over the limit until the
+                draws 3 and each Noble draws 2. That draw can leave you over the limit until the
                 next round. If a discard asks for more cards than you hold, you discard the cards
                 you have.
               </dd>

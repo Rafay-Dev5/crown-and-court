@@ -109,7 +109,7 @@ export default function GamePage() {
   useEffect(() => {
     if (lastSuccession) {
       setShowSuccession(true);
-      const t = setTimeout(() => setShowSuccession(false), 4000);
+      const t = setTimeout(() => setShowSuccession(false), 6500);
       return () => clearTimeout(t);
     }
   }, [lastSuccession]);

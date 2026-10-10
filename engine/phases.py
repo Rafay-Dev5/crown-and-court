@@ -20,10 +20,10 @@ def hand_cap(state: GameState, seat: int) -> int:
 
 
 def redraw_count(state: GameState, seat: int) -> int:
-    """Cards drawn after the hand is trimmed. King draws 2, Nobles draw 1."""
+    """Cards drawn after the hand is trimmed. King draws 3, Nobles draw 2."""
     if seat == state.king_seat:
-        return int(state.config.get("king_redraw", 2))
-    return int(state.config.get("noble_redraw", 1))
+        return int(state.config.get("king_redraw", 3))
+    return int(state.config.get("noble_redraw", 2))
 
 
 def draw_to_hand(

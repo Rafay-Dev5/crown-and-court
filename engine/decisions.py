@@ -454,7 +454,7 @@ class DecisionEngine:
         self._resolve_next_reveal()
 
     def _redraw_after_trim(self) -> None:
-        """Draw after the cap discard. King draws 2, each Noble draws 1."""
+        """Draw after the cap discard. King draws 3, each Noble draws 2."""
         assert self.state
         from engine.protection import finalize_protection_bets
         from engine.status_ticks import apply_status_tick_effects

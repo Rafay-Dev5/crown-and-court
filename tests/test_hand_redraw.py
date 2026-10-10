@@ -1,4 +1,4 @@
-"""Hands over the cap are discarded before the redraw, which is King 2 and Noble 1."""
+"""Hands over the cap are discarded before the redraw, which is King 3 and Noble 2."""
 
 from web.server.game_session import GameSession, HumanAction
 
@@ -50,9 +50,9 @@ def test_over_cap_discard_happens_before_the_smaller_redraw():
             HumanAction(action_type="discard", payload={"card_indices": list(range(count))})
         )
 
-    assert len(session.state.seats[king].hand) == 10
-    assert len(session.state.seats[king].deck) == decks[king] - 2
-    assert len(session.state.seats[nobles[0]].hand) == 8
-    assert len(session.state.seats[nobles[0]].deck) == decks[nobles[0]] - 1
-    assert len(session.state.seats[nobles[1]].hand) == 8
-    assert len(session.state.seats[nobles[2]].hand) == 8
+    assert len(session.state.seats[king].hand) == 11
+    assert len(session.state.seats[king].deck) == decks[king] - 3
+    assert len(session.state.seats[nobles[0]].hand) == 9
+    assert len(session.state.seats[nobles[0]].deck) == decks[nobles[0]] - 2
+    assert len(session.state.seats[nobles[1]].hand) == 9
+    assert len(session.state.seats[nobles[2]].hand) == 9

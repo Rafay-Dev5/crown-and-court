@@ -11,7 +11,7 @@ hand_size: 8
 king_deck_size: 42
 noble_deck_size: 40
 king_plays_per_round: 3
-king_redraw: 2
+king_redraw: 3
 king_start_gold: 1000
 league_bots:
 - hoard
@@ -26,7 +26,7 @@ max_negotiation_trades_per_phase: 2
 n_rounds: 4
 negotiation_ticks: 4
 noble_plays_per_round: 2
-noble_redraw: 1
+noble_redraw: 2
 noble_start_gold: 600
 num_players: 6
 policy_act_dim: 64

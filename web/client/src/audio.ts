@@ -108,3 +108,25 @@ export function playTurnBuzz() {
   tone(audio, 784, now, 0.09, "sine", 0.12);
   tone(audio, 1046, now + 0.12, 0.16, "sine", 0.1);
 }
+
+let lastFanfareAt = 0;
+
+/** Short coronation fanfare when a Noble takes the crown. */
+export function playSuccessionFanfare() {
+  const nowMs = performance.now();
+  if (nowMs - lastFanfareAt < 900) return;
+  lastFanfareAt = nowMs;
+  const audio = context();
+  const now = audio.currentTime + 0.03;
+  tone(audio, 98, now, 0.55, "sine", 0.14);
+  tone(audio, 146.83, now + 0.04, 0.5, "triangle", 0.07);
+  const rising = [392, 493.88, 587.33, 783.99];
+  rising.forEach((freq, i) => {
+    const at = now + 0.18 + i * 0.14;
+    tone(audio, freq, at, 0.5, "triangle", 0.08);
+    tone(audio, freq * 2, at, 0.28, "sine", 0.025);
+  });
+  tone(audio, 523.25, now + 0.82, 1.15, "triangle", 0.06);
+  tone(audio, 659.25, now + 0.82, 1.15, "triangle", 0.05);
+  tone(audio, 783.99, now + 0.82, 1.25, "sine", 0.045);
+}

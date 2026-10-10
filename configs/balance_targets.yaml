@@ -4,7 +4,7 @@ locked_rules:
   king_start_gold: 1000
   noble_start_gold: 600
   king_plays_per_round: 3
-  king_redraw: 2
+  king_redraw: 3
 
 # Sign-off gates at 385 games (make signoff --no-tune)
 assisted_win_rate_max: 0.12
