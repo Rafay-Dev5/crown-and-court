@@ -25,14 +25,14 @@
             "primitive": "gold_gain",
             "params": {
               "target": "self",
-              "amount": 111
+              "amount": 110
             }
           },
           "on_failure": {
             "primitive": "gold_loss",
             "params": {
               "target": "self",
-              "amount": 53
+              "amount": 55
             }
           }
         }

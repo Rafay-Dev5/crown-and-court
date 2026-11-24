@@ -10,7 +10,7 @@
     "primitive": "gold_gain",
     "params": {
       "target": "self",
-      "amount": 88
+      "amount": 90
     }
   },
   "tags": [

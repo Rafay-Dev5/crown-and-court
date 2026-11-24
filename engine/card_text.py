@@ -151,14 +151,14 @@ def describe_effect_block(block: dict[str, Any] | None, depth: int = 0) -> list[
             who = p.get("target", "self")
             lines.append(_gold_phrase(p.get("amount"), who, "lose") + ".")
             if who not in (None, "self"):
-                lines.append("If that player is Marked, this takes 20% more gold.")
+                lines.append("If that player is Marked, this takes 25 extra gold.")
     elif primitive == "gold_transfer":
         lines.append(
             f"{int(p.get('amount') or 0)} gold moves from "
             f"{target_label(p.get('from', 'target'))} to {target_label(p.get('to', 'self'))}."
         )
         if _transfer_counts_as_theft(p):
-            lines.append("If that player is Marked, this takes 20% more gold.")
+            lines.append("If that player is Marked, this takes 25 extra gold.")
     elif primitive == "steal_card":
         lines.append(
             f"{target_label(p.get('to', 'self'))} steal {p.get('count', 1)} card(s) from "

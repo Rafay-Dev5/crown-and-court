@@ -9,7 +9,7 @@
   "effect": {
     "primitive": "alliance_bonus",
     "params": {
-      "amount": 54,
+      "amount": 55,
       "players": [
         "self",
         "target"
@@ -23,5 +23,5 @@
     "king_alliance"
   ],
   "flavor_text": "Favor flows to those who stand beside the throne.",
-  "designer_notes": "Replaced resize stub; King alliance payout (PRD §10)."
+  "designer_notes": "Replaced resize stub; King alliance payout (PRD \u00a710)."
 }

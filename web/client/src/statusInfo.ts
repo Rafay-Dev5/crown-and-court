@@ -11,7 +11,7 @@ export const STATUS_HELP: Record<string, { label: string; description: string }>
   },
   marked: {
     label: "Marked",
-    description: "Any gold theft against you takes 20% more. A shield that is already up stops the whole amount, including the extra.",
+    description: "Any gold theft against you takes 25 extra gold. A shield that is already up stops the whole amount, including the extra.",
   },
   corrupt: {
     label: "Corrupt",

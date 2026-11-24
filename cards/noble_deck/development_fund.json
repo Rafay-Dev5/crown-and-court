@@ -41,7 +41,7 @@
             "primitive": "gold_loss",
             "params": {
               "target": "self",
-              "amount": 68
+              "amount": 70
             }
           }
         },
@@ -54,14 +54,14 @@
             "primitive": "gold_gain",
             "params": {
               "target": "self",
-              "amount": 189
+              "amount": 190
             }
           },
           "on_failure": {
             "primitive": "gold_loss",
             "params": {
               "target": "self",
-              "amount": 42
+              "amount": 40
             }
           },
           "on_failure_status": {

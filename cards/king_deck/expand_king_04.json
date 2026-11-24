@@ -9,7 +9,7 @@
   "effect": {
     "primitive": "alliance_bonus",
     "params": {
-      "amount": 72,
+      "amount": 70,
       "players": [
         "self",
         "target"

@@ -11,7 +11,7 @@
     "params": {
       "from": "target",
       "to": "self",
-      "amount": 26,
+      "amount": 25,
       "as_theft": true
     }
   },
@@ -20,5 +20,5 @@
     "targets_gold"
   ],
   "flavor_text": "Pay up, or explain yourself to the guards.",
-  "designer_notes": "Replaced resize stub; Noble theft (PRD §10)."
+  "designer_notes": "Replaced resize stub; Noble theft (PRD \u00a710)."
 }

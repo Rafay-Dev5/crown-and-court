@@ -150,7 +150,7 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
         const who = p.target ?? "self";
         lines.push(goldPhrase(p.amount, who, "lose") + ".");
         if (who !== "self") {
-          lines.push("If that player is Marked, this takes 20% more gold.");
+          lines.push("If that player is Marked, this takes 25 extra gold.");
         }
       }
       break;
@@ -159,7 +159,7 @@ function describeEffectBlock(block: EffectBlock | undefined, depth = 0): string[
         `${Number(p.amount) || 0} gold moves from ${targetLabel(p.from ?? "target")} to ${targetLabel(p.to ?? "self")}.`
       );
       if (transferCountsAsTheft(p)) {
-        lines.push("If that player is Marked, this takes 20% more gold.");
+        lines.push("If that player is Marked, this takes 25 extra gold.");
       }
       break;
     case "steal_card": {

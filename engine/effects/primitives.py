@@ -77,9 +77,9 @@ def _evaluate_trigger(state: GameState, trigger: dict, ctx: EffectContext) -> bo
 
 
 def _marked_theft_amount(state: GameState, seat: int, amount: int) -> int:
-    """Marked victims lose 20% more on a gold theft."""
+    """Marked victims lose 25 extra gold on a gold theft."""
     if amount > 0 and state.has_status(seat, "marked"):
-        return amount + amount // 5
+        return amount + 25
     return amount
 
 

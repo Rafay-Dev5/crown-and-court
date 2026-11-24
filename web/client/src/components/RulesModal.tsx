@@ -320,7 +320,7 @@ export default function RulesModal({ onClose }: Props) {
             <div>
               <dt className="font-semibold">What do Marked and Discredited do?</dt>
               <dd>
-                Marked: every gold theft against you takes 20% more. A shield that is already up
+                Marked: every gold theft against you takes 25 extra gold. A shield that is already up
                 stops the whole amount. Discredited: every forced discard against you asks for one
                 extra card. You can have both at once. The same status does not stack; it keeps
                 the longer duration. Sealed Warrant and Royal Census are ordinary cards. They do

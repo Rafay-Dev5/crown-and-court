@@ -8,8 +8,8 @@ critic_layers: 3
 device: cuda
 episodes_per_update: 4
 hand_size: 8
-king_deck_size: 42
-noble_deck_size: 40
+king_deck_size: 40
+noble_deck_size: 50
 king_plays_per_round: 3
 king_redraw: 3
 king_start_gold: 1000

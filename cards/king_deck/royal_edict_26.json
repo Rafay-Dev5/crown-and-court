@@ -11,7 +11,7 @@
     "params": {
       "from": "target",
       "to": "self",
-      "amount": 62,
+      "amount": 60,
       "as_theft": true
     }
   },
@@ -19,6 +19,6 @@
     "economy",
     "targets_gold"
   ],
-  "flavor_text": "The quay master collects — for the throne.",
-  "designer_notes": "Replaced resize stub; light King levy on a noble (PRD §10)."
+  "flavor_text": "The quay master collects \u2014 for the throne.",
+  "designer_notes": "Replaced resize stub; light King levy on a noble (PRD \u00a710)."
 }

@@ -13,8 +13,8 @@ A 4–6 player political card game of gold, bluffing, alliances, and succession.
 |------|----------------|
 | Players | **4–6** (best at 6) |
 | Rounds | **5** (use **3** for a quick game) |
-| King deck | **42 cards** (shared design; one copy in play) |
-| Noble deck | **40 cards** (each Noble has their own shuffled copy) |
+| King deck | **40 cards** (shared design; one copy in play) |
+| Noble deck | **50 cards** (each Noble has their own shuffled copy) |
 | Gold tokens or paper | Track each player’s wealth |
 | Pen & paper (optional) | Track **earned gold** separately from gifts |
 
@@ -173,7 +173,7 @@ There is no shared victory — one crowned winner.
 | Cards played per round | 3 | 2 |
 | Cards drawn after play | 3 | 2 |
 | Hand size | 8 | 8 |
-| Deck size | 42 | 40 (each Noble) |
+| Deck size | 40 | 50 (each Noble) |
 
 | | Value |
 |---|:---:|
@@ -217,7 +217,7 @@ python -m scripts.export_rules_cards
 
 ## Card catalog
 
-Play-deck cards used in the standard rules (**42 King** / **40 Noble**). Card set version: `5014d381c568dd41`.
+Play-deck cards used in the standard rules (**40 King** / **50 Noble**). Card set version: `40c6f7880cb41f80`.
 
 This list matches the simulation play decks (`king_deck_size` / `noble_deck_size` in `configs/balance.yaml`). Numbers and wording may change between playtest printings. Statuses mentioned on cards (e.g. *oathbreaker*, *marked*, *corrupt*, *discredited*) are temporary tags applied by effects; follow each card’s text.
 
@@ -228,7 +228,8 @@ This list matches the simulation play decks (`king_deck_size` / `noble_deck_size
 > Every house pays the throne.
 
 Resolves when revealed in play order.
-78 gold moves from your chosen opponent to you.
+80 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 
 #### Grain Toll — *Economy* · Common
 
@@ -239,24 +240,25 @@ Your chosen opponent chooses one path:
   - Pay the Tariff
   - Hide the Cargo
 If “Pay the Tariff” is chosen:
-  - 70 gold moves from your chosen opponent to you.
+  - 70 gold moves from your chosen opponent to you. If that player is Marked, this takes 25 extra gold.
 If “Hide the Cargo” is chosen: Roll a 6-sided die. Success on 5 or 6.
   - Success: your chosen opponent gain 35 gold.
-  - Failure: 100 gold moves from your chosen opponent to you.
+  - Failure: 100 gold moves from your chosen opponent to you. If that player is Marked, this takes 25 extra gold.
 
 #### Harbor Dues — *Economy* · Common
 
 > The quay master collects — for the throne.
 
 Resolves when revealed in play order.
-62 gold moves from your chosen opponent to you.
+60 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 
 #### Tax Levy — *Economy* · Common
 
 > The crown's share comes due.
 
 Resolves when revealed in play order.
-You gain 62 gold.
+You gain 60 gold.
 
 #### Toll Bridge — *Economy* · Common
 
@@ -264,48 +266,39 @@ You gain 62 gold.
 
 Resolves when revealed in play order.
 55 gold moves from your chosen opponent to you.
-
-#### Alliance Summit — *Alliance* · Common
-
-> The crown rewards loyalty — when it suits the crown.
-
-Resolves when revealed in play order.
-Can only be played if:
-  - You have a declared alliance with your target.
-You and the player you target each gain 41 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+If that player is Marked, this takes 25 extra gold.
 
 #### Crown Patronage — *Alliance* · Common
 
 > Favor flows to those who stand beside the throne.
 
 Resolves when revealed in play order.
-You and the player you target each gain 54 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+You and your ally each gain 55 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Royal Alliance Pact — *Alliance* · Common
 
 > Loyalty rewarded — if it holds.
 
 Resolves when revealed in play order.
-You and the player you target each gain 58 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+You and your ally each gain 60 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Royal Pact — *Alliance* · Common
 
 > Expansion design — Royal Pact.
 
 Resolves when revealed in play order.
-You and the player you target each gain 72 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+You and your ally each gain 70 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Summit Oath — *Alliance* · Common
 
 > Expansion design — Summit Oath.
 
 Resolves when revealed in play order.
-You and the player you target each gain 58 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+You and your ally each gain 60 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Crown Gambit — *Betrayal* · Common
 
@@ -313,7 +306,8 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 Resolves when revealed in play order.
 90 gold moves from your chosen opponent to you.
-Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
+If that player is Marked, this takes 25 extra gold.
+Warning: only playable while you are allied, and only against that ally. The alliance ends after every card this phase is revealed.
 
 #### False Summons — *Betrayal* · Common
 
@@ -321,7 +315,8 @@ Warning: this is a betrayal. You still suffer its extra cost if a shield blocks 
 
 Resolves when revealed in play order.
 80 gold moves from your chosen opponent to you.
-Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
+If that player is Marked, this takes 25 extra gold.
+Warning: only playable while you are allied, and only against that ally. The alliance ends after every card this phase is revealed.
 
 #### Broken Crown — *Disruption* · Rare
 
@@ -329,6 +324,7 @@ Warning: this is a betrayal. You still suffer its extra cost if a shield blocks 
 
 Resolves when revealed in play order.
 70 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 Then: your chosen opponent receive the “oathbreaker” status for 4 round(s).
 
 #### Corruption Inquiry — *Disruption* · Rare
@@ -339,52 +335,44 @@ Resolves when revealed in play order.
 Can only be played if:
   - Your target previously chose “Invest Private” (within 2 rounds).
 If they previously chose “Invest Private” in the last 2 rounds:
-  - Then: If they failed a dice roll on a prior card in the last 2 rounds:   Then: your chosen opponent lose 132 gold.   Otherwise: your chosen opponent lose 65 gold.
-  - Otherwise: your chosen opponent lose 32 gold.
+  - Then: If they failed a die roll on Development Fund in the last 2 rounds:   Then: your chosen opponent lose 130 gold. If that player is Marked, this takes 25 extra gold.   Otherwise: your chosen opponent lose 65 gold. If that player is Marked, this takes 25 extra gold.
+  - Otherwise: your chosen opponent lose 30 gold. If that player is Marked, this takes 25 extra gold.
 
 #### Garrison Inspection — *Disruption* · Common
 
 > Soldiers toss the saddlebags. Something always falls out.
 
 Resolves when revealed in play order.
-Your chosen opponent chooses 1 card(s) to discard.
-
-#### Noble Containment — *Disruption* · Common
-
-> Sit down. You have said enough.
-
-Resolves when revealed in play order.
-Your chosen opponent play one fewer card next round.
+Your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Quarter Search — *Disruption* · Common
 
 > Expansion design — Quarter Search.
 
 Resolves when revealed in play order.
-Your chosen opponent chooses 2 card(s) to discard.
+Your chosen opponent chooses 2 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Royal Decree — *Disruption* · Common
 
 > By order of the crown, discard your plans.
 
 Resolves when revealed in play order.
-Your chosen opponent chooses 1 card(s) to discard.
+Your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Sealed Warrant — *Disruption* · Rare
 
 > Signed, sealed, confiscated.
 
 Resolves when revealed in play order.
-If your chosen opponent has the “marked” status:
-  - Then: 100 gold moves from your chosen opponent to you.
-  - Otherwise: 80 gold moves from your chosen opponent to you.
+80 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 
 #### Sealed Warrant II — *Disruption* · Common
 
 > Expansion design — Sealed Warrant II.
 
 Resolves when revealed in play order.
-Your chosen opponent chooses 1 card(s) to discard.
+Your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Tithe of Silence — *Disruption* · Rare
 
@@ -398,17 +386,17 @@ If “Accept Stipend” is chosen:
   - your chosen opponent gain 40 gold. Then: you gain 80 gold. Then: your chosen opponent receive the “oathbreaker” status for 3 round(s).
 If “Gamble for More” is chosen: Roll a 6-sided die. Success on 5 or 6.
   - Success: your chosen opponent gain 150 gold.
-  - Failure: 100 gold moves from your chosen opponent to you.
-  - On failure they also get “corrupt” for 2 round(s).
+  - Failure: 100 gold moves from your chosen opponent to you. If that player is Marked, this takes 25 extra gold.
+  - On failure your chosen opponent also gets “corrupt” for 2 round(s).
 
 #### Bastion Wall — *Protection* · Common
 
 > Expansion design — Bastion Wall.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 90 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 80 gold.
 
@@ -417,9 +405,9 @@ If the guess misses:
 > Wrong thief, wrong day — or wrong guess.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 200 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
 
@@ -439,9 +427,9 @@ If the guess misses:
 > The treasury closes its gates.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
 
@@ -450,9 +438,9 @@ If the guess misses:
 > Expansion design — Iron Gate.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 80 gold.
 
@@ -467,14 +455,25 @@ A hit keeps the block, so the succession check that follows can be stopped. A mi
 If the guess misses:
   - you lose 50% of your current gold.
 
+#### Treasury Shield — *Protection* · Common
+
+> The vault doors hold — for now.
+
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
+If the guess misses:
+  - you lose 60 gold.
+
 #### Vault Seal — *Protection* · Common
 
 > The seal holds — if thieves come knocking.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 110 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
 
@@ -520,33 +519,29 @@ You draw 1 extra card(s).
 Resolves when revealed in play order.
 You see every card in your chosen opponent's hand. Only you see them.
 
-#### Court Scribe — *Information* · Common
-
-> Expansion design — Court Scribe.
-
-Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
-
 #### Ledger Audit — *Information* · Common
 
 > Expansion design — Ledger Audit.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
+Your chosen opponent's hand is revealed to everyone.
+Then: your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Royal Audit — *Information* · Common
 
 > Transparency, demanded from everyone but the crown.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
+Your chosen opponent's hand is revealed to everyone.
+Then: your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Royal Census — *Information* · Common
 
 > Clerks count heads — and hands.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
+Your chosen opponent's hand is revealed to everyone.
+Then: your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Spy Master — *Information* · Rare
 
@@ -561,7 +556,7 @@ You see every card in your chosen opponent's hand. Only you see them.
 
 Resolves when revealed in play order.
 You gain 170 gold.
-Then: your chosen opponent loses 110 gold.
+Then: your chosen opponent lose 110 gold. If that player is Marked, this takes 25 extra gold.
 
 #### Imperial Mandate — *Supercard* · Supercard
 
@@ -582,7 +577,7 @@ If “Squeeze the Court” is chosen:
 
 Resolves when revealed in play order.
 You gain 120 gold.
-Then: your chosen opponent loses 90 gold.
+Then: your chosen opponent lose 90 gold. If that player is Marked, this takes 25 extra gold.
 
 ### Noble deck
 
@@ -597,11 +592,11 @@ Choose one path:
   - Cook the Books
 If “Public Works” is chosen: Roll a 6-sided die. Success on 4, 5, or 6.
   - Success: you gain 140 gold.
-  - Failure: you lose 68 gold.
+  - Failure: you lose 70 gold.
 If “Private Enrichment” is chosen: Roll a 6-sided die. Success on 4, 5, or 6.
-  - Success: you gain 189 gold.
-  - Failure: you lose 42 gold.
-  - On failure they also get “corrupt” for 3 round(s).
+  - Success: you gain 190 gold.
+  - Failure: you lose 40 gold.
+  - On failure you also get “corrupt” for 3 round(s).
 If “Cook the Books” is chosen:
   - you gain 70 gold. Then: you receive the “corrupt” status for 2 round(s).
 
@@ -610,7 +605,8 @@ If “Cook the Books” is chosen:
 > What the crown loses, you gain.
 
 Resolves when revealed in play order.
-74 gold moves from your chosen opponent to you.
+75 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 
 #### Gambler's Wager — *Economy* · Common
 
@@ -620,22 +616,23 @@ Resolves when revealed in play order.
 Choose one path:
   - Double Down
 If “Double Down” is chosen: Roll a 6-sided die. Success on 5 or 6.
-  - Success: you gain 111 gold.
-  - Failure: you lose 53 gold.
+  - Success: you gain 110 gold.
+  - Failure: you lose 55 gold.
 
 #### Loan Shark — *Economy* · Rare
 
 > Interest due — in gold, not gratitude.
 
 Resolves when revealed in play order.
-88 gold moves from your chosen opponent to you.
+90 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 
 #### Market Manipulation — *Economy* · Common
 
 > Buy low. Sell to whoever's desperate.
 
 Resolves when revealed in play order.
-You gain 93 gold.
+You gain 95 gold.
 
 #### Night Collection — *Economy* · Common
 
@@ -648,9 +645,9 @@ Choose one path:
 If “Collect Quietly” is chosen:
   - you gain 30 gold.
 If “Stage a Shakedown” is chosen: Roll a 6-sided die. Success on 5 or 6.
-  - Success: 60 gold moves from your chosen opponent to you.
+  - Success: 60 gold moves from your chosen opponent to you. If that player is Marked, this takes 25 extra gold.
   - Failure: you lose 20 gold.
-  - On failure they also get “discredited” for 1 round(s).
+  - On failure you also get “discredited” for 1 round(s).
 
 #### People's Levy — *Economy* · Common
 
@@ -663,16 +660,17 @@ Choose one path:
 If “Organize Donations” is chosen:
   - you gain 45 gold.
 If “Squeeze the Crowd” is chosen: Roll a 6-sided die. Success on 5 or 6.
-  - Success: 110 gold moves from your chosen opponent to you.
+  - Success: 110 gold moves from your chosen opponent to you. If that player is Marked, this takes 25 extra gold.
   - Failure: you lose 35 gold.
-  - On failure they also get “oathbreaker” for 2 round(s).
+  - On failure you also get “oathbreaker” for 2 round(s).
 
 #### Smuggler's Cut — *Economy* · Common
 
 > Expansion design — Smuggler's Cut.
 
 Resolves when revealed in play order.
-52 gold moves from the King to you.
+50 gold moves from the King to you.
+If that player is Marked, this takes 25 extra gold.
 
 #### Smuggler's Tithe — *Economy* · Common
 
@@ -687,48 +685,58 @@ If “Take a Quiet Cut” is chosen:
 If “Run a Deep Route” is chosen: Roll a 6-sided die. Success on 5 or 6.
   - Success: you gain 95 gold.
   - Failure: you lose 25 gold.
-  - On failure they also get “marked” for 1 round(s).
+  - On failure you also get “marked” for 1 round(s).
+
+#### Tithe Collectors — *Economy* · Common
+
+> God's share — and yours.
+
+Resolves when revealed in play order.
+You gain 90 gold.
 
 #### Blood Oath — *Alliance* · Common
 
 > Expansion design — Blood Oath.
 
 Resolves when revealed in play order.
-You and the player you target each gain 55 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+You and your ally each gain 55 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Mob Contract — *Alliance* · Common
 
 > Strength in numbers — for a price.
 
 Resolves when revealed in play order.
-You and the player you target each gain 55 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+You and your ally each gain 55 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
-#### Neighborhood Pact — *Alliance* · Common
+#### Rally Support — *Alliance* · Common
 
-> Your neighbors watch your back — for a share.
+> Crowds love a cause — especially a profitable one.
 
 Resolves when revealed in play order.
-You and the player you target each gain 30 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+Can only be played if:
+  - You have a declared alliance with your target.
+You and your ally each gain 50 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Secret Compact — *Alliance* · Common
 
 > Expansion design — Secret Compact.
 
 Resolves when revealed in play order.
-You and the player you target each gain 65 gold, but only if you are allied with them when this resolves. If you are not, the card does nothing.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+You and your ally each gain 65 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
-#### Back-Alley Stab — *Betrayal* · Common
+#### Secret Pact — *Alliance* · Common
 
-> The knife is quiet; the debt is not.
+> Some bonds pay dividends.
 
 Resolves when revealed in play order.
-20 gold moves from your chosen opponent to you.
-Then: you receive the “marked” status for 1 round(s).
-Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
+Can only be played if:
+  - You have a declared alliance with your target.
+You and your ally each gain 50 gold. This only works while you are allied. If you are not, the card does nothing.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Backstab Deal — *Betrayal* · Rare
 
@@ -738,8 +746,9 @@ Resolves when revealed in play order.
 Can only be played if:
   - You have a declared alliance with your target.
 60 gold moves from your chosen opponent to you.
-Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+If that player is Marked, this takes 25 extra gold.
+Warning: only playable while you are allied, and only against that ally. The alliance ends after every card this phase is revealed.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Broken Vow — *Betrayal* · Common
 
@@ -749,9 +758,10 @@ Resolves when revealed in play order.
 Can only be played if:
   - You have a declared alliance with your target.
 30 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 Then: you receive the “oathbreaker” status for 3 round(s).
-Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+Warning: only playable while you are allied, and only against that ally. The alliance ends after every card this phase is revealed. Betrayal cost (paid even if a shield stops the theft): you receive the “oathbreaker” status for 3 round(s).
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Coup Plot — *Betrayal* · Rare
 
@@ -761,9 +771,10 @@ Resolves when revealed in play order.
 Can only be played if:
   - You have a declared alliance with your target.
 125 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 Then: you receive the “marked” status for 2 round(s).
-Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
-Warning: this needs an alliance with your target. Otherwise it does nothing.
+Warning: only playable while you are allied, and only against that ally. The alliance ends after every card this phase is revealed. Betrayal cost (paid even if a shield stops the theft): you receive the “marked” status for 2 round(s).
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Coup Plot II — *Betrayal* · Common
 
@@ -771,29 +782,44 @@ Warning: this needs an alliance with your target. Otherwise it does nothing.
 
 Resolves when revealed in play order.
 75 gold moves from the King to you.
-Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
+If that player is Marked, this takes 25 extra gold.
+Warning: only playable while you are allied, and only against that ally. The alliance ends after every card this phase is revealed.
+
+#### Poisoned Chalice — *Betrayal* · Rare
+
+> Trust, bottled and served cold.
+
+Resolves when revealed in play order.
+Can only be played if:
+  - You have a declared alliance with your target.
+140 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
+Warning: only playable while you are allied, and only against that ally. The alliance ends after every card this phase is revealed.
+Warning: this needs an alliance with your ally. Otherwise it does nothing.
 
 #### Shakedown — *Betrayal* · Common
 
 > Pay up, or explain yourself to the guards.
 
 Resolves when revealed in play order.
-26 gold moves from your chosen opponent to you.
-Warning: this is a betrayal. You still suffer its extra cost if a shield blocks the theft.
+25 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
+Warning: only playable while you are allied, and only against that ally. The alliance ends after every card this phase is revealed.
 
 #### Blackmail — *Disruption* · Common
 
 > Pay up, or everyone hears.
 
 Resolves when revealed in play order.
-78 gold moves from your chosen opponent to you.
+80 gold moves from your chosen opponent to you.
+If that player is Marked, this takes 25 extra gold.
 
 #### Cut Supply Lines — *Disruption* · Common
 
 > No carriages reach the palace tonight.
 
 Resolves when revealed in play order.
-Your chosen opponent chooses 1 card(s) to discard.
+Your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Embargo — *Disruption* · Rare
 
@@ -814,23 +840,38 @@ You steal 1 card(s) from your chosen opponent.
 > Expansion design — Poisoned Chalice.
 
 Resolves when revealed in play order.
-Your chosen opponent chooses 2 card(s) to discard.
+Your chosen opponent chooses 2 card(s) to discard. If that player is Discredited, they discard one extra card.
+
+#### Public Scandal — *Disruption* · Common
+
+> Secrets spilled in the square.
+
+Resolves when revealed in play order.
+Your chosen opponent's hand is revealed to everyone.
+Then: your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Sabotage — *Disruption* · Common
 
 > Expansion design — Sabotage.
 
 Resolves when revealed in play order.
-Your chosen opponent chooses 1 card(s) to discard.
+Your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
+
+#### Sabotage — *Disruption* · Common
+
+> A single spark in the right place.
+
+Resolves when revealed in play order.
+Your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Body Double — *Protection* · Common
 
 > Expansion design — Body Double.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 80 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 80 gold.
 
@@ -839,9 +880,9 @@ If the guess misses:
 > You hired him to stop the wrong kind of theft.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 120 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
 
@@ -850,9 +891,9 @@ If the guess misses:
 > Coins buried where thieves won't look.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 100 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 60 gold.
 
@@ -861,11 +902,22 @@ If the guess misses:
 > Expansion design — Hidden Cache II.
 
 Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
-When this card is revealed, a shield for up to 85 gold goes up immediately and stays up through the rest of the reveals.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
 The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
-While it is up, it can stop a gold theft revealed after this card. It does not undo anything revealed before it. A hit keeps the shield. A miss removes the unused shield.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
 If the guess misses:
   - you lose 80 gold.
+
+#### Ward — *Protection* · Common
+
+> A guarded purse — if anyone tries to take it.
+
+Played face-down. It arms when revealed and stays up. The guess is scored after every card has been revealed, before succession.
+When this card is revealed, a shield against gold theft goes up immediately and stays up through the rest of the reveals.
+The guess is not scored then. It is checked after every card has been revealed, before succession. It hits if you suffered a gold theft during this round's reveals.
+While it is up, it stops the next gold theft revealed after this card, then it is used up. It does not undo a theft revealed before it. A hit means you do not pay the miss cost. A miss removes the unused shield.
+If the guess misses:
+  - you lose 60 gold.
 
 #### Courier Swap — *Tempo* · Common
 
@@ -895,9 +947,23 @@ You may play an extra card next round.
 Resolves when revealed in play order.
 You may play an extra card next round.
 
+#### Quick Escape — *Tempo* · Common
+
+> Leave fast, plan faster.
+
+Resolves when revealed in play order.
+You draw 1 extra card(s).
+
 #### Slip Away — *Tempo* · Common
 
 > Leave the hall before the verdict lands.
+
+Resolves when revealed in play order.
+You draw 1 extra card(s).
+
+#### Smuggler's Route — *Tempo* · Common
+
+> Goods arrive by paths the tax collectors never see.
 
 Resolves when revealed in play order.
 You draw 1 extra card(s).
@@ -914,7 +980,15 @@ You see every card in the King's hand. Only you see them.
 > Expansion design — Spy Network.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
+Your chosen opponent's hand is revealed to everyone.
+Then: your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
+
+#### Spy Network — *Information* · Common
+
+> Whispers travel faster than horses.
+
+Resolves when revealed in play order.
+You see every card in your chosen opponent's hand. Only you see them.
 
 #### Stolen Ledger — *Information* · Common
 
@@ -923,12 +997,20 @@ Your chosen opponent's hand is revealed to everyone. They choose 1 card to disca
 Resolves when revealed in play order.
 You see every card in your chosen opponent's hand. Only you see them.
 
+#### Whisper Campaign — *Information* · Rare
+
+> Reputation erodes one whisper at a time.
+
+Resolves when revealed in play order.
+Your chosen opponent receive the “discredited” status for 2 round(s).
+
 #### Whisper Ring — *Information* · Common
 
 > Expansion design — Whisper Ring.
 
 Resolves when revealed in play order.
-Your chosen opponent's hand is revealed to everyone. They choose 1 card to discard.
+Your chosen opponent's hand is revealed to everyone.
+Then: your chosen opponent chooses 1 card(s) to discard. If that player is Discredited, they discard one extra card.
 
 #### Assassin's Blade — *Supercard* · Supercard
 
@@ -936,6 +1018,7 @@ Your chosen opponent's hand is revealed to everyone. They choose 1 card to disca
 
 Resolves when revealed in play order.
 235 gold moves from the King to you.
+If that player is Marked, this takes 25 extra gold.
 Then: you receive the “marked” status for 3 round(s).
 
 #### Grand Conspiracy — *Supercard* · Supercard
@@ -944,7 +1027,17 @@ Then: you receive the “marked” status for 3 round(s).
 
 Resolves when revealed in play order.
 120 gold moves from the King to you.
+If that player is Marked, this takes 25 extra gold.
 Then: you draw 1 extra card(s).
+
+#### Revolution Banner — *Supercard* · Supercard
+
+> Lead the uprising — or pay for the attempt.
+
+Resolves when revealed in play order.
+If you have more gold than every other Noble. A tie does not count:
+  - Then: you gain 200 gold.
+  - Otherwise: you lose 150 gold.
 
 <!-- END CARD CATALOG -->
 

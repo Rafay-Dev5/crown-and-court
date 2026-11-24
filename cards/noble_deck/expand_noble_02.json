@@ -11,7 +11,7 @@
     "params": {
       "from": "king",
       "to": "self",
-      "amount": 52,
+      "amount": 50,
       "as_theft": true
     }
   },

@@ -11,7 +11,7 @@
     "params": {
       "from": "target",
       "to": "self",
-      "amount": 138,
+      "amount": 140,
       "as_theft": true
     }
   },
